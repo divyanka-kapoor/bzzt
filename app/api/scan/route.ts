@@ -21,6 +21,9 @@ function scoreMalaria(temp: number, rain: number, laggedRain: number, humidity: 
   return { level: 'LOW', score: Math.round(5 + Math.random() * 15) };
 }
 
+const withTimeout = <T>(p: Promise<T>, ms: number, fallback: T): Promise<T> =>
+  Promise.race([p, new Promise<T>(res => setTimeout(() => res(fallback), ms))]);
+
 let lastScan: Array<{
   id: string; name: string; country: string; lat: number; lng: number;
   dengue: RiskLevel; malaria: RiskLevel; dengueScore: number; malariaScore: number; scannedAt: string;
@@ -32,9 +35,13 @@ export async function GET() {
     return NextResponse.json({ cities: lastScan, cached: true });
   }
 
-  const results = await Promise.all(
+  const climateDefault = { avgTemp: 0, avgRainfall: 0, laggedRainfall: 0, avgHumidity: 0, weeks: 0 };
+
+  const results = (await Promise.all(
     CITIES.map(async (city) => {
-      const climate = await fetchClimateData(city.lat, city.lng);
+      const climate = await withTimeout(fetchClimateData(city.lat, city.lng), 8000, climateDefault);
+      if (climate.weeks === 0) return null; // timed out — exclude from results
+
       const dengue  = scoreDengue(climate.avgTemp, climate.avgRainfall, climate.laggedRainfall, climate.avgHumidity);
       const malaria = scoreMalaria(climate.avgTemp, climate.avgRainfall, climate.laggedRainfall, climate.avgHumidity);
 
@@ -45,7 +52,7 @@ export async function GET() {
 
       return { id: city.id, name: city.name, country: city.country, lat: city.lat, lng: city.lng, dengue: dengue.level, malaria: malaria.level, dengueScore: dengue.score, malariaScore: malaria.score, scannedAt: new Date().toISOString() };
     }),
-  );
+  )).filter(Boolean) as typeof lastScan;
 
   lastScan = results;
   lastScanAt = Date.now();

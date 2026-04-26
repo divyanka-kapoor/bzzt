@@ -10,12 +10,14 @@ export default function Home() {
         <div className="text-xl font-bold tracking-tight text-white">
           Bzzt
         </div>
-        <Link
-          href="/dashboard"
-          className="text-sm text-muted hover:text-white transition-colors"
-        >
-          Operator Dashboard →
-        </Link>
+        <div className="flex items-center gap-4">
+          <Link href="/lookup" className="text-sm text-muted hover:text-white transition-colors">
+            Check risk →
+          </Link>
+          <Link href="/dashboard" className="text-sm text-muted hover:text-white transition-colors">
+            Dashboard →
+          </Link>
+        </div>
       </nav>
 
       {/* Hero */}

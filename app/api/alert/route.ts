@@ -5,7 +5,7 @@ import { fetchClimateData } from '@/lib/open-meteo';
 import { composeAlertMessage } from '@/lib/openai';
 import { sendSMS } from '@/lib/twilio';
 import { sendEmail } from '@/lib/agent-mail';
-import { logRiskComputation } from '@/lib/openmetadata';
+import { logRiskComputation, markAlertSent } from '@/lib/openmetadata';
 
 type RiskLevel = 'HIGH' | 'WATCH' | 'LOW';
 
@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
     const dengueLevel  = scoreDengue(climate.avgTemp, climate.avgRainfall, climate.laggedRainfall, climate.avgHumidity);
     const malariaLevel = scoreMalaria(climate.avgTemp, climate.avgRainfall, climate.laggedRainfall, climate.avgHumidity);
 
-    await logRiskComputation(city.id, city.name,
+    const lineageEvent = await logRiskComputation(city.id, city.name,
       { source: 'Open-Meteo API', lat: city.lat, lng: city.lng, avgTemp: climate.avgTemp, avgRainfall: climate.avgRainfall, laggedRainfall: climate.laggedRainfall, avgHumidity: climate.avgHumidity },
       { dengue: dengueLevel, malaria: malariaLevel, dengueScore: dengueLevel === 'HIGH' ? 90 : 55, malariaScore: malariaLevel === 'HIGH' ? 88 : 52 },
     );
@@ -52,6 +52,7 @@ export async function POST(req: NextRequest) {
 
     const topRisk: RiskLevel = dengueLevel === 'HIGH' || malariaLevel === 'HIGH' ? 'HIGH' : dengueLevel === 'WATCH' || malariaLevel === 'WATCH' ? 'WATCH' : 'LOW';
     logAlert({ cityId: city.id, cityName: city.name, country: city.country, message, recipients: sentCount, type: 'sms', riskLevel: topRisk });
+    await markAlertSent(lineageEvent.id, sentCount);
 
     return NextResponse.json({ sent: true, recipients: sentCount, message, dengueLevel, malariaLevel });
   } catch (err) {

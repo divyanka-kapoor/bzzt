@@ -1,10 +1,11 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { MapContainer, TileLayer, CircleMarker, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
-interface CityRisk {
+export interface CityRisk {
   id: string;
   name: string;
   country: string;
@@ -17,17 +18,59 @@ interface CityRisk {
   scannedAt?: string;
 }
 
-function topRisk(dengue: string, malaria: string): 'HIGH' | 'WATCH' | 'LOW' {
-  if (dengue === 'HIGH' || malaria === 'HIGH') return 'HIGH';
-  if (dengue === 'WATCH' || malaria === 'WATCH') return 'WATCH';
-  return 'LOW';
+type RiskLevel = 'HIGH' | 'WATCH' | 'LOW';
+
+const RISK_COLOR: Record<RiskLevel, string> = {
+  HIGH:  '#F87171', // rose
+  WATCH: '#FCD34D', // amber
+  LOW:   '#34D399', // mint
+};
+
+const RISK_SIZE: Record<RiskLevel, number> = {
+  HIGH: 13, WATCH: 10, LOW: 7,
+};
+
+function dengueIcon(level: RiskLevel): L.DivIcon {
+  const c = RISK_COLOR[level];
+  const r = RISK_SIZE[level];
+  const d = r * 2;
+  return L.divIcon({
+    html: `<svg width="${d}" height="${d}" viewBox="0 0 ${d} ${d}" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="${r}" cy="${r}" r="${r - 1}" fill="${c}" fill-opacity="0.85" stroke="#0a0a0a" stroke-width="1.2"/>
+    </svg>`,
+    className: '',
+    iconSize: [d, d],
+    iconAnchor: [r, r],
+  });
 }
 
-const LEVEL_STYLE: Record<string, { color: string; opacity: number; radius: number }> = {
-  HIGH:  { color: '#ffffff', opacity: 0.9,  radius: 14 },
-  WATCH: { color: '#9ca3af', opacity: 0.65, radius: 10 },
-  LOW:   { color: '#374151', opacity: 0.5,  radius: 7  },
-};
+function malariaIcon(level: RiskLevel): L.DivIcon {
+  const c = RISK_COLOR[level];
+  const s = RISK_SIZE[level] * 2; // total svg size
+  const h = s / 2;
+  // Diamond: top, right, bottom, left
+  return L.divIcon({
+    html: `<svg width="${s}" height="${s}" viewBox="0 0 ${s} ${s}" xmlns="http://www.w3.org/2000/svg">
+      <path d="M${h} 1 L${s - 1} ${h} L${h} ${s - 1} L1 ${h} Z"
+        fill="${c}" fill-opacity="0.85" stroke="#0a0a0a" stroke-width="1.2"/>
+    </svg>`,
+    className: '',
+    iconSize: [s, s],
+    iconAnchor: [h, h],
+  });
+}
+
+// Offset dengue slightly west, malaria slightly east so they sit side-by-side
+const LNG_OFFSET = 0.4;
+
+function RiskLabel({ level }: { level: RiskLevel }) {
+  const color = RISK_COLOR[level];
+  return (
+    <span style={{ fontSize: 11, fontWeight: 700, padding: '2px 7px', borderRadius: 4, background: `${color}22`, color }}>
+      {level}
+    </span>
+  );
+}
 
 export default function Map({ livePoints }: { livePoints?: CityRisk[] }) {
   const [mounted, setMounted] = useState(false);
@@ -37,50 +80,54 @@ export default function Map({ livePoints }: { livePoints?: CityRisk[] }) {
 
   if (!livePoints || livePoints.length === 0) {
     return (
-      <div className="w-full h-full bg-[#0a0a0a] rounded-xl flex items-center justify-center">
-        <p className="text-white/30 text-sm">Scanning cities…</p>
+      <div className="w-full h-full bg-[#0a0a0a] rounded-xl flex items-center justify-center flex-col gap-3">
+        <div className="w-4 h-4 border border-white/20 rounded-full animate-pulse" />
+        <p className="text-white/25 text-xs">Scanning cities…</p>
       </div>
     );
   }
 
   return (
-    <MapContainer center={[15, 30]} zoom={2} scrollWheelZoom={true}
+    <MapContainer center={[15, 25]} zoom={2} scrollWheelZoom={true}
       className="w-full h-full rounded-xl" style={{ background: '#0a0a0a' }}>
       <TileLayer
         attribution='&copy; <a href="https://carto.com/">CARTO</a>'
         url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
       />
-      {livePoints.map((p) => {
-        const risk = topRisk(p.dengue, p.malaria);
-        const s = LEVEL_STYLE[risk];
-        return (
-          <CircleMarker key={p.id} center={[p.lat, p.lng]} radius={s.radius}
-            pathOptions={{ color: s.color, fillColor: s.color, fillOpacity: s.opacity * 0.25, weight: 1.5, opacity: s.opacity }}>
+
+      {livePoints.map((city) => (
+        <div key={city.id}>
+          {/* Dengue — circle, offset west */}
+          <Marker position={[city.lat, city.lng - LNG_OFFSET]} icon={dengueIcon(city.dengue)}>
             <Popup>
-              <div style={{ fontFamily: 'sans-serif', fontSize: 13, padding: '6px 10px', minWidth: 170 }}>
-                <strong style={{ fontSize: 14 }}>{p.name}</strong>
-                <div style={{ color: '#6b7280', fontSize: 11, marginBottom: 8 }}>{p.country}</div>
-                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                  {(['dengue', 'malaria'] as const).map(d => (
-                    <span key={d} style={{
-                      fontSize: 11, fontWeight: 700, padding: '2px 8px', borderRadius: 4,
-                      background: p[d] === 'HIGH' ? '#fff' : p[d] === 'WATCH' ? '#9ca3af30' : '#37415130',
-                      color: p[d] === 'HIGH' ? '#000' : p[d] === 'WATCH' ? '#9ca3af' : '#4b5563',
-                    }}>
-                      {d.charAt(0).toUpperCase() + d.slice(1)} {p[d]}
-                    </span>
-                  ))}
+              <div style={{ fontFamily: 'sans-serif', padding: '8px 10px', minWidth: 180 }}>
+                <strong style={{ fontSize: 14 }}>{city.name}</strong>
+                <div style={{ color: '#6b7280', fontSize: 11, marginBottom: 8 }}>{city.country}</div>
+                <div style={{ marginBottom: 4 }}>
+                  <span style={{ fontSize: 10, color: '#9ca3af', marginRight: 6 }}>◉ Dengue</span>
+                  <RiskLabel level={city.dengue} />
                 </div>
-                {p.scannedAt && (
-                  <div style={{ color: '#9ca3af', fontSize: 10, marginTop: 6 }}>
-                    {new Date(p.scannedAt).toLocaleTimeString()}
-                  </div>
-                )}
+                <div style={{ fontSize: 10, color: '#9ca3af' }}>Score: {city.dengueScore}/100</div>
               </div>
             </Popup>
-          </CircleMarker>
-        );
-      })}
+          </Marker>
+
+          {/* Malaria — diamond, offset east */}
+          <Marker position={[city.lat, city.lng + LNG_OFFSET]} icon={malariaIcon(city.malaria)}>
+            <Popup>
+              <div style={{ fontFamily: 'sans-serif', padding: '8px 10px', minWidth: 180 }}>
+                <strong style={{ fontSize: 14 }}>{city.name}</strong>
+                <div style={{ color: '#6b7280', fontSize: 11, marginBottom: 8 }}>{city.country}</div>
+                <div style={{ marginBottom: 4 }}>
+                  <span style={{ fontSize: 10, color: '#9ca3af', marginRight: 6 }}>◆ Malaria</span>
+                  <RiskLabel level={city.malaria} />
+                </div>
+                <div style={{ fontSize: 10, color: '#9ca3af' }}>Score: {city.malariaScore}/100</div>
+              </div>
+            </Popup>
+          </Marker>
+        </div>
+      ))}
     </MapContainer>
   );
 }
