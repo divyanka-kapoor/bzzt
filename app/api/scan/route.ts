@@ -4,6 +4,7 @@ export const dynamic = 'force-dynamic';
 import { CITIES } from '@/lib/cities';
 import { fetchClimateData } from '@/lib/open-meteo';
 import { logRiskComputation } from '@/lib/openmetadata';
+import { recordScan } from '@/lib/trend';
 
 type RiskLevel = 'HIGH' | 'WATCH' | 'LOW';
 
@@ -56,5 +57,6 @@ export async function GET() {
 
   lastScan = results;
   lastScanAt = Date.now();
+  recordScan(results);
   return NextResponse.json({ cities: results, cached: false });
 }

@@ -74,7 +74,155 @@ async function bootstrap() {
   if (bootstrapped) return;
   bootstrapped = true;
 
-  // 1. Pipeline service
+  // ── Data source services ─────────────────────────────────────────────────
+  await omFetch('/services/databaseServices', 'PUT', {
+    name: 'open-meteo-api',
+    displayName: 'Open-Meteo Climate API',
+    description: 'Free weather forecast API providing historical and forecast climate data. No API key required. Used as primary climate signal source for Bzzt risk scoring.',
+    serviceType: 'CustomDatabase',
+    connection: { config: { type: 'CustomDatabase', sourcePythonClass: 'open_meteo' } },
+  });
+
+  await omFetch('/services/databaseServices', 'PUT', {
+    name: 'who-gho-api',
+    displayName: 'WHO Global Health Observatory',
+    description: 'WHO GHO OData API providing historical dengue and malaria case surveillance data by country. Used to validate climate-based risk signals against observed outbreak patterns.',
+    serviceType: 'CustomDatabase',
+    connection: { config: { type: 'CustomDatabase', sourcePythonClass: 'who_gho' } },
+  });
+
+  await omFetch('/services/databaseServices', 'PUT', {
+    name: 'population-estimates',
+    displayName: 'UN Population Estimates',
+    description: 'UN World Urbanization Prospects 2024 metro area population figures. Used to compute people-at-risk counts from risk scores.',
+    serviceType: 'CustomDatabase',
+    connection: { config: { type: 'CustomDatabase', sourcePythonClass: 'population' } },
+  });
+
+  // ── Table entities (data assets) ─────────────────────────────────────────
+  await omFetch('/tables', 'PUT', {
+    name: 'climate_observations',
+    displayName: 'Climate Observations',
+    description: 'Daily climate observations from Open-Meteo. Each row is a (lat, lng, date) triple with temperature, rainfall, and humidity readings.',
+    service: { fullyQualifiedName: 'open-meteo-api' },
+    databaseSchema: { fullyQualifiedName: 'open-meteo-api.open_meteo' },
+    columns: [
+      { name: 'latitude',                  dataType: 'FLOAT',  description: 'Location latitude' },
+      { name: 'longitude',                 dataType: 'FLOAT',  description: 'Location longitude' },
+      { name: 'date',                      dataType: 'DATE',   description: 'Observation date' },
+      { name: 'temperature_2m_max',        dataType: 'FLOAT',  description: 'Daily max temperature at 2m (°C)' },
+      { name: 'precipitation_sum',         dataType: 'FLOAT',  description: 'Daily precipitation total (mm)' },
+      { name: 'relative_humidity_2m_max',  dataType: 'FLOAT',  description: 'Daily max relative humidity at 2m (%)' },
+    ],
+    tags: [{ tagFQN: 'PII.None' }],
+  });
+
+  await omFetch('/tables', 'PUT', {
+    name: 'disease_surveillance',
+    displayName: 'WHO Disease Surveillance',
+    description: 'Annual dengue case counts and malaria incidence rates by country from WHO GHO. Used as historical baseline to contextualise climate-based risk signals.',
+    service: { fullyQualifiedName: 'who-gho-api' },
+    databaseSchema: { fullyQualifiedName: 'who-gho-api.who_gho' },
+    columns: [
+      { name: 'country_iso3',        dataType: 'STRING',  description: 'ISO 3166-1 alpha-3 country code' },
+      { name: 'year',                dataType: 'INT',     description: 'Reporting year' },
+      { name: 'dengue_cases',        dataType: 'INT',     description: 'Reported dengue fever cases (DENGUE_0000000001)' },
+      { name: 'malaria_incidence',   dataType: 'FLOAT',   description: 'Estimated malaria incidence per 1000 population at risk (MALARIA_EST_INCIDENCE)' },
+    ],
+    tags: [{ tagFQN: 'PII.None' }],
+  });
+
+  await omFetch('/tables', 'PUT', {
+    name: 'city_population',
+    displayName: 'City Population Estimates',
+    description: 'UN World Urbanization Prospects 2024 metro area population for monitored cities.',
+    service: { fullyQualifiedName: 'population-estimates' },
+    databaseSchema: { fullyQualifiedName: 'population-estimates.un_wup' },
+    columns: [
+      { name: 'city_id',     dataType: 'STRING', description: 'Bzzt internal city slug' },
+      { name: 'city_name',   dataType: 'STRING', description: 'City display name' },
+      { name: 'country',     dataType: 'STRING', description: 'Country name' },
+      { name: 'population_m', dataType: 'FLOAT', description: 'Metro area population (millions)' },
+      { name: 'year',        dataType: 'INT',    description: 'Estimate year' },
+    ],
+    tags: [{ tagFQN: 'PII.None' }],
+  });
+
+  await omFetch('/tables', 'PUT', {
+    name: 'disease_risk_scores',
+    displayName: 'Disease Risk Scores',
+    description: 'Output of the Bzzt risk scorer. One row per (city, computation_run). Dengue and malaria risk levels and scores computed from lagged climate observations.',
+    service: { fullyQualifiedName: 'bzzt-pipeline-service' },
+    databaseSchema: { fullyQualifiedName: 'bzzt-pipeline-service.bzzt_outputs' },
+    columns: [
+      { name: 'run_id',             dataType: 'STRING',  description: 'Unique computation run ID' },
+      { name: 'city_id',            dataType: 'STRING',  description: 'Bzzt city slug' },
+      { name: 'city_name',          dataType: 'STRING',  description: 'City display name' },
+      { name: 'computed_at',        dataType: 'TIMESTAMP', description: 'Computation timestamp (UTC)' },
+      { name: 'dengue_risk_level',  dataType: 'STRING',  description: 'Dengue risk level: HIGH | WATCH | LOW' },
+      { name: 'dengue_risk_score',  dataType: 'FLOAT',   description: 'Dengue risk score 0–100' },
+      { name: 'malaria_risk_level', dataType: 'STRING',  description: 'Malaria risk level: HIGH | WATCH | LOW' },
+      { name: 'malaria_risk_score', dataType: 'FLOAT',   description: 'Malaria risk score 0–100' },
+      { name: 'alert_sent',         dataType: 'BOOLEAN', description: 'Whether an alert was dispatched for this run' },
+      { name: 'alert_recipients',   dataType: 'INT',     description: 'Number of recipients the alert was sent to' },
+    ],
+    tags: [{ tagFQN: 'PII.None' }],
+  });
+
+  // ── Column-level lineage ──────────────────────────────────────────────────
+  // climate_observations → disease_risk_scores
+  await omFetch('/lineage', 'PUT', {
+    edge: {
+      fromEntity: { type: 'table', fullyQualifiedName: 'open-meteo-api.open_meteo.default.climate_observations' },
+      toEntity:   { type: 'table', fullyQualifiedName: 'bzzt-pipeline-service.bzzt_outputs.default.disease_risk_scores' },
+      columnLineage: [
+        {
+          fromColumns: [
+            'open-meteo-api.open_meteo.default.climate_observations.temperature_2m_max',
+            'open-meteo-api.open_meteo.default.climate_observations.precipitation_sum',
+            'open-meteo-api.open_meteo.default.climate_observations.relative_humidity_2m_max',
+          ],
+          toColumn: 'bzzt-pipeline-service.bzzt_outputs.default.disease_risk_scores.dengue_risk_score',
+          function: 'scoreDengue(temp>26, rain 8–60mm, lagged_rain≥8mm, humidity≥60%)',
+        },
+        {
+          fromColumns: [
+            'open-meteo-api.open_meteo.default.climate_observations.temperature_2m_max',
+            'open-meteo-api.open_meteo.default.climate_observations.precipitation_sum',
+            'open-meteo-api.open_meteo.default.climate_observations.relative_humidity_2m_max',
+          ],
+          toColumn: 'bzzt-pipeline-service.bzzt_outputs.default.disease_risk_scores.malaria_risk_score',
+          function: 'scoreMalaria(temp>24, rain>25mm, lagged_rain>25mm, humidity>65%)',
+        },
+      ],
+    },
+  });
+
+  // disease_surveillance → disease_risk_scores (context enrichment)
+  await omFetch('/lineage', 'PUT', {
+    edge: {
+      fromEntity: { type: 'table', fullyQualifiedName: 'who-gho-api.who_gho.default.disease_surveillance' },
+      toEntity:   { type: 'table', fullyQualifiedName: 'bzzt-pipeline-service.bzzt_outputs.default.disease_risk_scores' },
+      description: 'WHO historical baseline used to contextualise risk signals. Not used in scoring computation directly.',
+    },
+  });
+
+  // city_population → disease_risk_scores (people-at-risk enrichment)
+  await omFetch('/lineage', 'PUT', {
+    edge: {
+      fromEntity: { type: 'table', fullyQualifiedName: 'population-estimates.un_wup.default.city_population' },
+      toEntity:   { type: 'table', fullyQualifiedName: 'bzzt-pipeline-service.bzzt_outputs.default.disease_risk_scores' },
+      columnLineage: [
+        {
+          fromColumns: ['population-estimates.un_wup.default.city_population.population_m'],
+          toColumn:    'bzzt-pipeline-service.bzzt_outputs.default.disease_risk_scores.alert_recipients',
+          function:    'population × enrollment_rate → estimated_reachable_population',
+        },
+      ],
+    },
+  });
+
+  // ── Pipeline service + pipeline entity ───────────────────────────────────
   await omFetch('/services/pipelineServices', 'PUT', {
     name: 'bzzt-pipeline-service',
     displayName: 'Bzzt Climate Risk Pipeline',

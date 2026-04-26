@@ -3,6 +3,7 @@
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useEffect, useState, useCallback } from 'react';
+import IntelligenceTab from '@/components/IntelligenceTab';
 
 const Map = dynamic(() => import('@/components/Map'), { ssr: false });
 
@@ -65,6 +66,7 @@ export default function Dashboard() {
   const [triggering, setTriggering] = useState<string | null>(null);
   const [lastScan, setLastScan] = useState<string>('—');
   const [activeTab, setActiveTab] = useState<'alerts' | 'lineage'>('alerts');
+  const [topTab, setTopTab] = useState<'map' | 'intelligence'>('map');
 
   const loadAlerts = useCallback(async () => {
     try {
@@ -130,7 +132,17 @@ export default function Dashboard() {
           <Link href="/" className="text-sm font-bold tracking-tight text-white hover:text-white/70 transition-colors">
             Bzzt
           </Link>
-          <span className="text-[10px] text-white/25 uppercase tracking-wider hidden sm:inline">Global Disease Risk Monitor</span>
+          {/* Top-level tab switcher */}
+          <div className="flex items-center border border-white/10 rounded-lg overflow-hidden">
+            {([['map', 'Live Map'], ['intelligence', 'Intelligence']] as const).map(([id, label]) => (
+              <button key={id} onClick={() => setTopTab(id)}
+                className={`px-3 py-1.5 text-xs font-medium transition ${
+                  topTab === id ? 'bg-white/10 text-white' : 'text-white/30 hover:text-white/50'
+                }`}>
+                {label}
+              </button>
+            ))}
+          </div>
           <div className="flex items-center gap-2 text-xs">
             <span className={`w-1.5 h-1.5 rounded-full ${scanning ? 'bg-white/60 animate-pulse' : 'bg-white/30'}`} />
             <span className="text-white/30 text-[11px]">{scanning ? 'Scanning…' : `Updated ${lastScan}`}</span>
@@ -164,8 +176,15 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* Body */}
-      <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
+      {/* Intelligence tab — rendered separately, no overlap with Map tab */}
+      {topTab === 'intelligence' && (
+        <div className="flex-1 flex flex-col overflow-hidden">
+          <IntelligenceTab />
+        </div>
+      )}
+
+      {/* Body — Map tab (untouched) */}
+      <div className={`flex-1 flex flex-col md:flex-row overflow-hidden ${topTab !== 'map' ? 'hidden' : ''}`}>
         {/* Map */}
         <div className="flex-1 h-[55vw] md:h-auto p-3">
           <Map livePoints={cities} />
@@ -272,13 +291,14 @@ export default function Dashboard() {
 
       {/* Footer legend */}
       <div className="px-6 py-2 border-t border-white/[0.04] flex items-center gap-5 text-[10px] text-white/20">
-        {[['HIGH', '#ffffff', 0.9], ['WATCH', '#9ca3af', 0.65], ['LOW', '#374151', 0.5]].map(([label, color, op]) => (
-          <span key={label as string} className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full" style={{ background: color as string, opacity: op as number }} />
-            {label}
+        {([['HIGH', '#F87171'], ['WATCH', '#FCD34D'], ['LOW', '#34D399']] as [string, string][]).map(([label, color]) => (
+          <span key={label} className="flex items-center gap-1.5">
+            <span className="text-xs" style={{ color }}>◉</span>
+            <span>{label}</span>
           </span>
         ))}
-        <span className="ml-auto">Climate · Open-Meteo API</span>
+        <span className="text-white/15">◉ dengue · ◆ malaria</span>
+        <span className="ml-auto">Open-Meteo · WHO GHO · OpenMetadata</span>
       </div>
     </main>
   );
