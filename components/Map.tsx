@@ -80,16 +80,18 @@ export default function Map({ livePoints }: { livePoints?: CityRisk[] }) {
 
   if (!livePoints || livePoints.length === 0) {
     return (
-      <div className="w-full h-full bg-[#0a0a0a] rounded-xl flex items-center justify-center flex-col gap-3">
-        <div className="w-4 h-4 border border-white/20 rounded-full animate-pulse" />
-        <p className="text-white/25 text-xs">Scanning cities…</p>
+      <div className="w-full h-full bg-[#0a0a0a] rounded-xl flex items-center justify-center flex-col gap-3"
+        role="status" aria-label="Loading map data">
+        <div className="w-4 h-4 border border-white/20 rounded-full animate-pulse" aria-hidden="true" />
+        <p className="text-white/60 text-xs">Scanning cities…</p>
       </div>
     );
   }
 
   return (
     <MapContainer center={[15, 25]} zoom={2} scrollWheelZoom={true}
-      className="w-full h-full rounded-xl" style={{ background: '#0a0a0a' }}>
+      className="w-full h-full rounded-xl" style={{ background: '#0a0a0a' }}
+      aria-label={`Global disease risk map showing ${livePoints.length} cities. Circle markers show dengue risk, diamond markers show malaria risk.`}>
       <TileLayer
         attribution='&copy; <a href="https://carto.com/">CARTO</a>'
         url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
@@ -98,13 +100,18 @@ export default function Map({ livePoints }: { livePoints?: CityRisk[] }) {
       {livePoints.map((city) => (
         <div key={city.id}>
           {/* Dengue — circle, offset west */}
-          <Marker position={[city.lat, city.lng - LNG_OFFSET]} icon={dengueIcon(city.dengue)}>
+          <Marker
+            position={[city.lat, city.lng - LNG_OFFSET]}
+            icon={dengueIcon(city.dengue)}
+            aria-label={`${city.name} dengue risk: ${city.dengue}`}
+          >
             <Popup>
               <div style={{ fontFamily: 'sans-serif', padding: '8px 10px', minWidth: 180 }}>
                 <strong style={{ fontSize: 14 }}>{city.name}</strong>
                 <div style={{ color: '#6b7280', fontSize: 11, marginBottom: 8 }}>{city.country}</div>
                 <div style={{ marginBottom: 4 }}>
-                  <span style={{ fontSize: 10, color: '#9ca3af', marginRight: 6 }}>◉ Dengue</span>
+                  <span aria-hidden="true" style={{ fontSize: 10, color: '#9ca3af', marginRight: 6 }}>◉</span>
+                  <span style={{ fontSize: 10, color: '#9ca3af', marginRight: 6 }}>Dengue</span>
                   <RiskLabel level={city.dengue} />
                 </div>
                 <div style={{ fontSize: 10, color: '#9ca3af' }}>Score: {city.dengueScore}/100</div>
@@ -113,13 +120,18 @@ export default function Map({ livePoints }: { livePoints?: CityRisk[] }) {
           </Marker>
 
           {/* Malaria — diamond, offset east */}
-          <Marker position={[city.lat, city.lng + LNG_OFFSET]} icon={malariaIcon(city.malaria)}>
+          <Marker
+            position={[city.lat, city.lng + LNG_OFFSET]}
+            icon={malariaIcon(city.malaria)}
+            aria-label={`${city.name} malaria risk: ${city.malaria}`}
+          >
             <Popup>
               <div style={{ fontFamily: 'sans-serif', padding: '8px 10px', minWidth: 180 }}>
                 <strong style={{ fontSize: 14 }}>{city.name}</strong>
                 <div style={{ color: '#6b7280', fontSize: 11, marginBottom: 8 }}>{city.country}</div>
                 <div style={{ marginBottom: 4 }}>
-                  <span style={{ fontSize: 10, color: '#9ca3af', marginRight: 6 }}>◆ Malaria</span>
+                  <span aria-hidden="true" style={{ fontSize: 10, color: '#9ca3af', marginRight: 6 }}>◆</span>
+                  <span style={{ fontSize: 10, color: '#9ca3af', marginRight: 6 }}>Malaria</span>
                   <RiskLabel level={city.malaria} />
                 </div>
                 <div style={{ fontSize: 10, color: '#9ca3af' }}>Score: {city.malariaScore}/100</div>

@@ -125,167 +125,218 @@ export default function Dashboard() {
   const highCities = cities.filter(c => c.dengue === 'HIGH' || c.malaria === 'HIGH').slice(0, 3);
 
   return (
-    <main className="min-h-screen bg-[#0a0a0a] text-white flex flex-col font-sans">
+    <main id="main-content" className="min-h-screen bg-[#0a0a0a] text-white flex flex-col font-sans">
       {/* Header */}
       <header className="flex items-center justify-between px-6 py-3 border-b border-white/[0.06]">
         <div className="flex items-center gap-4">
-          <Link href="/" className="text-sm font-bold tracking-tight text-white hover:text-white/70 transition-colors">
+          <Link href="/" className="text-sm font-bold tracking-tight text-white hover:text-white/70 transition-colors" aria-label="Bzzt — home">
             Bzzt
           </Link>
-          {/* Top-level tab switcher */}
-          <div className="flex items-center border border-white/10 rounded-lg overflow-hidden">
+
+          {/* Top-level tab switcher — proper ARIA tablist */}
+          <div role="tablist" aria-label="Dashboard view" className="flex items-center border border-white/10 rounded-lg overflow-hidden">
             {([['map', 'Live Map'], ['intelligence', 'Intelligence']] as const).map(([id, label]) => (
-              <button key={id} onClick={() => setTopTab(id)}
+              <button
+                key={id}
+                role="tab"
+                aria-selected={topTab === id}
+                aria-controls={`tabpanel-${id}`}
+                onClick={() => setTopTab(id)}
                 className={`px-3 py-1.5 text-xs font-medium transition ${
-                  topTab === id ? 'bg-white/10 text-white' : 'text-white/30 hover:text-white/50'
-                }`}>
+                  topTab === id ? 'bg-white/10 text-white' : 'text-white/60 hover:text-white/80'
+                }`}
+              >
                 {label}
               </button>
             ))}
           </div>
-          <div className="flex items-center gap-2 text-xs">
-            <span className={`w-1.5 h-1.5 rounded-full ${scanning ? 'bg-white/60 animate-pulse' : 'bg-white/30'}`} />
-            <span className="text-white/30 text-[11px]">{scanning ? 'Scanning…' : `Updated ${lastScan}`}</span>
+
+          {/* Scan status — announced to screen readers */}
+          <div aria-live="polite" aria-atomic="true" className="flex items-center gap-2 text-xs">
+            <span aria-hidden="true" className={`w-1.5 h-1.5 rounded-full ${scanning ? 'bg-white/60 animate-pulse' : 'bg-white/30'}`} />
+            <span className="text-white/60 text-[11px]">{scanning ? 'Scanning…' : `Updated ${lastScan}`}</span>
           </div>
         </div>
+
         <div className="flex items-center gap-2">
-          <button onClick={runScan} disabled={scanning}
-            className="px-3 py-1.5 rounded-lg border border-white/10 hover:border-white/20 text-xs text-white/40 hover:text-white/60 transition disabled:opacity-30">
-            {scanning ? 'Scanning…' : '↻ Refresh'}
+          <button
+            onClick={runScan}
+            disabled={scanning}
+            aria-label="Refresh risk data"
+            className="px-3 py-1.5 rounded-lg border border-white/10 hover:border-white/20 text-xs text-white/60 hover:text-white/80 transition disabled:opacity-30"
+          >
+            <span aria-hidden="true">↻</span> Refresh
           </button>
         </div>
       </header>
 
       {/* Stats strip */}
       {cities.length > 0 && (
-        <div className="flex items-center gap-6 px-6 py-2 border-b border-white/[0.04] text-[11px]">
-          <span className="text-white/60">{highCount} <span className="text-white/30">HIGH</span></span>
-          <span className="text-white/40">{watchCount} <span className="text-white/20">WATCH</span></span>
-          <span className="text-white/20">{cities.length - highCount - watchCount} LOW</span>
+        <div aria-label="Risk summary" className="flex items-center gap-6 px-6 py-2 border-b border-white/[0.04] text-[11px]">
+          <span className="text-white/70">
+            <strong>{highCount}</strong> <span className="text-white/50">HIGH</span>
+          </span>
+          <span className="text-white/60">
+            <strong>{watchCount}</strong> <span className="text-white/40">WATCH</span>
+          </span>
+          <span className="text-white/40">
+            <strong>{cities.length - highCount - watchCount}</strong> LOW
+          </span>
           {highCities.length > 0 && (
-            <div className="flex items-center gap-2 ml-2">
+            <div className="flex items-center gap-2 ml-2" role="group" aria-label="Trigger alerts for high-risk cities">
               {highCities.map(c => (
-                <button key={c.id} onClick={() => triggerAlert(c.id)} disabled={triggering === c.id}
-                  className="text-[10px] px-2 py-0.5 rounded border border-white/15 hover:border-white/30 text-white/50 hover:text-white/80 transition disabled:opacity-30">
-                  {triggering === c.id ? '…' : `⚡ ${c.name}`}
+                <button
+                  key={c.id}
+                  onClick={() => triggerAlert(c.id)}
+                  disabled={triggering === c.id}
+                  aria-label={`Send alert for ${c.name}`}
+                  className="text-[10px] px-2 py-0.5 rounded border border-white/20 hover:border-white/40 text-white/60 hover:text-white transition disabled:opacity-30"
+                >
+                  <span aria-hidden="true">⚡</span> {triggering === c.id ? 'Sending…' : c.name}
                 </button>
               ))}
             </div>
           )}
-          <span className="ml-auto text-white/15">{cities.length} cities · Open-Meteo · OpenMetadata</span>
+          <span className="ml-auto text-white/30">{cities.length} cities monitored</span>
         </div>
       )}
 
-      {/* Intelligence tab — rendered separately, no overlap with Map tab */}
-      {topTab === 'intelligence' && (
-        <div className="flex-1 flex flex-col overflow-hidden">
-          <IntelligenceTab />
-        </div>
-      )}
+      {/* Intelligence tab */}
+      <div
+        id="tabpanel-intelligence"
+        role="tabpanel"
+        aria-label="Intelligence view"
+        hidden={topTab !== 'intelligence'}
+        className={`flex-1 flex flex-col overflow-hidden ${topTab !== 'intelligence' ? 'hidden' : ''}`}
+      >
+        <IntelligenceTab />
+      </div>
 
-      {/* Body — Map tab (untouched) */}
-      <div className={`flex-1 flex flex-col md:flex-row overflow-hidden ${topTab !== 'map' ? 'hidden' : ''}`}>
+      {/* Map tab */}
+      <div
+        id="tabpanel-map"
+        role="tabpanel"
+        aria-label="Live map view"
+        hidden={topTab !== 'map'}
+        className={`flex-1 flex flex-col md:flex-row overflow-hidden ${topTab !== 'map' ? 'hidden' : ''}`}
+      >
         {/* Map */}
         <div className="flex-1 h-[55vw] md:h-auto p-3">
           <Map livePoints={cities} />
         </div>
 
         {/* Right panel */}
-        <aside className="w-full md:w-[320px] flex-shrink-0 border-t md:border-t-0 md:border-l border-white/[0.06] flex flex-col">
+        <aside aria-label="Alerts and data lineage" className="w-full md:w-[320px] flex-shrink-0 border-t md:border-t-0 md:border-l border-white/[0.06] flex flex-col">
           {/* Tabs */}
-          <div className="flex border-b border-white/[0.06]">
+          <div role="tablist" aria-label="Panel view" className="flex border-b border-white/[0.06]">
             {(['alerts', 'lineage'] as const).map((tab) => (
-              <button key={tab} onClick={() => setActiveTab(tab)}
+              <button
+                key={tab}
+                role="tab"
+                aria-selected={activeTab === tab}
+                aria-controls={`panel-${tab}`}
+                onClick={() => setActiveTab(tab)}
                 className={`flex-1 py-2.5 text-[11px] font-medium uppercase tracking-wider transition ${
-                  activeTab === tab ? 'text-white border-b border-white/40' : 'text-white/25 hover:text-white/40'
-                }`}>
+                  activeTab === tab ? 'text-white border-b border-white/40' : 'text-white/50 hover:text-white/70'
+                }`}
+              >
                 {tab === 'alerts' ? `Alerts (${alerts.length})` : `Lineage (${lineage.length})`}
               </button>
             ))}
           </div>
 
-          {/* Alerts tab */}
-          {activeTab === 'alerts' && (
-            <div className="flex-1 overflow-y-auto p-4 space-y-2.5">
-              {alerts.length === 0 && (
-                <p className="text-[11px] text-white/20 italic pt-2">
-                  No alerts yet. Click a city name in the header to trigger one.
-                </p>
-              )}
-              {alerts.map((a) => {
+          {/* Alerts panel */}
+          <div
+            id="panel-alerts"
+            role="tabpanel"
+            aria-label="Alert history"
+            hidden={activeTab !== 'alerts'}
+            className={`flex-1 overflow-y-auto p-4 space-y-2.5 ${activeTab !== 'alerts' ? 'hidden' : ''}`}
+          >
+            {alerts.length === 0 && (
+              <p className="text-xs text-white/50 italic pt-2">
+                No alerts yet. Click a city name above to trigger one.
+              </p>
+            )}
+            {alerts.map((a) => {
                 const s = RISK_STYLE[a.riskLevel] || RISK_STYLE.LOW;
                 return (
                   <div key={a.id} className={`rounded-lg border p-3 space-y-1.5 ${s.bg} ${s.border}`}>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <RiskBadge level={a.riskLevel} />
-                        <span className="text-[10px] text-white/40">{a.cityName}, {a.country}</span>
+                        <span className="text-[10px] text-white/60">{a.cityName}, {a.country}</span>
                       </div>
-                      <span className="text-[10px] text-white/20">{new Date(a.sentAt).toLocaleTimeString()}</span>
+                      <time className="text-[10px] text-white/40" dateTime={a.sentAt}>{new Date(a.sentAt).toLocaleTimeString()}</time>
                     </div>
                     <p className="text-[11px] text-white/70 leading-snug line-clamp-3">{a.message}</p>
-                    <div className="text-[10px] text-white/20">
+                    <div className="text-[10px] text-white/50">
                       {a.recipients} recipient{a.recipients !== 1 ? 's' : ''} · {a.type.toUpperCase()}
                     </div>
                   </div>
                 );
               })}
             </div>
-          )}
 
-          {/* Lineage tab */}
-          {activeTab === 'lineage' && (
-            <div className="flex-1 overflow-y-auto p-4 space-y-2.5">
-              {lineage.length === 0 && (
-                <p className="text-[11px] text-white/20 italic pt-2">Waiting for scan…</p>
-              )}
-              {lineage.map((ev) => {
-                const allPassed = ev.qualityChecks.every(q => q.passed);
-                const outDengue = ev.outputs.dengue as string;
-                const outMalaria = ev.outputs.malaria as string;
-                return (
-                  <div key={ev.id} className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-3 space-y-2">
-                    <div className="flex items-center justify-between">
-                      <span className="text-[11px] font-medium text-white/80">{ev.city}</span>
-                      <div className="flex items-center gap-1">
-                        <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded border ${allPassed ? 'text-white/50 border-white/20 bg-white/5' : 'text-white/30 border-white/10'}`}>
-                          QC {allPassed ? '✓' : '✗'}
-                        </span>
-                        {ev.omSynced && <span className="text-[9px] text-white/30 border border-white/10 px-1.5 py-0.5 rounded">OM</span>}
-                      </div>
+          {/* Lineage panel */}
+          <div
+            id="panel-lineage"
+            role="tabpanel"
+            aria-label="Data lineage"
+            hidden={activeTab !== 'lineage'}
+            className={`flex-1 overflow-y-auto p-4 space-y-2.5 ${activeTab !== 'lineage' ? 'hidden' : ''}`}
+          >
+            {lineage.length === 0 && (
+              <p className="text-xs text-white/50 italic pt-2">Waiting for first scan…</p>
+            )}
+            {lineage.map((ev) => {
+              const allPassed = ev.qualityChecks.every(q => q.passed);
+              const outDengue = ev.outputs.dengue as string;
+              const outMalaria = ev.outputs.malaria as string;
+              return (
+                <article key={ev.id} aria-label={`Lineage record for ${ev.city}`} className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-3 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-medium text-white">{ev.city}</span>
+                    <div className="flex items-center gap-1">
+                      <span
+                        aria-label={`Quality checks: ${allPassed ? 'all passed' : 'some failed'}`}
+                        className={`text-[9px] font-bold px-1.5 py-0.5 rounded border ${allPassed ? 'text-white/60 border-white/20 bg-white/5' : 'text-white/50 border-white/10'}`}
+                      >
+                        QC <span aria-hidden="true">{allPassed ? '✓' : '✗'}</span>
+                      </span>
+                      {ev.omSynced && <span aria-label="Synced to OpenMetadata" className="text-[9px] text-white/50 border border-white/15 px-1.5 py-0.5 rounded">OM</span>}
                     </div>
-
-                    {/* Lineage flow */}
-                    <div className="flex items-center gap-1 text-[9px] text-white/30 overflow-hidden">
-                      <span className="border border-white/10 rounded px-1.5 py-0.5 text-white/40 truncate shrink">Open-Meteo</span>
-                      <span className="shrink-0">→</span>
-                      <span className="border border-white/10 rounded px-1.5 py-0.5 text-white/40 shrink-0">risk-scorer</span>
-                      <span className="shrink-0">→</span>
-                      <span className="border border-white/10 rounded px-1.5 py-0.5 text-white/40 shrink-0">alert</span>
-                    </div>
-
-                    {/* Climate inputs */}
-                    <div className="grid grid-cols-2 gap-x-3 gap-y-0.5 text-[10px] text-white/25">
-                      <span>Temp <span className="text-white/50">{ev.inputs.avgTemp.toFixed(1)}°C</span></span>
-                      <span>Humidity <span className="text-white/50">{ev.inputs.avgHumidity.toFixed(0)}%</span></span>
-                      <span>Rain 28d <span className="text-white/50">{ev.inputs.avgRainfall.toFixed(1)}mm</span></span>
-                      <span>Rain 14d <span className="text-white/50">{ev.inputs.laggedRainfall.toFixed(1)}mm</span></span>
-                    </div>
-
-                    {/* Outputs */}
-                    <div className="flex gap-1.5">
-                      <RiskBadge level={outDengue} />
-                      <span className="text-[10px] text-white/25 self-center">dengue</span>
-                      <RiskBadge level={outMalaria} />
-                      <span className="text-[10px] text-white/25 self-center">malaria</span>
-                    </div>
-
-                    <div className="text-[9px] text-white/15">{new Date(ev.computedAt).toLocaleTimeString()}</div>
                   </div>
-                );
-              })}
-            </div>
-          )}
+
+                  <div aria-label="Data lineage flow" className="flex items-center gap-1 text-[10px] text-white/50 overflow-hidden">
+                    <span className="border border-white/10 rounded px-1.5 py-0.5 truncate shrink">Open-Meteo</span>
+                    <span aria-hidden="true" className="shrink-0">→</span>
+                    <span className="border border-white/10 rounded px-1.5 py-0.5 shrink-0">risk-scorer</span>
+                    <span aria-hidden="true" className="shrink-0">→</span>
+                    <span className="border border-white/10 rounded px-1.5 py-0.5 shrink-0">alert</span>
+                  </div>
+
+                  <dl className="grid grid-cols-2 gap-x-3 gap-y-0.5 text-[10px] text-white/50">
+                    <div><dt className="inline">Temp </dt><dd className="inline text-white/70">{ev.inputs.avgTemp.toFixed(1)}°C</dd></div>
+                    <div><dt className="inline">Humidity </dt><dd className="inline text-white/70">{ev.inputs.avgHumidity.toFixed(0)}%</dd></div>
+                    <div><dt className="inline">Rain 28d </dt><dd className="inline text-white/70">{ev.inputs.avgRainfall.toFixed(1)}mm</dd></div>
+                    <div><dt className="inline">Rain 14d </dt><dd className="inline text-white/70">{ev.inputs.laggedRainfall.toFixed(1)}mm</dd></div>
+                  </dl>
+
+                  <div className="flex gap-1.5">
+                    <RiskBadge level={outDengue} />
+                    <span className="text-[10px] text-white/50 self-center">dengue</span>
+                    <RiskBadge level={outMalaria} />
+                    <span className="text-[10px] text-white/50 self-center">malaria</span>
+                  </div>
+
+                  <time className="block text-[10px] text-white/30" dateTime={ev.computedAt}>
+                    {new Date(ev.computedAt).toLocaleTimeString()}
+                  </time>
+                </article>
+              );
+            })}
+          </div>
         </aside>
       </div>
 
