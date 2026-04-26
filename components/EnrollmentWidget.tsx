@@ -38,7 +38,7 @@ export default function EnrollmentWidget() {
     setLoading(false);
   }
 
-  const inputClass = 'w-full bg-[#0a0a0a] border border-white/20 rounded-lg px-4 py-3 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/40 focus:border-transparent text-sm';
+  const inputClass = 'w-full bg-[#0a0a0a] border border-white/20 rounded-lg px-4 py-3 text-white placeholder:text-white/55 focus:outline-none focus:ring-2 focus:ring-white/40 focus:border-transparent text-sm';
   const btnClass   = 'w-full bg-white text-black font-semibold py-3 px-4 rounded-lg transition hover:bg-white/90 disabled:opacity-40 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-black';
   const labelClass = 'block text-xs font-medium text-white/70 mb-1.5';
 

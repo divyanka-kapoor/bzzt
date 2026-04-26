@@ -66,7 +66,7 @@ const LNG_OFFSET = 0.4;
 function RiskLabel({ level }: { level: RiskLevel }) {
   const color = RISK_COLOR[level];
   return (
-    <span style={{ fontSize: 11, fontWeight: 700, padding: '2px 7px', borderRadius: 4, background: `${color}22`, color }}>
+    <span style={{ fontSize: 13, fontWeight: 700, padding: '2px 7px', borderRadius: 4, background: `${color}22`, color }}>
       {level}
     </span>
   );
@@ -108,13 +108,13 @@ export default function Map({ livePoints }: { livePoints?: CityRisk[] }) {
             <Popup>
               <div style={{ fontFamily: 'sans-serif', padding: '8px 10px', minWidth: 180 }}>
                 <strong style={{ fontSize: 14 }}>{city.name}</strong>
-                <div style={{ color: '#6b7280', fontSize: 11, marginBottom: 8 }}>{city.country}</div>
+                <div style={{ color: '#555555', fontSize: 13, marginBottom: 8 }}>{city.country}</div>
                 <div style={{ marginBottom: 4 }}>
-                  <span aria-hidden="true" style={{ fontSize: 10, color: '#9ca3af', marginRight: 6 }}>◉</span>
-                  <span style={{ fontSize: 10, color: '#9ca3af', marginRight: 6 }}>Dengue</span>
+                  <span aria-hidden="true" style={{ fontSize: 13, color: '#555555', marginRight: 6 }}>◉</span>
+                  <span style={{ fontSize: 13, color: '#555555', marginRight: 6 }}>Dengue</span>
                   <RiskLabel level={city.dengue} />
                 </div>
-                <div style={{ fontSize: 10, color: '#9ca3af' }}>Score: {city.dengueScore}/100</div>
+                <div style={{ fontSize: 13, color: '#555555' }}>Score: {city.dengueScore}/100</div>
               </div>
             </Popup>
           </Marker>
@@ -128,13 +128,13 @@ export default function Map({ livePoints }: { livePoints?: CityRisk[] }) {
             <Popup>
               <div style={{ fontFamily: 'sans-serif', padding: '8px 10px', minWidth: 180 }}>
                 <strong style={{ fontSize: 14 }}>{city.name}</strong>
-                <div style={{ color: '#6b7280', fontSize: 11, marginBottom: 8 }}>{city.country}</div>
+                <div style={{ color: '#555555', fontSize: 13, marginBottom: 8 }}>{city.country}</div>
                 <div style={{ marginBottom: 4 }}>
-                  <span aria-hidden="true" style={{ fontSize: 10, color: '#9ca3af', marginRight: 6 }}>◆</span>
-                  <span style={{ fontSize: 10, color: '#9ca3af', marginRight: 6 }}>Malaria</span>
+                  <span aria-hidden="true" style={{ fontSize: 13, color: '#555555', marginRight: 6 }}>◆</span>
+                  <span style={{ fontSize: 13, color: '#555555', marginRight: 6 }}>Malaria</span>
                   <RiskLabel level={city.malaria} />
                 </div>
-                <div style={{ fontSize: 10, color: '#9ca3af' }}>Score: {city.malariaScore}/100</div>
+                <div style={{ fontSize: 13, color: '#555555' }}>Score: {city.malariaScore}/100</div>
               </div>
             </Popup>
           </Marker>

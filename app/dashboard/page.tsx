@@ -46,13 +46,13 @@ interface LineageEvent {
 const RISK_STYLE: Record<string, { text: string; bg: string; border: string }> = {
   HIGH:  { text: 'text-white',       bg: 'bg-white/10',    border: 'border-white/30' },
   WATCH: { text: 'text-white/60',    bg: 'bg-white/5',     border: 'border-white/10' },
-  LOW:   { text: 'text-white/30',    bg: 'bg-white/[0.02]',border: 'border-white/5'  },
+  LOW:   { text: 'text-white/65',    bg: 'bg-white/[0.02]',border: 'border-white/5'  },
 };
 
 function RiskBadge({ level }: { level: string }) {
   const s = RISK_STYLE[level] || RISK_STYLE.LOW;
   return (
-    <span className={`text-[10px] font-bold px-2 py-0.5 rounded border ${s.text} ${s.bg} ${s.border}`}>
+    <span className={`text-xs font-bold px-2 py-0.5 rounded border ${s.text} ${s.bg} ${s.border}`}>
       {level}
     </span>
   );
@@ -154,7 +154,7 @@ export default function Dashboard() {
           {/* Scan status — announced to screen readers */}
           <div aria-live="polite" aria-atomic="true" className="flex items-center gap-2 text-xs">
             <span aria-hidden="true" className={`w-1.5 h-1.5 rounded-full ${scanning ? 'bg-white/60 animate-pulse' : 'bg-white/30'}`} />
-            <span className="text-white/60 text-[11px]">{scanning ? 'Scanning…' : `Updated ${lastScan}`}</span>
+            <span className="text-white/60 text-xs">{scanning ? 'Scanning…' : `Updated ${lastScan}`}</span>
           </div>
         </div>
 
@@ -172,14 +172,14 @@ export default function Dashboard() {
 
       {/* Stats strip */}
       {cities.length > 0 && (
-        <div aria-label="Risk summary" className="flex items-center gap-6 px-6 py-2 border-b border-white/[0.04] text-[11px]">
+        <div aria-label="Risk summary" className="flex items-center gap-6 px-6 py-2 border-b border-white/[0.04] text-xs">
           <span className="text-white/70">
             <strong>{highCount}</strong> <span className="text-white/50">HIGH</span>
           </span>
           <span className="text-white/60">
-            <strong>{watchCount}</strong> <span className="text-white/40">WATCH</span>
+            <strong>{watchCount}</strong> <span className="text-white/70">WATCH</span>
           </span>
-          <span className="text-white/40">
+          <span className="text-white/70">
             <strong>{cities.length - highCount - watchCount}</strong> LOW
           </span>
           {highCities.length > 0 && (
@@ -190,14 +190,14 @@ export default function Dashboard() {
                   onClick={() => triggerAlert(c.id)}
                   disabled={triggering === c.id}
                   aria-label={`Send alert for ${c.name}`}
-                  className="text-[10px] px-2 py-0.5 rounded border border-white/20 hover:border-white/40 text-white/60 hover:text-white transition disabled:opacity-30"
+                  className="text-xs px-2 py-0.5 rounded border border-white/20 hover:border-white/40 text-white/60 hover:text-white transition disabled:opacity-30"
                 >
                   <span aria-hidden="true">⚡</span> {triggering === c.id ? 'Sending…' : c.name}
                 </button>
               ))}
             </div>
           )}
-          <span className="ml-auto text-white/30">{cities.length} cities monitored</span>
+          <span className="ml-auto text-white/65">{cities.length} cities monitored</span>
         </div>
       )}
 
@@ -236,7 +236,7 @@ export default function Dashboard() {
                 aria-selected={activeTab === tab}
                 aria-controls={`panel-${tab}`}
                 onClick={() => setActiveTab(tab)}
-                className={`flex-1 py-2.5 text-[11px] font-medium uppercase tracking-wider transition ${
+                className={`flex-1 py-2.5 text-xs font-medium uppercase tracking-wider transition ${
                   activeTab === tab ? 'text-white border-b border-white/40' : 'text-white/50 hover:text-white/70'
                 }`}
               >
@@ -265,12 +265,12 @@ export default function Dashboard() {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <RiskBadge level={a.riskLevel} />
-                        <span className="text-[10px] text-white/60">{a.cityName}, {a.country}</span>
+                        <span className="text-xs text-white/60">{a.cityName}, {a.country}</span>
                       </div>
-                      <time className="text-[10px] text-white/40" dateTime={a.sentAt}>{new Date(a.sentAt).toLocaleTimeString()}</time>
+                      <time className="text-xs text-white/70" dateTime={a.sentAt}>{new Date(a.sentAt).toLocaleTimeString()}</time>
                     </div>
-                    <p className="text-[11px] text-white/70 leading-snug line-clamp-3">{a.message}</p>
-                    <div className="text-[10px] text-white/50">
+                    <p className="text-xs text-white/70 leading-snug line-clamp-3">{a.message}</p>
+                    <div className="text-xs text-white/50">
                       {a.recipients} recipient{a.recipients !== 1 ? 's' : ''} · {a.type.toUpperCase()}
                     </div>
                   </div>
@@ -296,19 +296,19 @@ export default function Dashboard() {
               return (
                 <article key={ev.id} aria-label={`Lineage record for ${ev.city}`} className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-3 space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-[11px] font-medium text-white">{ev.city}</span>
+                    <span className="text-xs font-medium text-white">{ev.city}</span>
                     <div className="flex items-center gap-1">
                       <span
                         aria-label={`Quality checks: ${allPassed ? 'all passed' : 'some failed'}`}
-                        className={`text-[9px] font-bold px-1.5 py-0.5 rounded border ${allPassed ? 'text-white/60 border-white/20 bg-white/5' : 'text-white/50 border-white/10'}`}
+                        className={`text-xs font-bold px-1.5 py-0.5 rounded border ${allPassed ? 'text-white/60 border-white/20 bg-white/5' : 'text-white/50 border-white/10'}`}
                       >
                         QC <span aria-hidden="true">{allPassed ? '✓' : '✗'}</span>
                       </span>
-                      {ev.omSynced && <span aria-label="Synced to OpenMetadata" className="text-[9px] text-white/50 border border-white/15 px-1.5 py-0.5 rounded">OM</span>}
+                      {ev.omSynced && <span aria-label="Synced to OpenMetadata" className="text-xs text-white/50 border border-white/15 px-1.5 py-0.5 rounded">OM</span>}
                     </div>
                   </div>
 
-                  <div aria-label="Data lineage flow" className="flex items-center gap-1 text-[10px] text-white/50 overflow-hidden">
+                  <div aria-label="Data lineage flow" className="flex items-center gap-1 text-xs text-white/50 overflow-hidden">
                     <span className="border border-white/10 rounded px-1.5 py-0.5 truncate shrink">Open-Meteo</span>
                     <span aria-hidden="true" className="shrink-0">→</span>
                     <span className="border border-white/10 rounded px-1.5 py-0.5 shrink-0">risk-scorer</span>
@@ -316,7 +316,7 @@ export default function Dashboard() {
                     <span className="border border-white/10 rounded px-1.5 py-0.5 shrink-0">alert</span>
                   </div>
 
-                  <dl className="grid grid-cols-2 gap-x-3 gap-y-0.5 text-[10px] text-white/50">
+                  <dl className="grid grid-cols-2 gap-x-3 gap-y-0.5 text-xs text-white/50">
                     <div><dt className="inline">Temp </dt><dd className="inline text-white/70">{ev.inputs.avgTemp.toFixed(1)}°C</dd></div>
                     <div><dt className="inline">Humidity </dt><dd className="inline text-white/70">{ev.inputs.avgHumidity.toFixed(0)}%</dd></div>
                     <div><dt className="inline">Rain 28d </dt><dd className="inline text-white/70">{ev.inputs.avgRainfall.toFixed(1)}mm</dd></div>
@@ -325,12 +325,12 @@ export default function Dashboard() {
 
                   <div className="flex gap-1.5">
                     <RiskBadge level={outDengue} />
-                    <span className="text-[10px] text-white/50 self-center">dengue</span>
+                    <span className="text-xs text-white/50 self-center">dengue</span>
                     <RiskBadge level={outMalaria} />
-                    <span className="text-[10px] text-white/50 self-center">malaria</span>
+                    <span className="text-xs text-white/50 self-center">malaria</span>
                   </div>
 
-                  <time className="block text-[10px] text-white/30" dateTime={ev.computedAt}>
+                  <time className="block text-xs text-white/65" dateTime={ev.computedAt}>
                     {new Date(ev.computedAt).toLocaleTimeString()}
                   </time>
                 </article>
@@ -341,14 +341,14 @@ export default function Dashboard() {
       </div>
 
       {/* Footer legend */}
-      <div className="px-6 py-2 border-t border-white/[0.04] flex items-center gap-5 text-[10px] text-white/20">
+      <div className="px-6 py-2 border-t border-white/[0.04] flex items-center gap-5 text-xs text-white/60">
         {([['HIGH', '#F87171'], ['WATCH', '#FCD34D'], ['LOW', '#34D399']] as [string, string][]).map(([label, color]) => (
           <span key={label} className="flex items-center gap-1.5">
             <span className="text-xs" style={{ color }}>◉</span>
             <span>{label}</span>
           </span>
         ))}
-        <span className="text-white/15">◉ dengue · ◆ malaria</span>
+        <span className="text-white/60">◉ dengue · ◆ malaria</span>
         <span className="ml-auto">Open-Meteo · WHO GHO · OpenMetadata</span>
       </div>
     </main>

@@ -60,13 +60,13 @@ function RiskCard({ disease, result }: { disease: 'dengue' | 'malaria'; result: 
         <div className="flex items-center gap-2">
           <span style={{ color, fontSize: 16 }}>{icon}</span>
           <span className="text-sm font-semibold text-white capitalize">{disease}</span>
-          <span className="text-[10px] text-white/30">({disease === 'dengue' ? 'Aedes aegypti' : 'Anopheles'})</span>
+          <span className="text-xs text-white/65">({disease === 'dengue' ? 'Aedes aegypti' : 'Anopheles'})</span>
         </div>
         <div className="flex items-center gap-2">
           <span className="text-xs font-bold px-2.5 py-1 rounded-full" style={{ color, background: bg, border: `1px solid ${color}50` }}>
             {data.level}
           </span>
-          <span className="text-xs text-white/30">{data.score}/100</span>
+          <span className="text-xs text-white/65">{data.score}/100</span>
         </div>
       </div>
 
@@ -76,9 +76,9 @@ function RiskCard({ disease, result }: { disease: 'dengue' | 'malaria'; result: 
 
       {data.factors.length > 0 && (
         <div className="space-y-1 mb-3">
-          <p className="text-[10px] text-white/30 uppercase tracking-wider mb-1">Contributing factors</p>
+          <p className="text-xs text-white/65 uppercase tracking-wider mb-1">Contributing factors</p>
           {data.factors.map((f, i) => (
-            <div key={i} className="flex items-center gap-2 text-[11px] text-white/50">
+            <div key={i} className="flex items-center gap-2 text-xs text-white/50">
               <span style={{ color }}>›</span> {f}
             </div>
           ))}
@@ -154,7 +154,7 @@ export default function LookupPage() {
               placeholder="e.g. Jakarta, Lagos, São Paulo"
               autoComplete="off"
               aria-describedby={error ? 'lookup-error' : undefined}
-              className="flex-1 bg-white/[0.04] border border-white/15 rounded-xl px-4 py-3 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/40 focus:border-transparent text-sm"
+              className="flex-1 bg-white/[0.04] border border-white/15 rounded-xl px-4 py-3 text-white placeholder:text-white/70 focus:outline-none focus:ring-2 focus:ring-white/40 focus:border-transparent text-sm"
             />
             <button type="submit" disabled={loading || !query.trim()}
               className="px-5 py-3 bg-white text-black text-sm font-semibold rounded-xl hover:bg-white/90 transition disabled:opacity-40 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-black">
@@ -194,7 +194,7 @@ export default function LookupPage() {
                 { label: 'Humidity', value: `${result.climate.avgHumidity.toFixed(0)}%` },
               ].map(({ label, value }) => (
                 <div key={label} className="bg-white/[0.03] border border-white/[0.06] rounded-lg p-3 text-center">
-                  <div className="text-[10px] text-white/30 mb-1">{label}</div>
+                  <div className="text-xs text-white/65 mb-1">{label}</div>
                   <div className="text-sm font-medium text-white">{value}</div>
                 </div>
               ))}
@@ -211,7 +211,7 @@ export default function LookupPage() {
                 <ul className="space-y-2">
                   {PRECAUTIONS[topRisk].map((p, i) => (
                     <li key={i} className="flex items-start gap-2 text-sm text-white/60">
-                      <span className="text-white/25 shrink-0 mt-0.5">·</span> {p}
+                      <span className="text-white/60 shrink-0 mt-0.5">·</span> {p}
                     </li>
                   ))}
                 </ul>
@@ -221,8 +221,8 @@ export default function LookupPage() {
             {/* Data quality */}
             <div className="rounded-xl border border-white/[0.06] p-4">
               <div className="flex items-center justify-between mb-2">
-                <p className="text-[10px] text-white/30 uppercase tracking-wider">Data quality</p>
-                <span className="text-[10px] text-white/30">ID: {result.lineageId}</span>
+                <p className="text-xs text-white/65 uppercase tracking-wider">Data quality</p>
+                <span className="text-xs text-white/65">ID: {result.lineageId}</span>
               </div>
               <div role="list" className="flex flex-wrap gap-1.5">
                 {result.qualityChecks.map(q => (
@@ -230,7 +230,7 @@ export default function LookupPage() {
                     key={q.name}
                     role="listitem"
                     aria-label={`${q.name}: ${q.passed ? 'passed' : 'failed'}`}
-                    className={`text-[10px] px-2 py-0.5 rounded border font-mono ${
+                    className={`text-xs px-2 py-0.5 rounded border font-mono ${
                       q.passed
                         ? 'border-white/15 text-white/50 bg-white/[0.02]'
                         : 'border-red-500/40 text-red-400/80 bg-red-500/5'
@@ -268,7 +268,7 @@ export default function LookupPage() {
                 </div>
               ))}
             </div>
-            <p className="text-xs text-white/40">
+            <p className="text-xs text-white/70">
               <span aria-hidden="true">◉</span> dengue (circle)
               {' · '}
               <span aria-hidden="true">◆</span> malaria (diamond)
