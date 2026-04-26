@@ -27,20 +27,20 @@ async function claudeComplete(prompt: string, maxTokens = 150): Promise<string |
 }
 
 export async function composeAlertMessage(params: {
-  pincode: string;
+  cityId?: string;
   city: string;
+  country?: string;
   dengueLevel: string;
   malariaLevel: string;
 }): Promise<string> {
-  const prompt = `You are Bzzt, a public health early-warning system for India. Write a concise SMS alert (under 280 characters) for residents of ${params.city} (PIN ${params.pincode}). Dengue risk: ${params.dengueLevel}. Malaria risk: ${params.malariaLevel}. Be direct and include one clear action they should take right now. Use plain English — no jargon.`;
+  const loc = params.country ? `${params.city}, ${params.country}` : params.city;
+  const prompt = `You are Bzzt, a global public health early-warning system. Write a concise SMS alert (under 280 characters) for residents of ${loc}. Dengue risk: ${params.dengueLevel}. Malaria risk: ${params.malariaLevel}. Be direct and include one clear action they should take right now. Use plain English — no jargon.`;
 
   const text = await claudeComplete(prompt, 120);
   if (text) return text;
 
-  // Template fallback
   const topRisk = params.dengueLevel === 'HIGH' || params.malariaLevel === 'HIGH' ? 'HIGH' : params.dengueLevel === 'WATCH' || params.malariaLevel === 'WATCH' ? 'WATCH' : 'LOW';
-  const emoji = topRisk === 'HIGH' ? '🚨' : topRisk === 'WATCH' ? '⚠️' : 'ℹ️';
-  return `${emoji} Bzzt: ${topRisk} mosquito-borne disease risk in ${params.city} (${params.pincode}). Eliminate standing water, use repellent, and visit a health worker if you have fever or joint pain.`;
+  return `Bzzt: ${topRisk} mosquito-borne disease risk in ${loc}. Eliminate standing water, use repellent, and visit a health worker if you have fever or joint pain.`;
 }
 
 export async function classifySymptoms(body: string): Promise<string> {

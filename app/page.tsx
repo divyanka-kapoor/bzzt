@@ -23,8 +23,7 @@ export default function Home() {
         <MosquitoWatermark />
         <div className="relative z-10 max-w-3xl mx-auto text-center space-y-6">
           <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-white leading-tight">
-            Climate data predicts disease outbreaks{" "}
-            <span className="text-accent">weeks before</span> they happen.
+            Climate data predicts disease outbreaks weeks before they happen.
           </h1>
           <p className="text-lg md:text-xl text-muted max-w-2xl mx-auto">
             Bzzt makes sure the warning reaches you.
@@ -39,7 +38,7 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="border-t border-border px-6 md:px-12 py-8 text-center text-sm text-muted">
-        Bzzt — Autonomous disease risk alerts for India. Built for public health.
+        Bzzt — Autonomous mosquito-borne disease early warning. Built for public health.
       </footer>
     </main>
   );
