@@ -51,18 +51,24 @@ export async function POST(req: NextRequest) {
     ].filter(Boolean).length;
     const probabilityScore = Math.round((conditionsMet / 4) * 100);
 
+    // Combine local + English into one message when local translation exists.
+    // SMS limit is 160 chars per segment; keep combined under 320 (2 segments).
+    // Format: "[local text]\n---\n[english text]"
+    // If no local language for this city, just send English.
+    const combinedMessage = localMessage
+      ? `${localMessage}\n---\n${message}`
+      : message;
+
     const recipients = getEnrollmentsByCityId(city.id);
     let sentCount = 0;
     for (const r of recipients) {
-      // Send in local language if available, fallback to English
-      const outboundMessage = localMessage ?? message;
-      const smsOk   = await sendSMS(r.phone, outboundMessage);
-      const emailOk = await sendEmail(r.email, `Bzzt Alert — ${city.name}`, outboundMessage);
+      const smsOk   = await sendSMS(r.phone, combinedMessage);
+      const emailOk = await sendEmail(r.email, `Bzzt Alert — ${city.name}`, combinedMessage);
       if (smsOk || emailOk) sentCount++;
     }
 
     const topRisk: RiskLevel = dengueLevel === 'HIGH' || malariaLevel === 'HIGH' ? 'HIGH' : dengueLevel === 'WATCH' || malariaLevel === 'WATCH' ? 'WATCH' : 'LOW';
-    logAlert({ cityId: city.id, cityName: city.name, country: city.country, message, recipients: sentCount, type: 'sms', riskLevel: topRisk });
+    logAlert({ cityId: city.id, cityName: city.name, country: city.country, message: combinedMessage, recipients: sentCount, type: 'sms', riskLevel: topRisk });
     await markAlertSent(lineageEvent.id, sentCount);
 
     return NextResponse.json({
