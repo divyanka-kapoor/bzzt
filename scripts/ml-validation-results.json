@@ -1,0 +1,271 @@
+{
+  "pooled": [
+    {
+      "name": "Bzzt rule-based",
+      "auc": 0.527,
+      "kappa": 0.097,
+      "sensitivity": 0.197,
+      "specificity": 0.886,
+      "ppv": 0.33,
+      "tp": 34,
+      "fp": 69,
+      "fn": 139,
+      "tn": 538
+    },
+    {
+      "name": "Seasonal naive",
+      "auc": 0.541,
+      "kappa": 0.064,
+      "sensitivity": 0.468,
+      "specificity": 0.614,
+      "ppv": 0.257,
+      "tp": 81,
+      "fp": 234,
+      "fn": 92,
+      "tn": 373
+    },
+    {
+      "name": "LogisticRegression",
+      "auc": 0.928,
+      "kappa": 0.495,
+      "sensitivity": 0.948,
+      "specificity": 0.715,
+      "ppv": 0.487,
+      "tp": 164,
+      "fp": 173,
+      "fn": 9,
+      "tn": 434
+    },
+    {
+      "name": "RandomForest",
+      "auc": 0.902,
+      "kappa": 0.509,
+      "sensitivity": 0.861,
+      "specificity": 0.769,
+      "ppv": 0.516,
+      "tp": 149,
+      "fp": 140,
+      "fn": 24,
+      "tn": 467
+    },
+    {
+      "name": "GradientBoosting",
+      "auc": 0.908,
+      "kappa": 0.591,
+      "sensitivity": 0.728,
+      "specificity": 0.888,
+      "ppv": 0.649,
+      "tp": 126,
+      "fp": 68,
+      "fn": 47,
+      "tn": 539
+    }
+  ],
+  "loco": [
+    {
+      "city": "S\u00e3o Paulo",
+      "results": [
+        {
+          "name": "Bzzt rule-based",
+          "auc": 0.588,
+          "kappa": 0.063,
+          "sensitivity": 0.101,
+          "specificity": 0.949,
+          "ppv": 0.486,
+          "tp": 17,
+          "fp": 18,
+          "fn": 151,
+          "tn": 335
+        },
+        {
+          "name": "GradientBoosting",
+          "auc": 0.904,
+          "kappa": 0.616,
+          "sensitivity": 0.81,
+          "specificity": 0.833,
+          "ppv": 0.697,
+          "tp": 136,
+          "fp": 59,
+          "fn": 32,
+          "tn": 294
+        },
+        {
+          "name": "RandomForest",
+          "auc": 0.893,
+          "kappa": 0.639,
+          "sensitivity": 0.792,
+          "specificity": 0.861,
+          "ppv": 0.731,
+          "tp": 133,
+          "fp": 49,
+          "fn": 35,
+          "tn": 304
+        }
+      ]
+    },
+    {
+      "city": "Rio de Janeiro",
+      "results": [
+        {
+          "name": "Bzzt rule-based",
+          "auc": 0.603,
+          "kappa": 0.089,
+          "sensitivity": 0.139,
+          "specificity": 0.933,
+          "ppv": 0.25,
+          "tp": 10,
+          "fp": 30,
+          "fn": 62,
+          "tn": 419
+        },
+        {
+          "name": "GradientBoosting",
+          "auc": 0.946,
+          "kappa": 0.621,
+          "sensitivity": 0.875,
+          "specificity": 0.891,
+          "ppv": 0.562,
+          "tp": 63,
+          "fp": 49,
+          "fn": 9,
+          "tn": 400
+        },
+        {
+          "name": "RandomForest",
+          "auc": 0.935,
+          "kappa": 0.449,
+          "sensitivity": 0.972,
+          "specificity": 0.757,
+          "ppv": 0.391,
+          "tp": 70,
+          "fp": 109,
+          "fn": 2,
+          "tn": 340
+        }
+      ]
+    },
+    {
+      "city": "Fortaleza",
+      "results": [
+        {
+          "name": "Bzzt rule-based",
+          "auc": 0.628,
+          "kappa": 0.279,
+          "sensitivity": 0.363,
+          "specificity": 0.889,
+          "ppv": 0.506,
+          "tp": 45,
+          "fp": 44,
+          "fn": 79,
+          "tn": 353
+        },
+        {
+          "name": "GradientBoosting",
+          "auc": 0.845,
+          "kappa": 0.286,
+          "sensitivity": 0.944,
+          "specificity": 0.496,
+          "ppv": 0.369,
+          "tp": 117,
+          "fp": 200,
+          "fn": 7,
+          "tn": 197
+        },
+        {
+          "name": "RandomForest",
+          "auc": 0.848,
+          "kappa": 0.11,
+          "sensitivity": 1.0,
+          "specificity": 0.207,
+          "ppv": 0.282,
+          "tp": 124,
+          "fp": 315,
+          "fn": 0,
+          "tn": 82
+        }
+      ]
+    },
+    {
+      "city": "Recife",
+      "results": [
+        {
+          "name": "Bzzt rule-based",
+          "auc": 0.499,
+          "kappa": -0.021,
+          "sensitivity": 0.057,
+          "specificity": 0.927,
+          "ppv": 0.194,
+          "tp": 7,
+          "fp": 29,
+          "fn": 116,
+          "tn": 369
+        },
+        {
+          "name": "GradientBoosting",
+          "auc": 0.919,
+          "kappa": 0.489,
+          "sensitivity": 0.39,
+          "specificity": 0.997,
+          "ppv": 0.98,
+          "tp": 48,
+          "fp": 1,
+          "fn": 75,
+          "tn": 397
+        },
+        {
+          "name": "RandomForest",
+          "auc": 0.845,
+          "kappa": 0.562,
+          "sensitivity": 0.593,
+          "specificity": 0.932,
+          "ppv": 0.73,
+          "tp": 73,
+          "fp": 27,
+          "fn": 50,
+          "tn": 371
+        }
+      ]
+    },
+    {
+      "city": "Manaus",
+      "results": [
+        {
+          "name": "Bzzt rule-based",
+          "auc": 0.642,
+          "kappa": 0.062,
+          "sensitivity": 0.583,
+          "specificity": 0.668,
+          "ppv": 0.078,
+          "tp": 14,
+          "fp": 165,
+          "fn": 10,
+          "tn": 332
+        },
+        {
+          "name": "GradientBoosting",
+          "auc": 0.862,
+          "kappa": 0.176,
+          "sensitivity": 0.125,
+          "specificity": 0.992,
+          "ppv": 0.429,
+          "tp": 3,
+          "fp": 4,
+          "fn": 21,
+          "tn": 493
+        },
+        {
+          "name": "RandomForest",
+          "auc": 0.76,
+          "kappa": 0.056,
+          "sensitivity": 0.708,
+          "specificity": 0.575,
+          "ppv": 0.075,
+          "tp": 17,
+          "fp": 211,
+          "fn": 7,
+          "tn": 286
+        }
+      ]
+    }
+  ]
+}

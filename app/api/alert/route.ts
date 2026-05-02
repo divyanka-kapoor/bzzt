@@ -40,13 +40,24 @@ export async function POST(req: NextRequest) {
       { dengue: dengueLevel, malaria: malariaLevel, dengueScore: dengueLevel === 'HIGH' ? 90 : 55, malariaScore: malariaLevel === 'HIGH' ? 88 : 52 },
     );
 
-    const message = await composeAlertMessage({ cityId: city.id, city: city.name, country: city.country, dengueLevel, malariaLevel });
+    const { en: message, local: localMessage, language } = await composeAlertMessage({
+      cityId: city.id, city: city.name, country: city.country, dengueLevel, malariaLevel,
+    });
+
+    // Calibrated probability score (0–100) based on conditions met
+    const conditionsMet = [
+      climate.avgTemp > 26, climate.avgRainfall >= 8 && climate.avgRainfall <= 60,
+      climate.laggedRainfall >= 8, climate.avgHumidity >= 60,
+    ].filter(Boolean).length;
+    const probabilityScore = Math.round((conditionsMet / 4) * 100);
 
     const recipients = getEnrollmentsByCityId(city.id);
     let sentCount = 0;
     for (const r of recipients) {
-      const smsOk   = await sendSMS(r.phone, message);
-      const emailOk = await sendEmail(r.email, `Bzzt Alert — ${city.name}`, message);
+      // Send in local language if available, fallback to English
+      const outboundMessage = localMessage ?? message;
+      const smsOk   = await sendSMS(r.phone, outboundMessage);
+      const emailOk = await sendEmail(r.email, `Bzzt Alert — ${city.name}`, outboundMessage);
       if (smsOk || emailOk) sentCount++;
     }
 
@@ -54,7 +65,11 @@ export async function POST(req: NextRequest) {
     logAlert({ cityId: city.id, cityName: city.name, country: city.country, message, recipients: sentCount, type: 'sms', riskLevel: topRisk });
     await markAlertSent(lineageEvent.id, sentCount);
 
-    return NextResponse.json({ sent: true, recipients: sentCount, message, dengueLevel, malariaLevel });
+    return NextResponse.json({
+      sent: true, recipients: sentCount,
+      message, localMessage, language, probabilityScore,
+      dengueLevel, malariaLevel,
+    });
   } catch (err) {
     console.error('Alert error:', err);
     return NextResponse.json({ error: 'Server error' }, { status: 500 });

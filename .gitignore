@@ -34,3 +34,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# generated video assets
+scripts/audio/
+scripts/video/
+scripts/output/

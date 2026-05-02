@@ -5,7 +5,7 @@ import { CITIES } from '@/lib/cities';
 import { fetchClimateData } from '@/lib/open-meteo';
 import { getPopulation, formatPopulation, computePopulationRisk } from '@/lib/population';
 import { getWhoData, CITY_ISO3, formatCases } from '@/lib/who';
-import { getCityTrend, getEscalatingCities, getImprovingCities, getSnapshotCount } from '@/lib/trend';
+import { getCityTrend, getEscalatingCities, getImprovingCities, getSnapshotCount, recordScan } from '@/lib/trend';
 
 type RiskLevel = 'HIGH' | 'WATCH' | 'LOW';
 
@@ -48,7 +48,8 @@ export async function GET() {
 
       const dengue  = scoreDengue(climate.avgTemp, climate.avgRainfall, climate.laggedRainfall, climate.avgHumidity);
       const malaria = scoreMalaria(climate.avgTemp, climate.avgRainfall, climate.laggedRainfall, climate.avgHumidity);
-      const trend = getCityTrend(city.id);
+      // Pass current scores so trend infers from magnitude when no history exists
+      const trend = getCityTrend(city.id, { dengueScore: dengue.score, malariaScore: malaria.score, dengue: dengue.level, malaria: malaria.level });
       const population = getPopulation(city.id);
 
       // Early-warning ratio: how does current signal compare to historical baseline?
@@ -89,6 +90,10 @@ export async function GET() {
   );
 
   const cities = cityResults.filter(Boolean) as NonNullable<typeof cityResults[0]>[];
+
+  // Record this scan so trend history accumulates across requests on the same instance
+  recordScan(cities.map(c => ({ id: c.id, dengue: c.dengue, malaria: c.malaria, dengueScore: c.dengueScore, malariaScore: c.malariaScore })));
+
   const popRisk = computePopulationRisk(cities);
   const escalating = getEscalatingCities();
   const improving  = getImprovingCities();

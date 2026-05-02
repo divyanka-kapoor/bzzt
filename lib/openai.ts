@@ -26,21 +26,51 @@ async function claudeComplete(prompt: string, maxTokens = 150): Promise<string |
   }
 }
 
+// Languages spoken in highest-burden cities
+const CITY_LANGUAGES: Record<string, { code: string; name: string }> = {
+  'lagos':         { code: 'ha', name: 'Hausa' },       // Nigeria — Hausa most widely spoken
+  'kinshasa':      { code: 'fr', name: 'French' },      // DRC
+  'dhaka':         { code: 'bn', name: 'Bengali' },     // Bangladesh
+  'mumbai':        { code: 'hi', name: 'Hindi' },       // India
+  'delhi':         { code: 'hi', name: 'Hindi' },
+  'kolkata':       { code: 'bn', name: 'Bengali' },
+  'karachi':       { code: 'ur', name: 'Urdu' },        // Pakistan
+  'jakarta':       { code: 'id', name: 'Bahasa Indonesia' },
+  'manila':        { code: 'tl', name: 'Filipino' },    // Philippines
+  'dar-es-salaam': { code: 'sw', name: 'Swahili' },    // Tanzania
+  'nairobi':       { code: 'sw', name: 'Swahili' },    // Kenya
+  'accra':         { code: 'tw', name: 'Twi' },         // Ghana
+  'bangkok':       { code: 'th', name: 'Thai' },
+  'ho-chi-minh':   { code: 'vi', name: 'Vietnamese' },
+  'kuala-lumpur':  { code: 'ms', name: 'Malay' },
+};
+
 export async function composeAlertMessage(params: {
   cityId?: string;
   city: string;
   country?: string;
   dengueLevel: string;
   malariaLevel: string;
-}): Promise<string> {
+}): Promise<{ en: string; local: string | null; language: string | null }> {
   const loc = params.country ? `${params.city}, ${params.country}` : params.city;
-  const prompt = `You are Bzzt, a global public health early-warning system. Write a concise SMS alert (under 280 characters) for residents of ${loc}. Dengue risk: ${params.dengueLevel}. Malaria risk: ${params.malariaLevel}. Be direct and include one clear action they should take right now. Use plain English — no jargon.`;
+  const lang = params.cityId ? CITY_LANGUAGES[params.cityId] : null;
 
-  const text = await claudeComplete(prompt, 120);
-  if (text) return text;
+  const topRisk = params.dengueLevel === 'HIGH' || params.malariaLevel === 'HIGH' ? 'HIGH'
+    : params.dengueLevel === 'WATCH' || params.malariaLevel === 'WATCH' ? 'WATCH' : 'LOW';
 
-  const topRisk = params.dengueLevel === 'HIGH' || params.malariaLevel === 'HIGH' ? 'HIGH' : params.dengueLevel === 'WATCH' || params.malariaLevel === 'WATCH' ? 'WATCH' : 'LOW';
-  return `Bzzt: ${topRisk} mosquito-borne disease risk in ${loc}. Eliminate standing water, use repellent, and visit a health worker if you have fever or joint pain.`;
+  const fallback = `Bzzt: ${topRisk} mosquito-borne disease risk in ${loc}. Eliminate standing water, use repellent, and see a health worker if you have fever or joint pain.`;
+
+  const englishPrompt = `You are Bzzt, a public health early-warning system. Write a concise SMS alert (under 280 characters) for residents of ${loc}. Dengue risk: ${params.dengueLevel}. Malaria risk: ${params.malariaLevel}. Be direct. Include one clear action. Plain English, no jargon.`;
+
+  const en = await claudeComplete(englishPrompt, 120) ?? fallback;
+
+  let local: string | null = null;
+  if (lang) {
+    const translatePrompt = `Translate this SMS health alert into ${lang.name} (${lang.code}). Keep it under 280 characters. Preserve the urgency and the specific action. Do not add or remove information. Alert: "${en}"`;
+    local = await claudeComplete(translatePrompt, 150) ?? null;
+  }
+
+  return { en, local, language: lang?.name ?? null };
 }
 
 export async function classifySymptoms(body: string): Promise<string> {

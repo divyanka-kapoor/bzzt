@@ -1,0 +1,1292 @@
+[
+  {
+    "city": "Jakarta",
+    "country": "Indonesia",
+    "iso3": "IDN",
+    "yearlyData": [
+      {
+        "year": 2014,
+        "highDenguePct": 0.42,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 1,
+        "watchOrHighMalariaPct": 1,
+        "actualDengueCases": null,
+        "actualMalariaRate": 4.492771499,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": true
+      },
+      {
+        "year": 2015,
+        "highDenguePct": 0.42,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 1,
+        "watchOrHighMalariaPct": 1,
+        "actualDengueCases": null,
+        "actualMalariaRate": 3.970194735,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": true
+      },
+      {
+        "year": 2016,
+        "highDenguePct": 0.58,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 1,
+        "watchOrHighMalariaPct": 1,
+        "actualDengueCases": null,
+        "actualMalariaRate": 4.108980877,
+        "knownDengueOutbreak": true,
+        "knownMalariaOutbreak": true
+      },
+      {
+        "year": 2017,
+        "highDenguePct": 0.42,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 1,
+        "watchOrHighMalariaPct": 1,
+        "actualDengueCases": null,
+        "actualMalariaRate": 2.783790176,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2018,
+        "highDenguePct": 0.25,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 1,
+        "watchOrHighMalariaPct": 1,
+        "actualDengueCases": null,
+        "actualMalariaRate": 2.454130282,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2019,
+        "highDenguePct": 0.42,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 1,
+        "watchOrHighMalariaPct": 1,
+        "actualDengueCases": null,
+        "actualMalariaRate": 1.95874055,
+        "knownDengueOutbreak": true,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2020,
+        "highDenguePct": 0.42,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 1,
+        "watchOrHighMalariaPct": 1,
+        "actualDengueCases": null,
+        "actualMalariaRate": 1.929520807,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2021,
+        "highDenguePct": 0.42,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 1,
+        "watchOrHighMalariaPct": 1,
+        "actualDengueCases": null,
+        "actualMalariaRate": 1.556984504,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2022,
+        "highDenguePct": 0.33,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 1,
+        "watchOrHighMalariaPct": 1,
+        "actualDengueCases": null,
+        "actualMalariaRate": 1.990589065,
+        "knownDengueOutbreak": true,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2023,
+        "highDenguePct": 0.33,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 1,
+        "watchOrHighMalariaPct": 1,
+        "actualDengueCases": null,
+        "actualMalariaRate": 1.814463104,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": false
+      }
+    ],
+    "dengueCorrelation": null,
+    "malariaCorrelation": null,
+    "outbreakDetectionRate": 1,
+    "knownOutbreakYears": [
+      2016,
+      2019,
+      2022
+    ],
+    "detectedOutbreakYears": [
+      2016,
+      2019,
+      2022
+    ]
+  },
+  {
+    "city": "Bangkok",
+    "country": "Thailand",
+    "iso3": "THA",
+    "yearlyData": [
+      {
+        "year": 2014,
+        "highDenguePct": 0,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 1,
+        "watchOrHighMalariaPct": 1,
+        "actualDengueCases": null,
+        "actualMalariaRate": 3.093455793,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2015,
+        "highDenguePct": 0,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 1,
+        "watchOrHighMalariaPct": 1,
+        "actualDengueCases": null,
+        "actualMalariaRate": 1.306905269,
+        "knownDengueOutbreak": true,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2016,
+        "highDenguePct": 0.17,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 1,
+        "watchOrHighMalariaPct": 1,
+        "actualDengueCases": null,
+        "actualMalariaRate": 0.898086717,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2017,
+        "highDenguePct": 0.17,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 1,
+        "watchOrHighMalariaPct": 1,
+        "actualDengueCases": null,
+        "actualMalariaRate": 0.549122711,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2018,
+        "highDenguePct": 0.17,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 1,
+        "watchOrHighMalariaPct": 1,
+        "actualDengueCases": null,
+        "actualMalariaRate": 0.377279811,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2019,
+        "highDenguePct": 0,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 1,
+        "watchOrHighMalariaPct": 1,
+        "actualDengueCases": null,
+        "actualMalariaRate": 0.299364887,
+        "knownDengueOutbreak": true,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2020,
+        "highDenguePct": 0.17,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 1,
+        "watchOrHighMalariaPct": 1,
+        "actualDengueCases": null,
+        "actualMalariaRate": 0.229722097,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2021,
+        "highDenguePct": 0.33,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 1,
+        "watchOrHighMalariaPct": 1,
+        "actualDengueCases": null,
+        "actualMalariaRate": 0.178238478,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2022,
+        "highDenguePct": 0.33,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 1,
+        "watchOrHighMalariaPct": 1,
+        "actualDengueCases": null,
+        "actualMalariaRate": 0.460018501,
+        "knownDengueOutbreak": true,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2023,
+        "highDenguePct": 0.25,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 1,
+        "watchOrHighMalariaPct": 1,
+        "actualDengueCases": null,
+        "actualMalariaRate": 0.67388129,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": false
+      }
+    ],
+    "dengueCorrelation": null,
+    "malariaCorrelation": null,
+    "outbreakDetectionRate": 1,
+    "knownOutbreakYears": [
+      2015,
+      2019,
+      2022
+    ],
+    "detectedOutbreakYears": [
+      2015,
+      2019,
+      2022
+    ]
+  },
+  {
+    "city": "Manila",
+    "country": "Philippines",
+    "iso3": "PHL",
+    "yearlyData": [
+      {
+        "year": 2014,
+        "highDenguePct": 0.33,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 1,
+        "watchOrHighMalariaPct": 1,
+        "actualDengueCases": null,
+        "actualMalariaRate": 0.237741707,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2015,
+        "highDenguePct": 0.08,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 1,
+        "watchOrHighMalariaPct": 1,
+        "actualDengueCases": null,
+        "actualMalariaRate": 0.456527913,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2016,
+        "highDenguePct": 0.33,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 1,
+        "watchOrHighMalariaPct": 1,
+        "actualDengueCases": null,
+        "actualMalariaRate": 0.279395834,
+        "knownDengueOutbreak": true,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2017,
+        "highDenguePct": 0.5,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 1,
+        "watchOrHighMalariaPct": 1,
+        "actualDengueCases": null,
+        "actualMalariaRate": 0.264313704,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2018,
+        "highDenguePct": 0.5,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 1,
+        "watchOrHighMalariaPct": 1,
+        "actualDengueCases": null,
+        "actualMalariaRate": 0.171566663,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2019,
+        "highDenguePct": 0.33,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 1,
+        "watchOrHighMalariaPct": 1,
+        "actualDengueCases": null,
+        "actualMalariaRate": 0.210482043,
+        "knownDengueOutbreak": true,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2020,
+        "highDenguePct": 0.5,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 1,
+        "watchOrHighMalariaPct": 1,
+        "actualDengueCases": null,
+        "actualMalariaRate": 0.23194311,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2021,
+        "highDenguePct": 0.33,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 1,
+        "watchOrHighMalariaPct": 1,
+        "actualDengueCases": null,
+        "actualMalariaRate": 0.161572777,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2022,
+        "highDenguePct": 0.5,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 1,
+        "watchOrHighMalariaPct": 1,
+        "actualDengueCases": null,
+        "actualMalariaRate": 0.123368422,
+        "knownDengueOutbreak": true,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2023,
+        "highDenguePct": 0.25,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 1,
+        "watchOrHighMalariaPct": 1,
+        "actualDengueCases": null,
+        "actualMalariaRate": 0.232524024,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": false
+      }
+    ],
+    "dengueCorrelation": null,
+    "malariaCorrelation": null,
+    "outbreakDetectionRate": 1,
+    "knownOutbreakYears": [
+      2016,
+      2019,
+      2022
+    ],
+    "detectedOutbreakYears": [
+      2016,
+      2019,
+      2022
+    ]
+  },
+  {
+    "city": "Dhaka",
+    "country": "Bangladesh",
+    "iso3": "BGD",
+    "yearlyData": [
+      {
+        "year": 2014,
+        "highDenguePct": 0.25,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 0.75,
+        "watchOrHighMalariaPct": 0.92,
+        "actualDengueCases": null,
+        "actualMalariaRate": 3.89299269,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2015,
+        "highDenguePct": 0.42,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 0.83,
+        "watchOrHighMalariaPct": 1,
+        "actualDengueCases": null,
+        "actualMalariaRate": 2.647646245,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2016,
+        "highDenguePct": 0.42,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 0.92,
+        "watchOrHighMalariaPct": 0.92,
+        "actualDengueCases": null,
+        "actualMalariaRate": 1.824561023,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2017,
+        "highDenguePct": 0.5,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 0.83,
+        "watchOrHighMalariaPct": 1,
+        "actualDengueCases": null,
+        "actualMalariaRate": 1.906934,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2018,
+        "highDenguePct": 0.33,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 0.83,
+        "watchOrHighMalariaPct": 0.92,
+        "actualDengueCases": null,
+        "actualMalariaRate": 0.703458625,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2019,
+        "highDenguePct": 0.25,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 0.83,
+        "watchOrHighMalariaPct": 1,
+        "actualDengueCases": null,
+        "actualMalariaRate": 1.192951693,
+        "knownDengueOutbreak": true,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2020,
+        "highDenguePct": 0.58,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 0.83,
+        "watchOrHighMalariaPct": 0.92,
+        "actualDengueCases": null,
+        "actualMalariaRate": 0.420991407,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2021,
+        "highDenguePct": 0.25,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 0.83,
+        "watchOrHighMalariaPct": 1,
+        "actualDengueCases": null,
+        "actualMalariaRate": 0.496661674,
+        "knownDengueOutbreak": true,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2022,
+        "highDenguePct": 0.25,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 0.83,
+        "watchOrHighMalariaPct": 0.92,
+        "actualDengueCases": null,
+        "actualMalariaRate": 1.229878145,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2023,
+        "highDenguePct": 0.25,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 0.83,
+        "watchOrHighMalariaPct": 1,
+        "actualDengueCases": null,
+        "actualMalariaRate": 1.102654564,
+        "knownDengueOutbreak": true,
+        "knownMalariaOutbreak": false
+      }
+    ],
+    "dengueCorrelation": null,
+    "malariaCorrelation": null,
+    "outbreakDetectionRate": 1,
+    "knownOutbreakYears": [
+      2019,
+      2021,
+      2023
+    ],
+    "detectedOutbreakYears": [
+      2019,
+      2021,
+      2023
+    ]
+  },
+  {
+    "city": "Mumbai",
+    "country": "India",
+    "iso3": "IND",
+    "yearlyData": [
+      {
+        "year": 2014,
+        "highDenguePct": 0.25,
+        "highMalariaPct": 0.08,
+        "watchOrHighDenguePct": 1,
+        "watchOrHighMalariaPct": 1,
+        "actualDengueCases": null,
+        "actualMalariaRate": 6.332193671,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": true
+      },
+      {
+        "year": 2015,
+        "highDenguePct": 0.17,
+        "highMalariaPct": 0.08,
+        "watchOrHighDenguePct": 1,
+        "watchOrHighMalariaPct": 1,
+        "actualDengueCases": null,
+        "actualMalariaRate": 6.436945603,
+        "knownDengueOutbreak": true,
+        "knownMalariaOutbreak": true
+      },
+      {
+        "year": 2016,
+        "highDenguePct": 0.33,
+        "highMalariaPct": 0.17,
+        "watchOrHighDenguePct": 1,
+        "watchOrHighMalariaPct": 1,
+        "actualDengueCases": null,
+        "actualMalariaRate": 6.291016141,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": true
+      },
+      {
+        "year": 2017,
+        "highDenguePct": 0.33,
+        "highMalariaPct": 0.25,
+        "watchOrHighDenguePct": 1,
+        "watchOrHighMalariaPct": 1,
+        "actualDengueCases": null,
+        "actualMalariaRate": 4.612929277,
+        "knownDengueOutbreak": true,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2018,
+        "highDenguePct": 0.25,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 1,
+        "watchOrHighMalariaPct": 1,
+        "actualDengueCases": null,
+        "actualMalariaRate": 3.434665461,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2019,
+        "highDenguePct": 0.42,
+        "highMalariaPct": 0.08,
+        "watchOrHighDenguePct": 1,
+        "watchOrHighMalariaPct": 1,
+        "actualDengueCases": null,
+        "actualMalariaRate": 2.843816766,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2020,
+        "highDenguePct": 0.33,
+        "highMalariaPct": 0.17,
+        "watchOrHighDenguePct": 1,
+        "watchOrHighMalariaPct": 1,
+        "actualDengueCases": null,
+        "actualMalariaRate": 2.532348445,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2021,
+        "highDenguePct": 0.33,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 1,
+        "watchOrHighMalariaPct": 1,
+        "actualDengueCases": null,
+        "actualMalariaRate": 2.49527384,
+        "knownDengueOutbreak": true,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2022,
+        "highDenguePct": 0.33,
+        "highMalariaPct": 0.08,
+        "watchOrHighDenguePct": 1,
+        "watchOrHighMalariaPct": 1,
+        "actualDengueCases": null,
+        "actualMalariaRate": 1.397859002,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2023,
+        "highDenguePct": 0.25,
+        "highMalariaPct": 0.08,
+        "watchOrHighDenguePct": 1,
+        "watchOrHighMalariaPct": 1,
+        "actualDengueCases": null,
+        "actualMalariaRate": 1.344700945,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": false
+      }
+    ],
+    "dengueCorrelation": null,
+    "malariaCorrelation": 0.276,
+    "outbreakDetectionRate": 1,
+    "knownOutbreakYears": [
+      2015,
+      2017,
+      2021
+    ],
+    "detectedOutbreakYears": [
+      2015,
+      2017,
+      2021
+    ]
+  },
+  {
+    "city": "Lagos",
+    "country": "Nigeria",
+    "iso3": "NGA",
+    "yearlyData": [
+      {
+        "year": 2014,
+        "highDenguePct": 0.17,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 1,
+        "watchOrHighMalariaPct": 1,
+        "actualDengueCases": null,
+        "actualMalariaRate": 287.7049251,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": true
+      },
+      {
+        "year": 2015,
+        "highDenguePct": 0.17,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 1,
+        "watchOrHighMalariaPct": 1,
+        "actualDengueCases": null,
+        "actualMalariaRate": 283.812818,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2016,
+        "highDenguePct": 0.25,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 1,
+        "watchOrHighMalariaPct": 1,
+        "actualDengueCases": null,
+        "actualMalariaRate": 284.8254203,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": true
+      },
+      {
+        "year": 2017,
+        "highDenguePct": 0.17,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 1,
+        "watchOrHighMalariaPct": 1,
+        "actualDengueCases": null,
+        "actualMalariaRate": 288.9798255,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": true
+      },
+      {
+        "year": 2018,
+        "highDenguePct": 0.08,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 1,
+        "watchOrHighMalariaPct": 1,
+        "actualDengueCases": null,
+        "actualMalariaRate": 291.073537,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": true
+      },
+      {
+        "year": 2019,
+        "highDenguePct": 0.25,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 1,
+        "watchOrHighMalariaPct": 1,
+        "actualDengueCases": null,
+        "actualMalariaRate": 292.9999532,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2020,
+        "highDenguePct": 0.17,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 1,
+        "watchOrHighMalariaPct": 1,
+        "actualDengueCases": null,
+        "actualMalariaRate": 304.3687915,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2021,
+        "highDenguePct": 0.17,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 1,
+        "watchOrHighMalariaPct": 1,
+        "actualDengueCases": null,
+        "actualMalariaRate": 299.2711055,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": true
+      },
+      {
+        "year": 2022,
+        "highDenguePct": 0.08,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 1,
+        "watchOrHighMalariaPct": 1,
+        "actualDengueCases": null,
+        "actualMalariaRate": 298.9976008,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2023,
+        "highDenguePct": 0.17,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 1,
+        "watchOrHighMalariaPct": 1,
+        "actualDengueCases": null,
+        "actualMalariaRate": 298.9976001,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": false
+      }
+    ],
+    "dengueCorrelation": null,
+    "malariaCorrelation": null,
+    "outbreakDetectionRate": null,
+    "knownOutbreakYears": [],
+    "detectedOutbreakYears": []
+  },
+  {
+    "city": "Nairobi",
+    "country": "Kenya",
+    "iso3": "KEN",
+    "yearlyData": [
+      {
+        "year": 2014,
+        "highDenguePct": 0,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 0.08,
+        "watchOrHighMalariaPct": 0.67,
+        "actualDengueCases": null,
+        "actualMalariaRate": 84.43082344,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2015,
+        "highDenguePct": 0,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 0.33,
+        "watchOrHighMalariaPct": 0.58,
+        "actualDengueCases": null,
+        "actualMalariaRate": 81.79663555,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": true
+      },
+      {
+        "year": 2016,
+        "highDenguePct": 0,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 0.33,
+        "watchOrHighMalariaPct": 0.58,
+        "actualDengueCases": null,
+        "actualMalariaRate": 77.26122108,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": true
+      },
+      {
+        "year": 2017,
+        "highDenguePct": 0,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 0.42,
+        "watchOrHighMalariaPct": 0.75,
+        "actualDengueCases": null,
+        "actualMalariaRate": 76.8492024,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2018,
+        "highDenguePct": 0.08,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 0.25,
+        "watchOrHighMalariaPct": 0.5,
+        "actualDengueCases": null,
+        "actualMalariaRate": 74.1496418,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": true
+      },
+      {
+        "year": 2019,
+        "highDenguePct": 0.25,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 0.58,
+        "watchOrHighMalariaPct": 0.42,
+        "actualDengueCases": null,
+        "actualMalariaRate": 71.67133565,
+        "knownDengueOutbreak": true,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2020,
+        "highDenguePct": 0.17,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 0.17,
+        "watchOrHighMalariaPct": 0.33,
+        "actualDengueCases": null,
+        "actualMalariaRate": 84.99876851,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2021,
+        "highDenguePct": 0,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 0.25,
+        "watchOrHighMalariaPct": 0.58,
+        "actualDengueCases": null,
+        "actualMalariaRate": 88.68703596,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": true
+      },
+      {
+        "year": 2022,
+        "highDenguePct": 0,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 0.33,
+        "watchOrHighMalariaPct": 0.67,
+        "actualDengueCases": null,
+        "actualMalariaRate": 82.09391795,
+        "knownDengueOutbreak": true,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2023,
+        "highDenguePct": 0,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 0.33,
+        "watchOrHighMalariaPct": 0.92,
+        "actualDengueCases": null,
+        "actualMalariaRate": 73.77391808,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": false
+      }
+    ],
+    "dengueCorrelation": null,
+    "malariaCorrelation": null,
+    "outbreakDetectionRate": 0.5,
+    "knownOutbreakYears": [
+      2019,
+      2022
+    ],
+    "detectedOutbreakYears": [
+      2019
+    ]
+  },
+  {
+    "city": "São Paulo",
+    "country": "Brazil",
+    "iso3": "BRA",
+    "yearlyData": [
+      {
+        "year": 2014,
+        "highDenguePct": 0.08,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 0.42,
+        "watchOrHighMalariaPct": 0.67,
+        "actualDengueCases": null,
+        "actualMalariaRate": 3.609276643,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2015,
+        "highDenguePct": 0,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 0.33,
+        "watchOrHighMalariaPct": 0.67,
+        "actualDengueCases": null,
+        "actualMalariaRate": 4.020236183,
+        "knownDengueOutbreak": true,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2016,
+        "highDenguePct": 0.08,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 0.33,
+        "watchOrHighMalariaPct": 0.5,
+        "actualDengueCases": null,
+        "actualMalariaRate": 3.200279095,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": true
+      },
+      {
+        "year": 2017,
+        "highDenguePct": 0.08,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 0.42,
+        "watchOrHighMalariaPct": 0.58,
+        "actualDengueCases": null,
+        "actualMalariaRate": 5.316185021,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": true
+      },
+      {
+        "year": 2018,
+        "highDenguePct": 0,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 0.17,
+        "watchOrHighMalariaPct": 0.5,
+        "actualDengueCases": null,
+        "actualMalariaRate": 5.229784588,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2019,
+        "highDenguePct": 0.08,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 0.33,
+        "watchOrHighMalariaPct": 0.67,
+        "actualDengueCases": null,
+        "actualMalariaRate": 4.242111868,
+        "knownDengueOutbreak": true,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2020,
+        "highDenguePct": 0.08,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 0.42,
+        "watchOrHighMalariaPct": 0.67,
+        "actualDengueCases": null,
+        "actualMalariaRate": 3.945238308,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2021,
+        "highDenguePct": 0,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 0.42,
+        "watchOrHighMalariaPct": 0.5,
+        "actualDengueCases": null,
+        "actualMalariaRate": 3.474576532,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2022,
+        "highDenguePct": 0.17,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 0.33,
+        "watchOrHighMalariaPct": 0.5,
+        "actualDengueCases": null,
+        "actualMalariaRate": 3.212530476,
+        "knownDengueOutbreak": true,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2023,
+        "highDenguePct": 0.08,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 0.42,
+        "watchOrHighMalariaPct": 0.67,
+        "actualDengueCases": null,
+        "actualMalariaRate": 3.813696312,
+        "knownDengueOutbreak": true,
+        "knownMalariaOutbreak": false
+      }
+    ],
+    "dengueCorrelation": null,
+    "malariaCorrelation": null,
+    "outbreakDetectionRate": 0,
+    "knownOutbreakYears": [
+      2015,
+      2019,
+      2022,
+      2023
+    ],
+    "detectedOutbreakYears": []
+  },
+  {
+    "city": "Ho Chi Minh City",
+    "country": "Vietnam",
+    "iso3": "VNM",
+    "yearlyData": [
+      {
+        "year": 2014,
+        "highDenguePct": 0.33,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 1,
+        "watchOrHighMalariaPct": 1,
+        "actualDengueCases": null,
+        "actualMalariaRate": 0.282091038,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2015,
+        "highDenguePct": 0.17,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 1,
+        "watchOrHighMalariaPct": 1,
+        "actualDengueCases": null,
+        "actualMalariaRate": 0.16493271,
+        "knownDengueOutbreak": true,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2016,
+        "highDenguePct": 0.33,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 1,
+        "watchOrHighMalariaPct": 1,
+        "actualDengueCases": null,
+        "actualMalariaRate": 0.072520408,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2017,
+        "highDenguePct": 0.5,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 1,
+        "watchOrHighMalariaPct": 1,
+        "actualDengueCases": null,
+        "actualMalariaRate": 0.078195853,
+        "knownDengueOutbreak": true,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2018,
+        "highDenguePct": 0.33,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 1,
+        "watchOrHighMalariaPct": 1,
+        "actualDengueCases": null,
+        "actualMalariaRate": 0.053252802,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2019,
+        "highDenguePct": 0.33,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 1,
+        "watchOrHighMalariaPct": 1,
+        "actualDengueCases": null,
+        "actualMalariaRate": 0.053842714,
+        "knownDengueOutbreak": true,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2020,
+        "highDenguePct": 0.5,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 1,
+        "watchOrHighMalariaPct": 1,
+        "actualDengueCases": null,
+        "actualMalariaRate": 0.022923696,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2021,
+        "highDenguePct": 0.58,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 1,
+        "watchOrHighMalariaPct": 1,
+        "actualDengueCases": null,
+        "actualMalariaRate": 0.005170469,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2022,
+        "highDenguePct": 0.5,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 1,
+        "watchOrHighMalariaPct": 1,
+        "actualDengueCases": null,
+        "actualMalariaRate": 0.005608224,
+        "knownDengueOutbreak": true,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2023,
+        "highDenguePct": 0.5,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 1,
+        "watchOrHighMalariaPct": 1,
+        "actualDengueCases": null,
+        "actualMalariaRate": 0.005043372,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": false
+      }
+    ],
+    "dengueCorrelation": null,
+    "malariaCorrelation": null,
+    "outbreakDetectionRate": 1,
+    "knownOutbreakYears": [
+      2015,
+      2017,
+      2019,
+      2022
+    ],
+    "detectedOutbreakYears": [
+      2015,
+      2017,
+      2019,
+      2022
+    ]
+  },
+  {
+    "city": "Karachi",
+    "country": "Pakistan",
+    "iso3": "PAK",
+    "yearlyData": [
+      {
+        "year": 2014,
+        "highDenguePct": 0,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 0.83,
+        "watchOrHighMalariaPct": 0.92,
+        "actualDengueCases": null,
+        "actualMalariaRate": 4.721672099,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": true
+      },
+      {
+        "year": 2015,
+        "highDenguePct": 0,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 0.92,
+        "watchOrHighMalariaPct": 1,
+        "actualDengueCases": null,
+        "actualMalariaRate": 4.682778163,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": true
+      },
+      {
+        "year": 2016,
+        "highDenguePct": 0,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 0.92,
+        "watchOrHighMalariaPct": 1,
+        "actualDengueCases": null,
+        "actualMalariaRate": 4.700275398,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2017,
+        "highDenguePct": 0,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 0.92,
+        "watchOrHighMalariaPct": 0.92,
+        "actualDengueCases": null,
+        "actualMalariaRate": 3.735459131,
+        "knownDengueOutbreak": true,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2018,
+        "highDenguePct": 0,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 0.83,
+        "watchOrHighMalariaPct": 1,
+        "actualDengueCases": null,
+        "actualMalariaRate": 3.16244487,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2019,
+        "highDenguePct": 0.08,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 0.75,
+        "watchOrHighMalariaPct": 0.92,
+        "actualDengueCases": null,
+        "actualMalariaRate": 2.822686032,
+        "knownDengueOutbreak": true,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2020,
+        "highDenguePct": 0,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 0.83,
+        "watchOrHighMalariaPct": 0.92,
+        "actualDengueCases": null,
+        "actualMalariaRate": 2.350049646,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2021,
+        "highDenguePct": 0,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 0.83,
+        "watchOrHighMalariaPct": 0.92,
+        "actualDengueCases": null,
+        "actualMalariaRate": 2.148534645,
+        "knownDengueOutbreak": true,
+        "knownMalariaOutbreak": true
+      },
+      {
+        "year": 2022,
+        "highDenguePct": 0.17,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 0.92,
+        "watchOrHighMalariaPct": 0.92,
+        "actualDengueCases": null,
+        "actualMalariaRate": 11.08382768,
+        "knownDengueOutbreak": true,
+        "knownMalariaOutbreak": false
+      },
+      {
+        "year": 2023,
+        "highDenguePct": 0,
+        "highMalariaPct": 0,
+        "watchOrHighDenguePct": 0.92,
+        "watchOrHighMalariaPct": 0.92,
+        "actualDengueCases": null,
+        "actualMalariaRate": 17.60869649,
+        "knownDengueOutbreak": false,
+        "knownMalariaOutbreak": false
+      }
+    ],
+    "dengueCorrelation": null,
+    "malariaCorrelation": null,
+    "outbreakDetectionRate": 1,
+    "knownOutbreakYears": [
+      2017,
+      2019,
+      2021,
+      2022
+    ],
+    "detectedOutbreakYears": [
+      2017,
+      2019,
+      2021,
+      2022
+    ]
+  }
+]

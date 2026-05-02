@@ -5,6 +5,7 @@ import { CITIES } from '@/lib/cities';
 import { fetchClimateData } from '@/lib/open-meteo';
 import { logRiskComputation } from '@/lib/openmetadata';
 import { recordScan } from '@/lib/trend';
+import { logPrediction } from '@/lib/store';
 
 type RiskLevel = 'HIGH' | 'WATCH' | 'LOW';
 
@@ -50,6 +51,18 @@ export async function GET() {
         { source: 'Open-Meteo API', lat: city.lat, lng: city.lng, avgTemp: climate.avgTemp, avgRainfall: climate.avgRainfall, laggedRainfall: climate.laggedRainfall, avgHumidity: climate.avgHumidity },
         { dengue: dengue.level, malaria: malaria.level, dengueScore: dengue.score, malariaScore: malaria.score },
       );
+
+      // Log prospective prediction — validates against actual cases in 5 weeks
+      const conditionsMet = [
+        climate.avgTemp > 26, climate.avgRainfall >= 8 && climate.avgRainfall <= 60,
+        climate.laggedRainfall >= 8, climate.avgHumidity >= 60,
+      ].filter(Boolean).length;
+      logPrediction({
+        cityId: city.id, city: city.name, country: city.country,
+        dengueLevel: dengue.level, malariaLevel: malaria.level,
+        probabilityScore: Math.round((conditionsMet / 4) * 100),
+        climate: { avgTemp: climate.avgTemp, avgRainfall: climate.avgRainfall, laggedRainfall: climate.laggedRainfall, avgHumidity: climate.avgHumidity },
+      });
 
       return { id: city.id, name: city.name, country: city.country, lat: city.lat, lng: city.lng, dengue: dengue.level, malaria: malaria.level, dengueScore: dengue.score, malariaScore: malaria.score, scannedAt: new Date().toISOString() };
     }),

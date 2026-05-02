@@ -1,5 +1,5 @@
 const AGENTMAIL_API = 'https://api.agentmail.to';
-const AGENTMAIL_KEY = process.env.AGENTMAIL_API_KEY || 'am_us_d1776097b1ae901d349dda3bf36637c2cd7ed6a77566f15b924e76eb5735749d';
+const AGENTMAIL_KEY = process.env.AGENTMAIL_API_KEY || '';
 const BZZT_INBOX = 'bzzt@agentmail.to';
 
 export async function sendEmail(to: string, subject: string, body: string): Promise<boolean> {

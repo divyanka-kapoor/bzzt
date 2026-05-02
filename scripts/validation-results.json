@@ -1,0 +1,1047 @@
+[
+  {
+    "city": "S\u00e3o Paulo",
+    "n_weeks": 522,
+    "n_outbreak_weeks": 168,
+    "concurrent_spearman_r": 0.1496,
+    "concurrent_p": 0.0006,
+    "lag_results": {
+      "0": [
+        0.1496,
+        0.0006
+      ],
+      "1": [
+        0.1793,
+        0.0
+      ],
+      "2": [
+        0.2182,
+        0.0
+      ],
+      "3": [
+        0.2632,
+        0.0
+      ],
+      "4": [
+        0.2984,
+        0.0
+      ],
+      "5": [
+        0.3357,
+        0.0
+      ],
+      "6": [
+        0.3624,
+        0.0
+      ]
+    },
+    "best_lag_weeks": 6,
+    "best_lag_r": 0.3624,
+    "confusion": {
+      "tp": 17,
+      "fp": 18,
+      "tn": 336,
+      "fn": 151,
+      "sensitivity": 0.101,
+      "specificity": 0.949,
+      "ppv": 0.486,
+      "npv": 0.69,
+      "accuracy": 0.676,
+      "kappa": 0.064,
+      "n": 522
+    },
+    "auc_roc": 0.587,
+    "baseline_confusion": {
+      "tp": 93,
+      "fp": 123,
+      "tn": 231,
+      "fn": 75,
+      "sensitivity": 0.554,
+      "specificity": 0.653,
+      "ppv": 0.431,
+      "npv": 0.755,
+      "accuracy": 0.621,
+      "kappa": 0.192,
+      "n": 522
+    },
+    "outperforms_baseline": false,
+    "weekly_data": [
+      {
+        "week_start": "2013-12-29 00:00:00",
+        "epi_week": 201401,
+        "cases": 80,
+        "nivel": 1,
+        "inc100k": 0.64907503,
+        "Rt": 0.66757184,
+        "model_level": "WATCH",
+        "model_score": 2,
+        "temp": 27.5,
+        "rain_28d": 3.23,
+        "rain_14d": 2.49,
+        "humidity": 98.7
+      },
+      {
+        "week_start": "2014-01-05 00:00:00",
+        "epi_week": 201402,
+        "cases": 183,
+        "nivel": 2,
+        "inc100k": 1.4847591,
+        "Rt": 1.6057532,
+        "model_level": "WATCH",
+        "model_score": 2,
+        "temp": 29.0,
+        "rain_28d": 2.93,
+        "rain_14d": 3.24,
+        "humidity": 93.1
+      },
+      {
+        "week_start": "2014-01-12 00:00:00",
+        "epi_week": 201403,
+        "cases": 198,
+        "nivel": 3,
+        "inc100k": 1.6064607,
+        "Rt": 1.6068783,
+        "model_level": "WATCH",
+        "model_score": 2,
+        "temp": 28.9,
+        "rain_28d": 2.32,
+        "rain_14d": 2.14,
+        "humidity": 97.6
+      },
+      {
+        "week_start": "2014-01-19 00:00:00",
+        "epi_week": 201404,
+        "cases": 214,
+        "nivel": 3,
+        "inc100k": 1.7362757,
+        "Rt": 1.3466729,
+        "model_level": "WATCH",
+        "model_score": 2,
+        "temp": 27.4,
+        "rain_28d": 3.8,
+        "rain_14d": 4.35,
+        "humidity": 98.0
+      },
+      {
+        "week_start": "2014-01-26 00:00:00",
+        "epi_week": 201405,
+        "cases": 315,
+        "nivel": 3,
+        "inc100k": 2.5557327,
+        "Rt": 1.5995378,
+        "model_level": "WATCH",
+        "model_score": 2,
+        "temp": 29.4,
+        "rain_28d": 2.99,
+        "rain_14d": 3.84,
+        "humidity": 95.0
+      },
+      {
+        "week_start": "2014-02-02 00:00:00",
+        "epi_week": 201406,
+        "cases": 345,
+        "nivel": 3,
+        "inc100k": 2.799136,
+        "Rt": 1.4472522,
+        "model_level": "WATCH",
+        "model_score": 2,
+        "temp": 31.4,
+        "rain_28d": 2.52,
+        "rain_14d": 0.7,
+        "humidity": 97.0
+      },
+      {
+        "week_start": "2014-02-09 00:00:00",
+        "epi_week": 201407,
+        "cases": 470,
+        "nivel": 3,
+        "inc100k": 3.8133156,
+        "Rt": 1.5781538,
+        "model_level": "WATCH",
+        "model_score": 2,
+        "temp": 32.4,
+        "rain_28d": 1.99,
+        "rain_14d": 0.14,
+        "humidity": 90.1
+      },
+      {
+        "week_start": "2014-02-16 00:00:00",
+        "epi_week": 201408,
+        "cases": 610,
+        "nivel": 3,
+        "inc100k": 4.949197,
+        "Rt": 1.6355081,
+        "model_level": "WATCH",
+        "model_score": 2,
+        "temp": 28.8,
+        "rain_28d": 2.18,
+        "rain_14d": 3.66,
+        "humidity": 93.9
+      },
+      {
+        "week_start": "2014-02-23 00:00:00",
+        "epi_week": 201409,
+        "cases": 669,
+        "nivel": 3,
+        "inc100k": 5.42789,
+        "Rt": 1.4153123,
+        "model_level": "WATCH",
+        "model_score": 2,
+        "temp": 26.9,
+        "rain_28d": 2.11,
+        "rain_14d": 4.08,
+        "humidity": 97.1
+      },
+      {
+        "week_start": "2014-03-02 00:00:00",
+        "epi_week": 201410,
+        "cases": 976,
+        "nivel": 3,
+        "inc100k": 7.918715,
+        "Rt": 1.6494665,
+        "model_level": "WATCH",
+        "model_score": 2,
+        "temp": 28.5,
+        "rain_28d": 3.22,
+        "rain_14d": 2.78,
+        "humidity": 96.9
+      }
+    ]
+  },
+  {
+    "city": "Rio de Janeiro",
+    "n_weeks": 522,
+    "n_outbreak_weeks": 72,
+    "concurrent_spearman_r": 0.1763,
+    "concurrent_p": 0.0001,
+    "lag_results": {
+      "0": [
+        0.1763,
+        0.0001
+      ],
+      "1": [
+        0.2016,
+        0.0
+      ],
+      "2": [
+        0.2276,
+        0.0
+      ],
+      "3": [
+        0.2547,
+        0.0
+      ],
+      "4": [
+        0.2779,
+        0.0
+      ],
+      "5": [
+        0.2966,
+        0.0
+      ],
+      "6": [
+        0.3121,
+        0.0
+      ]
+    },
+    "best_lag_weeks": 6,
+    "best_lag_r": 0.3121,
+    "confusion": {
+      "tp": 10,
+      "fp": 30,
+      "tn": 420,
+      "fn": 62,
+      "sensitivity": 0.139,
+      "specificity": 0.933,
+      "ppv": 0.25,
+      "npv": 0.871,
+      "accuracy": 0.824,
+      "kappa": 0.089,
+      "n": 522
+    },
+    "auc_roc": 0.6,
+    "baseline_confusion": {
+      "tp": 34,
+      "fp": 182,
+      "tn": 268,
+      "fn": 38,
+      "sensitivity": 0.472,
+      "specificity": 0.596,
+      "ppv": 0.157,
+      "npv": 0.876,
+      "accuracy": 0.579,
+      "kappa": 0.037,
+      "n": 522
+    },
+    "outperforms_baseline": true,
+    "weekly_data": [
+      {
+        "week_start": "2013-12-29 00:00:00",
+        "epi_week": 201401,
+        "cases": 89,
+        "nivel": 2,
+        "inc100k": 1.3189454,
+        "Rt": 0.9755433,
+        "model_level": "WATCH",
+        "model_score": 2,
+        "temp": 29.8,
+        "rain_28d": 4.42,
+        "rain_14d": 3.91,
+        "humidity": 97.0
+      },
+      {
+        "week_start": "2014-01-05 00:00:00",
+        "epi_week": 201402,
+        "cases": 152,
+        "nivel": 2,
+        "inc100k": 2.2525811,
+        "Rt": 1.7361457,
+        "model_level": "WATCH",
+        "model_score": 2,
+        "temp": 34.6,
+        "rain_28d": 4.55,
+        "rain_14d": 3.86,
+        "humidity": 95.0
+      },
+      {
+        "week_start": "2014-01-12 00:00:00",
+        "epi_week": 201403,
+        "cases": 142,
+        "nivel": 2,
+        "inc100k": 2.104385,
+        "Rt": 1.362265,
+        "model_level": "WATCH",
+        "model_score": 2,
+        "temp": 33.7,
+        "rain_28d": 2.82,
+        "rain_14d": 1.72,
+        "humidity": 90.7
+      },
+      {
+        "week_start": "2014-01-19 00:00:00",
+        "epi_week": 201404,
+        "cases": 156,
+        "nivel": 2,
+        "inc100k": 2.3118594,
+        "Rt": 1.2028946,
+        "model_level": "WATCH",
+        "model_score": 2,
+        "temp": 32.7,
+        "rain_28d": 3.82,
+        "rain_14d": 3.77,
+        "humidity": 90.0
+      },
+      {
+        "week_start": "2014-01-26 00:00:00",
+        "epi_week": 201405,
+        "cases": 119,
+        "nivel": 2,
+        "inc100k": 1.7635338,
+        "Rt": 0.8334713,
+        "model_level": "WATCH",
+        "model_score": 2,
+        "temp": 34.2,
+        "rain_28d": 3.16,
+        "rain_14d": 4.59,
+        "humidity": 94.3
+      },
+      {
+        "week_start": "2014-02-02 00:00:00",
+        "epi_week": 201406,
+        "cases": 125,
+        "nivel": 2,
+        "inc100k": 1.8524514,
+        "Rt": 0.88809794,
+        "model_level": "WATCH",
+        "model_score": 2,
+        "temp": 35.4,
+        "rain_28d": 2.49,
+        "rain_14d": 1.21,
+        "humidity": 90.4
+      },
+      {
+        "week_start": "2014-02-09 00:00:00",
+        "epi_week": 201407,
+        "cases": 119,
+        "nivel": 2,
+        "inc100k": 1.7635338,
+        "Rt": 0.9136612,
+        "model_level": "WATCH",
+        "model_score": 2,
+        "temp": 36.0,
+        "rain_28d": 2.37,
+        "rain_14d": 0.14,
+        "humidity": 86.4
+      },
+      {
+        "week_start": "2014-02-16 00:00:00",
+        "epi_week": 201408,
+        "cases": 120,
+        "nivel": 2,
+        "inc100k": 1.7783535,
+        "Rt": 0.97554535,
+        "model_level": "WATCH",
+        "model_score": 2,
+        "temp": 34.1,
+        "rain_28d": 1.51,
+        "rain_14d": 1.82,
+        "humidity": 86.1
+      },
+      {
+        "week_start": "2014-02-23 00:00:00",
+        "epi_week": 201409,
+        "cases": 67,
+        "nivel": 2,
+        "inc100k": 0.992914,
+        "Rt": 0.57016486,
+        "model_level": "WATCH",
+        "model_score": 2,
+        "temp": 29.7,
+        "rain_28d": 2.29,
+        "rain_14d": 4.44,
+        "humidity": 93.4
+      },
+      {
+        "week_start": "2014-03-02 00:00:00",
+        "epi_week": 201410,
+        "cases": 74,
+        "nivel": 2,
+        "inc100k": 1.0966513,
+        "Rt": 0.71036154,
+        "model_level": "WATCH",
+        "model_score": 2,
+        "temp": 33.4,
+        "rain_28d": 3.05,
+        "rain_14d": 4.28,
+        "humidity": 90.0
+      }
+    ]
+  },
+  {
+    "city": "Fortaleza",
+    "n_weeks": 522,
+    "n_outbreak_weeks": 124,
+    "concurrent_spearman_r": 0.1794,
+    "concurrent_p": 0.0,
+    "lag_results": {
+      "0": [
+        0.1794,
+        0.0
+      ],
+      "1": [
+        0.1773,
+        0.0001
+      ],
+      "2": [
+        0.1801,
+        0.0
+      ],
+      "3": [
+        0.1837,
+        0.0
+      ],
+      "4": [
+        0.183,
+        0.0
+      ],
+      "5": [
+        0.1825,
+        0.0
+      ],
+      "6": [
+        0.1715,
+        0.0001
+      ]
+    },
+    "best_lag_weeks": 3,
+    "best_lag_r": 0.1837,
+    "confusion": {
+      "tp": 45,
+      "fp": 44,
+      "tn": 354,
+      "fn": 79,
+      "sensitivity": 0.363,
+      "specificity": 0.889,
+      "ppv": 0.506,
+      "npv": 0.818,
+      "accuracy": 0.764,
+      "kappa": 0.28,
+      "n": 522
+    },
+    "auc_roc": 0.626,
+    "baseline_confusion": {
+      "tp": 56,
+      "fp": 160,
+      "tn": 238,
+      "fn": 68,
+      "sensitivity": 0.452,
+      "specificity": 0.598,
+      "ppv": 0.259,
+      "npv": 0.778,
+      "accuracy": 0.563,
+      "kappa": 0.04,
+      "n": 522
+    },
+    "outperforms_baseline": true,
+    "weekly_data": [
+      {
+        "week_start": "2013-12-29 00:00:00",
+        "epi_week": 201401,
+        "cases": 40,
+        "nivel": 1,
+        "inc100k": 1.4888641,
+        "Rt": 0.5911112,
+        "model_level": "WATCH",
+        "model_score": 2,
+        "temp": 30.2,
+        "rain_28d": 0.42,
+        "rain_14d": 0.58,
+        "humidity": 87.6
+      },
+      {
+        "week_start": "2014-01-05 00:00:00",
+        "epi_week": 201402,
+        "cases": 77,
+        "nivel": 1,
+        "inc100k": 2.8660634,
+        "Rt": 1.3592666,
+        "model_level": "WATCH",
+        "model_score": 2,
+        "temp": 29.3,
+        "rain_28d": 0.58,
+        "rain_14d": 0.71,
+        "humidity": 84.9
+      },
+      {
+        "week_start": "2014-01-12 00:00:00",
+        "epi_week": 201403,
+        "cases": 107,
+        "nivel": 1,
+        "inc100k": 3.9827113,
+        "Rt": 1.858094,
+        "model_level": "WATCH",
+        "model_score": 2,
+        "temp": 28.4,
+        "rain_28d": 1.59,
+        "rain_14d": 2.59,
+        "humidity": 89.9
+      },
+      {
+        "week_start": "2014-01-19 00:00:00",
+        "epi_week": 201404,
+        "cases": 150,
+        "nivel": 1,
+        "inc100k": 5.58324,
+        "Rt": 1.9315864,
+        "model_level": "WATCH",
+        "model_score": 2,
+        "temp": 29.4,
+        "rain_28d": 1.79,
+        "rain_14d": 2.87,
+        "humidity": 89.1
+      },
+      {
+        "week_start": "2014-01-26 00:00:00",
+        "epi_week": 201405,
+        "cases": 180,
+        "nivel": 1,
+        "inc100k": 6.699888,
+        "Rt": 1.6401693,
+        "model_level": "WATCH",
+        "model_score": 2,
+        "temp": 29.5,
+        "rain_28d": 1.76,
+        "rain_14d": 0.94,
+        "humidity": 85.3
+      },
+      {
+        "week_start": "2014-02-02 00:00:00",
+        "epi_week": 201406,
+        "cases": 154,
+        "nivel": 1,
+        "inc100k": 5.7321267,
+        "Rt": 1.084938,
+        "model_level": "WATCH",
+        "model_score": 2,
+        "temp": 29.7,
+        "rain_28d": 2.3,
+        "rain_14d": 1.73,
+        "humidity": 89.4
+      },
+      {
+        "week_start": "2014-02-09 00:00:00",
+        "epi_week": 201407,
+        "cases": 151,
+        "nivel": 1,
+        "inc100k": 5.620462,
+        "Rt": 0.9458482,
+        "model_level": "WATCH",
+        "model_score": 2,
+        "temp": 29.3,
+        "rain_28d": 1.73,
+        "rain_14d": 2.53,
+        "humidity": 89.6
+      },
+      {
+        "week_start": "2014-02-16 00:00:00",
+        "epi_week": 201408,
+        "cases": 154,
+        "nivel": 1,
+        "inc100k": 5.7321267,
+        "Rt": 0.972055,
+        "model_level": "WATCH",
+        "model_score": 2,
+        "temp": 29.5,
+        "rain_28d": 2.4,
+        "rain_14d": 3.07,
+        "humidity": 90.9
+      },
+      {
+        "week_start": "2014-02-23 00:00:00",
+        "epi_week": 201409,
+        "cases": 109,
+        "nivel": 1,
+        "inc100k": 4.0571547,
+        "Rt": 0.72161597,
+        "model_level": "WATCH",
+        "model_score": 2,
+        "temp": 28.3,
+        "rain_28d": 3.24,
+        "rain_14d": 3.95,
+        "humidity": 90.3
+      },
+      {
+        "week_start": "2014-03-02 00:00:00",
+        "epi_week": 201410,
+        "cases": 114,
+        "nivel": 1,
+        "inc100k": 4.2432623,
+        "Rt": 0.81640226,
+        "model_level": "WATCH",
+        "model_score": 2,
+        "temp": 29.9,
+        "rain_28d": 2.53,
+        "rain_14d": 1.99,
+        "humidity": 85.9
+      }
+    ]
+  },
+  {
+    "city": "Recife",
+    "n_weeks": 522,
+    "n_outbreak_weeks": 123,
+    "concurrent_spearman_r": -0.2301,
+    "concurrent_p": 0.0,
+    "lag_results": {
+      "0": [
+        -0.2301,
+        0.0
+      ],
+      "1": [
+        -0.2283,
+        0.0
+      ],
+      "2": [
+        -0.241,
+        0.0
+      ],
+      "3": [
+        -0.2391,
+        0.0
+      ],
+      "4": [
+        -0.2373,
+        0.0
+      ],
+      "5": [
+        -0.2381,
+        0.0
+      ],
+      "6": [
+        -0.2381,
+        0.0
+      ]
+    },
+    "best_lag_weeks": 1,
+    "best_lag_r": -0.2283,
+    "confusion": {
+      "tp": 7,
+      "fp": 29,
+      "tn": 370,
+      "fn": 116,
+      "sensitivity": 0.057,
+      "specificity": 0.927,
+      "ppv": 0.194,
+      "npv": 0.761,
+      "accuracy": 0.722,
+      "kappa": -0.021,
+      "n": 522
+    },
+    "auc_roc": 0.5,
+    "baseline_confusion": {
+      "tp": 50,
+      "fp": 166,
+      "tn": 233,
+      "fn": 73,
+      "sensitivity": 0.407,
+      "specificity": 0.584,
+      "ppv": 0.231,
+      "npv": 0.761,
+      "accuracy": 0.542,
+      "kappa": -0.008,
+      "n": 522
+    },
+    "outperforms_baseline": false,
+    "weekly_data": [
+      {
+        "week_start": "2013-12-29 00:00:00",
+        "epi_week": 201401,
+        "cases": 34,
+        "nivel": 2,
+        "inc100k": 2.0562928,
+        "Rt": 0.8637118,
+        "model_level": "WATCH",
+        "model_score": 2,
+        "temp": 29.0,
+        "rain_28d": 1.4,
+        "rain_14d": 1.99,
+        "humidity": 88.0
+      },
+      {
+        "week_start": "2014-01-05 00:00:00",
+        "epi_week": 201402,
+        "cases": 42,
+        "nivel": 2,
+        "inc100k": 2.5401263,
+        "Rt": 1.1277595,
+        "model_level": "WATCH",
+        "model_score": 2,
+        "temp": 30.1,
+        "rain_28d": 1.25,
+        "rain_14d": 1.24,
+        "humidity": 84.6
+      },
+      {
+        "week_start": "2014-01-12 00:00:00",
+        "epi_week": 201403,
+        "cases": 43,
+        "nivel": 2,
+        "inc100k": 2.6006057,
+        "Rt": 1.1440476,
+        "model_level": "WATCH",
+        "model_score": 2,
+        "temp": 28.7,
+        "rain_28d": 1.83,
+        "rain_14d": 1.67,
+        "humidity": 86.4
+      },
+      {
+        "week_start": "2014-01-19 00:00:00",
+        "epi_week": 201404,
+        "cases": 72,
+        "nivel": 2,
+        "inc100k": 4.3545027,
+        "Rt": 1.7331996,
+        "model_level": "WATCH",
+        "model_score": 2,
+        "temp": 29.4,
+        "rain_28d": 1.62,
+        "rain_14d": 2.01,
+        "humidity": 87.1
+      },
+      {
+        "week_start": "2014-01-26 00:00:00",
+        "epi_week": 201405,
+        "cases": 62,
+        "nivel": 2,
+        "inc100k": 3.7497106,
+        "Rt": 1.2375273,
+        "model_level": "WATCH",
+        "model_score": 2,
+        "temp": 30.3,
+        "rain_28d": 1.38,
+        "rain_14d": 1.08,
+        "humidity": 81.6
+      },
+      {
+        "week_start": "2014-02-02 00:00:00",
+        "epi_week": 201406,
+        "cases": 52,
+        "nivel": 2,
+        "inc100k": 3.1449184,
+        "Rt": 0.8759831,
+        "model_level": "WATCH",
+        "model_score": 2,
+        "temp": 29.7,
+        "rain_28d": 1.56,
+        "rain_14d": 1.11,
+        "humidity": 86.7
+      },
+      {
+        "week_start": "2014-02-09 00:00:00",
+        "epi_week": 201407,
+        "cases": 63,
+        "nivel": 2,
+        "inc100k": 3.8101897,
+        "Rt": 1.0387027,
+        "model_level": "WATCH",
+        "model_score": 2,
+        "temp": 29.0,
+        "rain_28d": 1.53,
+        "rain_14d": 1.98,
+        "humidity": 89.3
+      },
+      {
+        "week_start": "2014-02-16 00:00:00",
+        "epi_week": 201408,
+        "cases": 68,
+        "nivel": 2,
+        "inc100k": 4.1125855,
+        "Rt": 1.1575195,
+        "model_level": "WATCH",
+        "model_score": 2,
+        "temp": 29.7,
+        "rain_28d": 1.48,
+        "rain_14d": 1.86,
+        "humidity": 85.9
+      },
+      {
+        "week_start": "2014-02-23 00:00:00",
+        "epi_week": 201409,
+        "cases": 56,
+        "nivel": 2,
+        "inc100k": 3.3868353,
+        "Rt": 0.9200585,
+        "model_level": "WATCH",
+        "model_score": 2,
+        "temp": 29.7,
+        "rain_28d": 1.8,
+        "rain_14d": 1.61,
+        "humidity": 87.9
+      },
+      {
+        "week_start": "2014-03-02 00:00:00",
+        "epi_week": 201410,
+        "cases": 56,
+        "nivel": 2,
+        "inc100k": 3.3868353,
+        "Rt": 0.9026712,
+        "model_level": "WATCH",
+        "model_score": 2,
+        "temp": 29.7,
+        "rain_28d": 1.74,
+        "rain_14d": 1.62,
+        "humidity": 88.3
+      }
+    ]
+  },
+  {
+    "city": "Manaus",
+    "n_weeks": 522,
+    "n_outbreak_weeks": 24,
+    "concurrent_spearman_r": 0.1774,
+    "concurrent_p": 0.0001,
+    "lag_results": {
+      "0": [
+        0.1774,
+        0.0001
+      ],
+      "1": [
+        0.2199,
+        0.0
+      ],
+      "2": [
+        0.2539,
+        0.0
+      ],
+      "3": [
+        0.2442,
+        0.0
+      ],
+      "4": [
+        0.2708,
+        0.0
+      ],
+      "5": [
+        0.2596,
+        0.0
+      ],
+      "6": [
+        0.2816,
+        0.0
+      ]
+    },
+    "best_lag_weeks": 6,
+    "best_lag_r": 0.2816,
+    "confusion": {
+      "tp": 14,
+      "fp": 166,
+      "tn": 332,
+      "fn": 10,
+      "sensitivity": 0.583,
+      "specificity": 0.667,
+      "ppv": 0.078,
+      "npv": 0.971,
+      "accuracy": 0.663,
+      "kappa": 0.061,
+      "n": 522
+    },
+    "auc_roc": 0.625,
+    "baseline_confusion": {
+      "tp": 19,
+      "fp": 197,
+      "tn": 301,
+      "fn": 5,
+      "sensitivity": 0.792,
+      "specificity": 0.604,
+      "ppv": 0.088,
+      "npv": 0.984,
+      "accuracy": 0.613,
+      "kappa": 0.082,
+      "n": 522
+    },
+    "outperforms_baseline": false,
+    "weekly_data": [
+      {
+        "week_start": "2013-12-29 00:00:00",
+        "epi_week": 201401,
+        "cases": 31,
+        "nivel": 1,
+        "inc100k": 1.3966607,
+        "Rt": 0.44521987,
+        "model_level": "HIGH",
+        "model_score": 3,
+        "temp": 29.5,
+        "rain_28d": 6.84,
+        "rain_14d": 10.59,
+        "humidity": 96.1
+      },
+      {
+        "week_start": "2014-01-05 00:00:00",
+        "epi_week": 201402,
+        "cases": 97,
+        "nivel": 1,
+        "inc100k": 4.3701963,
+        "Rt": 1.7680147,
+        "model_level": "WATCH",
+        "model_score": 2,
+        "temp": 30.6,
+        "rain_28d": 6.91,
+        "rain_14d": 4.99,
+        "humidity": 93.7
+      },
+      {
+        "week_start": "2014-01-12 00:00:00",
+        "epi_week": 201403,
+        "cases": 106,
+        "nivel": 1,
+        "inc100k": 4.775678,
+        "Rt": 1.8540742,
+        "model_level": "HIGH",
+        "model_score": 3,
+        "temp": 28.7,
+        "rain_28d": 8.93,
+        "rain_14d": 7.28,
+        "humidity": 96.6
+      },
+      {
+        "week_start": "2014-01-19 00:00:00",
+        "epi_week": 201404,
+        "cases": 74,
+        "nivel": 1,
+        "inc100k": 3.333964,
+        "Rt": 0.94097894,
+        "model_level": "HIGH",
+        "model_score": 3,
+        "temp": 28.5,
+        "rain_28d": 8.84,
+        "rain_14d": 12.7,
+        "humidity": 97.0
+      },
+      {
+        "week_start": "2014-01-26 00:00:00",
+        "epi_week": 201405,
+        "cases": 88,
+        "nivel": 1,
+        "inc100k": 3.964714,
+        "Rt": 0.97452736,
+        "model_level": "HIGH",
+        "model_score": 3,
+        "temp": 30.0,
+        "rain_28d": 7.79,
+        "rain_14d": 8.3,
+        "humidity": 95.6
+      },
+      {
+        "week_start": "2014-02-02 00:00:00",
+        "epi_week": 201406,
+        "cases": 68,
+        "nivel": 1,
+        "inc100k": 3.0636427,
+        "Rt": 0.795172,
+        "model_level": "HIGH",
+        "model_score": 3,
+        "temp": 28.4,
+        "rain_28d": 9.08,
+        "rain_14d": 5.46,
+        "humidity": 95.7
+      },
+      {
+        "week_start": "2014-02-09 00:00:00",
+        "epi_week": 201407,
+        "cases": 76,
+        "nivel": 1,
+        "inc100k": 3.4240713,
+        "Rt": 0.9532503,
+        "model_level": "HIGH",
+        "model_score": 3,
+        "temp": 29.0,
+        "rain_28d": 9.26,
+        "rain_14d": 10.22,
+        "humidity": 97.6
+      },
+      {
+        "week_start": "2014-02-16 00:00:00",
+        "epi_week": 201408,
+        "cases": 143,
+        "nivel": 1,
+        "inc100k": 6.4426603,
+        "Rt": 1.8098948,
+        "model_level": "HIGH",
+        "model_score": 3,
+        "temp": 27.2,
+        "rain_28d": 9.21,
+        "rain_14d": 12.95,
+        "humidity": 97.9
+      },
+      {
+        "week_start": "2014-02-23 00:00:00",
+        "epi_week": 201409,
+        "cases": 166,
+        "nivel": 1,
+        "inc100k": 7.4788923,
+        "Rt": 1.7394689,
+        "model_level": "HIGH",
+        "model_score": 3,
+        "temp": 28.3,
+        "rain_28d": 10.64,
+        "rain_14d": 11.05,
+        "humidity": 96.9
+      },
+      {
+        "week_start": "2014-03-02 00:00:00",
+        "epi_week": 201410,
+        "cases": 138,
+        "nivel": 1,
+        "inc100k": 6.2173924,
+        "Rt": 1.0855212,
+        "model_level": "HIGH",
+        "model_score": 3,
+        "temp": 28.4,
+        "rain_28d": 12.12,
+        "rain_14d": 11.29,
+        "humidity": 97.7
+      }
+    ]
+  }
+]

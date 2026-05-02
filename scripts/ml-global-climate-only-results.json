@@ -1,0 +1,145 @@
+{
+  "pooled": [
+    {
+      "name": "Bzzt rule-based",
+      "auc": 0.574,
+      "kappa": 0.027,
+      "sensitivity": 0.271,
+      "specificity": 0.754,
+      "ppv": 0.346,
+      "tp": 143,
+      "fp": 270,
+      "fn": 384,
+      "tn": 828
+    },
+    {
+      "name": "LogisticRegression",
+      "auc": 0.642,
+      "kappa": 0.107,
+      "sensitivity": 0.77,
+      "specificity": 0.367,
+      "ppv": 0.369,
+      "tp": 406,
+      "fp": 695,
+      "fn": 121,
+      "tn": 403
+    },
+    {
+      "name": "RandomForest",
+      "auc": 0.612,
+      "kappa": 0.209,
+      "sensitivity": 0.744,
+      "specificity": 0.507,
+      "ppv": 0.42,
+      "tp": 392,
+      "fp": 541,
+      "fn": 135,
+      "tn": 557
+    },
+    {
+      "name": "XGBoost",
+      "auc": 0.629,
+      "kappa": 0.189,
+      "sensitivity": 0.588,
+      "specificity": 0.619,
+      "ppv": 0.426,
+      "tp": 310,
+      "fp": 418,
+      "fn": 217,
+      "tn": 680
+    }
+  ],
+  "loco": [
+    {
+      "loc": "S\u00e3o Paulo",
+      "country": "Brazil",
+      "best_auc": 0.77,
+      "bzzt_auc": 0.588,
+      "ml_beats": "\u2713"
+    },
+    {
+      "loc": "Rio de Janeiro",
+      "country": "Brazil",
+      "best_auc": 0.698,
+      "bzzt_auc": 0.603,
+      "ml_beats": "\u2713"
+    },
+    {
+      "loc": "Fortaleza",
+      "country": "Brazil",
+      "best_auc": 0.628,
+      "bzzt_auc": 0.628,
+      "ml_beats": "\u2717"
+    },
+    {
+      "loc": "Recife",
+      "country": "Brazil",
+      "best_auc": 0.59,
+      "bzzt_auc": 0.499,
+      "ml_beats": "\u2713"
+    },
+    {
+      "loc": "Manaus",
+      "country": "Brazil",
+      "best_auc": 0.642,
+      "bzzt_auc": 0.642,
+      "ml_beats": "\u2717"
+    },
+    {
+      "loc": "San Martin (Peru)",
+      "country": "Peru",
+      "best_auc": 0.524,
+      "bzzt_auc": 0.502,
+      "ml_beats": "\u2713"
+    },
+    {
+      "loc": "Loreto (Iquitos)",
+      "country": "Peru",
+      "best_auc": 0.589,
+      "bzzt_auc": 0.58,
+      "ml_beats": "\u2713"
+    },
+    {
+      "loc": "Piura (Peru)",
+      "country": "Peru",
+      "best_auc": 0.557,
+      "bzzt_auc": 0.557,
+      "ml_beats": "\u2717"
+    },
+    {
+      "loc": "Antioquia (Medell\u00edn)",
+      "country": "Colombia",
+      "best_auc": 0.784,
+      "bzzt_auc": 0.604,
+      "ml_beats": "\u2713"
+    },
+    {
+      "loc": "Valle del Cauca (Cali)",
+      "country": "Colombia",
+      "best_auc": 0.405,
+      "bzzt_auc": 0.344,
+      "ml_beats": "\u2713"
+    },
+    {
+      "loc": "Santander (Bucaramanga)",
+      "country": "Colombia",
+      "best_auc": 0.546,
+      "bzzt_auc": 0.546,
+      "ml_beats": "\u2717"
+    },
+    {
+      "loc": "Kaohsiung (Taiwan)",
+      "country": "Taiwan",
+      "best_auc": 0.56,
+      "bzzt_auc": 0.452,
+      "ml_beats": "\u2713"
+    },
+    {
+      "loc": "Tainan (Taiwan)",
+      "country": "Taiwan",
+      "best_auc": 0.736,
+      "bzzt_auc": 0.646,
+      "ml_beats": "\u2713"
+    }
+  ]
+}
