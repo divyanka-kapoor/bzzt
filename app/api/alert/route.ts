@@ -5,6 +5,7 @@ import { fetchClimateData } from '@/lib/open-meteo';
 import { composeAlertMessage } from '@/lib/openai';
 import { sendSMS } from '@/lib/twilio';
 import { sendEmail } from '@/lib/agent-mail';
+import { selectChannel, sendWhatsApp, sendAfricasTalking, estimateCost } from '@/lib/messaging';
 import { logRiskComputation, markAlertSent } from '@/lib/openmetadata';
 
 type RiskLevel = 'HIGH' | 'WATCH' | 'LOW';
@@ -61,11 +62,31 @@ export async function POST(req: NextRequest) {
 
     const recipients = getEnrollmentsByCityId(city.id);
     let sentCount = 0;
+    const channelCounts: Record<string, number> = {};
+
     for (const r of recipients) {
-      const smsOk   = await sendSMS(r.phone, combinedMessage);
+      const channel = selectChannel(city.id, r);
+      let smsOk = false;
+
+      if (channel === 'whatsapp') {
+        smsOk = await sendWhatsApp(r.phone, combinedMessage);
+      } else if (channel === 'africas-talking') {
+        smsOk = await sendAfricasTalking(r.phone, combinedMessage);
+      } else {
+        smsOk = await sendSMS(r.phone, combinedMessage);
+      }
+
       const emailOk = await sendEmail(r.email, `Bzzt Alert — ${city.name}`, combinedMessage);
-      if (smsOk || emailOk) sentCount++;
+      if (smsOk || emailOk) {
+        sentCount++;
+        channelCounts[channel] = (channelCounts[channel] ?? 0) + 1;
+      }
     }
+
+    const estimatedCostUsd = Object.entries(channelCounts).reduce(
+      (sum, [ch, count]) => sum + estimateCost(ch as 'whatsapp' | 'africas-talking' | 'twilio', count),
+      0
+    );
 
     const topRisk: RiskLevel = dengueLevel === 'HIGH' || malariaLevel === 'HIGH' ? 'HIGH' : dengueLevel === 'WATCH' || malariaLevel === 'WATCH' ? 'WATCH' : 'LOW';
     logAlert({ cityId: city.id, cityName: city.name, country: city.country, message: combinedMessage, recipients: sentCount, type: 'sms', riskLevel: topRisk });
@@ -75,6 +96,8 @@ export async function POST(req: NextRequest) {
       sent: true, recipients: sentCount,
       message, localMessage, language, probabilityScore,
       dengueLevel, malariaLevel,
+      channelBreakdown: channelCounts,
+      estimatedCostUsd: +estimatedCostUsd.toFixed(4),
     });
   } catch (err) {
     console.error('Alert error:', err);
