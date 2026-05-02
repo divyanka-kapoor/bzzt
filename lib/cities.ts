@@ -30,10 +30,18 @@ export const CITIES: City[] = [
   { id: 'rio-de-janeiro', name: 'Rio de Janeiro',   country: 'Brazil',       lat: -22.9068,  lng: -43.1729 },
   { id: 'bogota',         name: 'Bogotá',           country: 'Colombia',     lat: 4.7110,    lng: -74.0721 },
   { id: 'lima',           name: 'Lima',             country: 'Peru',         lat: -12.0464,  lng: -77.0428 },
-  // Low-risk baselines
+  // Egypt — dengue present but low burden
   { id: 'cairo',          name: 'Cairo',            country: 'Egypt',        lat: 30.0444,   lng: 31.2357  },
-  { id: 'london',         name: 'London',           country: 'UK',           lat: 51.5074,   lng: -0.1278  },
-  { id: 'new-york',       name: 'New York',         country: 'USA',          lat: 40.7128,   lng: -74.0060 },
+  // High-burden rural regions — not capital cities
+  // These represent the areas where the disease burden is actually highest
+  { id: 'kano',           name: 'Kano',             country: 'Nigeria',      lat: 12.0022,   lng: 8.5920   }, // Northern Nigeria — highest malaria mortality
+  { id: 'maiduguri',      name: 'Maiduguri',        country: 'Nigeria',      lat: 11.8333,   lng: 13.1500  }, // Borno state — endemic malaria
+  { id: 'kisumu',         name: 'Kisumu',           country: 'Kenya',        lat: -0.1022,   lng: 34.7617  }, // Lake Victoria region — malaria endemic
+  { id: 'bhopal',         name: 'Bhopal',           country: 'India',        lat: 23.2599,   lng: 77.4126  }, // Madhya Pradesh — high malaria burden
+  { id: 'raipur',         name: 'Raipur',           country: 'India',        lat: 21.2514,   lng: 81.6296  }, // Chhattisgarh — India's highest malaria state
+  { id: 'chittagong',     name: 'Chittagong',       country: 'Bangladesh',   lat: 22.3569,   lng: 91.7832  }, // Chittagong Hill Tracts — malaria endemic
+  { id: 'cebu',           name: 'Cebu',             country: 'Philippines',  lat: 10.3157,   lng: 123.8854 }, // Visayas — high dengue burden outside Manila
+  { id: 'manaus',         name: 'Manaus',           country: 'Brazil',       lat: -3.1190,   lng: -60.0217 }, // Amazon — dengue + malaria
 ];
 
 export function getCityById(id: string): City | null {

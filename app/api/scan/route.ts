@@ -5,7 +5,7 @@ import { CITIES } from '@/lib/cities';
 import { fetchClimateData } from '@/lib/open-meteo';
 import { logRiskComputation } from '@/lib/openmetadata';
 import { recordScan } from '@/lib/trend';
-import { logPrediction } from '@/lib/store';
+import { logPrediction, getAllEnrollments } from '@/lib/store';
 
 type RiskLevel = 'HIGH' | 'WATCH' | 'LOW';
 
@@ -39,8 +39,21 @@ export async function GET() {
 
   const climateDefault = { avgTemp: 0, avgRainfall: 0, laggedRainfall: 0, avgHumidity: 0, weeks: 0 };
 
+  // Include enrolled custom locations (rural villages, health clinics etc.)
+  // that are NOT in the hardcoded city list. Deduplicate by proximity (~50km).
+  const enrolledLocations = getAllEnrollments()
+    .filter(e => e.lat && e.lng)
+    .filter(e => !CITIES.some(c => Math.abs(c.lat - e.lat) < 0.5 && Math.abs(c.lng - e.lng) < 0.5))
+    .reduce((acc, e) => {
+      const duplicate = acc.some(a => Math.abs(a.lat - e.lat) < 0.45 && Math.abs(a.lng - e.lng) < 0.45);
+      if (!duplicate) acc.push({ id: e.cityId, name: e.cityName, country: e.country, lat: e.lat, lng: e.lng });
+      return acc;
+    }, [] as typeof CITIES);
+
+  const allLocations = [...CITIES, ...enrolledLocations];
+
   const results = (await Promise.all(
-    CITIES.map(async (city) => {
+    allLocations.map(async (city) => {
       const climate = await withTimeout(fetchClimateData(city.lat, city.lng), 8000, climateDefault);
       if (climate.weeks === 0) return null; // timed out — exclude from results
 
