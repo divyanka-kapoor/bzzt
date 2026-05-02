@@ -60,7 +60,7 @@ export async function POST(req: NextRequest) {
       ? `${localMessage}\n---\n${message}`
       : message;
 
-    const recipients = getEnrollmentsByCityId(city.id);
+    const recipients = await getEnrollmentsByCityId(city.id);
     let sentCount = 0;
     const channelCounts: Record<string, number> = {};
 
@@ -89,7 +89,7 @@ export async function POST(req: NextRequest) {
     );
 
     const topRisk: RiskLevel = dengueLevel === 'HIGH' || malariaLevel === 'HIGH' ? 'HIGH' : dengueLevel === 'WATCH' || malariaLevel === 'WATCH' ? 'WATCH' : 'LOW';
-    logAlert({ cityId: city.id, cityName: city.name, country: city.country, message: combinedMessage, recipients: sentCount, type: 'sms', riskLevel: topRisk });
+    await logAlert({ cityId: city.id, cityName: city.name, country: city.country, message: combinedMessage, recipients: sentCount, type: 'sms', riskLevel: topRisk });
     await markAlertSent(lineageEvent.id, sentCount);
 
     return NextResponse.json({

@@ -41,7 +41,8 @@ export async function GET() {
 
   // Include enrolled custom locations (rural villages, health clinics etc.)
   // that are NOT in the hardcoded city list. Deduplicate by proximity (~50km).
-  const enrolledLocations = getAllEnrollments()
+  const allEnrollments = await getAllEnrollments();
+  const enrolledLocations = allEnrollments
     .filter(e => e.lat && e.lng)
     .filter(e => !CITIES.some(c => Math.abs(c.lat - e.lat) < 0.5 && Math.abs(c.lng - e.lng) < 0.5))
     .reduce((acc, e) => {
@@ -70,7 +71,7 @@ export async function GET() {
         climate.avgTemp > 26, climate.avgRainfall >= 8 && climate.avgRainfall <= 60,
         climate.laggedRainfall >= 8, climate.avgHumidity >= 60,
       ].filter(Boolean).length;
-      logPrediction({
+      await logPrediction({
         cityId: city.id, city: city.name, country: city.country,
         dengueLevel: dengue.level, malariaLevel: malaria.level,
         probabilityScore: Math.round((conditionsMet / 4) * 100),

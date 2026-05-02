@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
     if (!geo) return NextResponse.json({ success: false, error: 'Location not found — try a different city name' }, { status: 404 });
 
     const cityId = geo.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
-    saveEnrollment({ phone: phone || '', email: email || '', cityId, cityName: geo.name, country: geo.country, lat: geo.lat, lng: geo.lng });
+    await saveEnrollment({ phone: phone || '', email: email || '', cityId, cityName: geo.name, country: geo.country, lat: geo.lat, lng: geo.lng });
 
     if (phone) {
       const msg = `Bzzt: You're enrolled for disease risk alerts in ${geo.name}, ${geo.country}. We monitor climate signals and warn you before outbreaks.`;
