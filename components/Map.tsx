@@ -53,7 +53,7 @@ function formatPop(n?: number): string {
   return String(n);
 }
 
-export default function Map({ livePoints }: { livePoints?: CityRisk[] }) {
+export default function Map({ livePoints: _livePoints }: { livePoints?: CityRisk[] }) {
   const mapRef      = useRef<HTMLDivElement>(null);
   const leafletRef  = useRef<import('leaflet').Map | null>(null);
   const geoLayerRef = useRef<import('leaflet').GeoJSON | null>(null);
@@ -96,8 +96,9 @@ export default function Map({ livePoints }: { livePoints?: CityRisk[] }) {
       let highCount = 0, watchCount = 0;
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const geojsonData = { type: 'FeatureCollection', features: data.features } as unknown as Parameters<typeof L.geoJSON>[0];
       const layer = L.geoJSON(
-        { type: 'FeatureCollection' as const, features: data.features } as any,
+        geojsonData,
         {
           style: (feature) => {
             const risk = feature?.properties?.topRisk as RiskLevel ?? 'LOW';
