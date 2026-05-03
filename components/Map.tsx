@@ -53,7 +53,8 @@ function formatPop(n?: number): string {
   return String(n);
 }
 
-export default function Map({ livePoints: _livePoints }: { livePoints?: CityRisk[] }) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export default function Map({ livePoints }: { livePoints?: CityRisk[] }) {
   const mapRef      = useRef<HTMLDivElement>(null);
   const leafletRef  = useRef<import('leaflet').Map | null>(null);
   const geoLayerRef = useRef<import('leaflet').GeoJSON | null>(null);
