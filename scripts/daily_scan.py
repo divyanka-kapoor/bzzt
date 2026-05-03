@@ -176,5 +176,18 @@ def main():
     # Summary for GitHub Actions log
     print(f"\n::notice::Bzzt scan: {high_count} HIGH, {watch_count} WATCH, {low_count} LOW across {total} districts")
 
+    # Prune old risk_scores — keep only last 90 days
+    cutoff = (datetime.utcnow() - timedelta(days=90)).isoformat()
+    prune_url = f"{SUPABASE_URL}/rest/v1/risk_scores?computed_at=lt.{cutoff}"
+    prune_req = urllib.request.Request(prune_url, headers={
+        "apikey": SUPABASE_KEY,
+        "Authorization": f"Bearer {SUPABASE_KEY}",
+    }, method="DELETE")
+    try:
+        with urllib.request.urlopen(prune_req, timeout=30) as r:
+            print(f"Pruned risk_scores older than 90 days (status {r.status})")
+    except Exception as e:
+        print(f"Prune warning: {e}")
+
 if __name__ == "__main__":
     main()

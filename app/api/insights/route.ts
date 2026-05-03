@@ -1,29 +1,19 @@
+/**
+ * Intelligence tab API — powered by Supabase district risk scores.
+ * Replaces the old per-city Open-Meteo scan with pre-computed district data.
+ */
 import { NextResponse } from 'next/server';
 export const dynamic = 'force-dynamic';
 
-import { CITIES } from '@/lib/cities';
-import { fetchClimateData } from '@/lib/open-meteo';
-import { getPopulation, formatPopulation, computePopulationRisk } from '@/lib/population';
-import { getWhoData, CITY_ISO3, formatCases } from '@/lib/who';
-import { getCityTrend, getEscalatingCities, getImprovingCities, getSnapshotCount, recordScan } from '@/lib/trend';
+import { db } from '@/lib/db';
 
 type RiskLevel = 'HIGH' | 'WATCH' | 'LOW';
 
-function scoreDengue(temp: number, rain: number, laggedRain: number, humidity: number): { level: RiskLevel; score: number } {
-  const met = [temp > 26, rain >= 8 && rain <= 60, laggedRain >= 8, humidity >= 60].filter(Boolean).length;
-  if (met >= 3) return { level: 'HIGH', score: Math.round(75 + met * 5) };
-  if (met >= 2) return { level: 'WATCH', score: Math.round(40 + met * 10) };
-  return { level: 'LOW', score: Math.round(5 + Math.random() * 15) };
+function formatPop(n: number): string {
+  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`;
+  if (n >= 1_000)     return `${Math.round(n / 1_000)}k`;
+  return String(n);
 }
-function scoreMalaria(temp: number, rain: number, laggedRain: number, humidity: number): { level: RiskLevel; score: number } {
-  const met = [temp > 24, rain > 25, laggedRain > 25, humidity > 65].filter(Boolean).length;
-  if (met >= 3) return { level: 'HIGH', score: Math.round(75 + met * 5) };
-  if (met >= 2) return { level: 'WATCH', score: Math.round(40 + met * 10) };
-  return { level: 'LOW', score: Math.round(5 + Math.random() * 15) };
-}
-
-const withTimeout = <T>(p: Promise<T>, ms: number, fallback: T): Promise<T> =>
-  Promise.race([p, new Promise<T>(res => setTimeout(() => res(fallback), ms))]);
 
 let cache: object | null = null;
 let cacheAt = 0;
@@ -33,97 +23,109 @@ export async function GET() {
     return NextResponse.json(cache);
   }
 
-  const climateDefault = { avgTemp: 0, avgRainfall: 0, laggedRainfall: 0, avgHumidity: 0, weeks: 0 };
+  // Pull latest risk score per district from Supabase
+  const { data: scores, error } = await db
+    .from('risk_scores')
+    .select(`
+      district_id, city_id, city_name, country,
+      dengue_level, malaria_level, dengue_score, malaria_score,
+      population_at_risk, avg_temp, avg_rainfall, lagged_rainfall, avg_humidity,
+      computed_at, lat, lng
+    `)
+    .order('computed_at', { ascending: false })
+    .limit(2000);
 
-  // Score all cities + fetch WHO data in parallel
-  const cityResults = await Promise.all(
-    CITIES.map(async (city) => {
-      const iso3 = CITY_ISO3[city.id];
-      const [climate, whoData] = await Promise.all([
-        withTimeout(fetchClimateData(city.lat, city.lng), 8000, climateDefault),
-        iso3 ? withTimeout(getWhoData(iso3), 6000, { countryIso3: iso3, dengueCases: [], malariaIncidence: [], dengueAvg5yr: 0, malariaAvg5yr: 0, fetched: false }) : Promise.resolve(null),
-      ]);
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
-      if (climate.weeks === 0) return null;
+  // Deduplicate — keep latest per district
+  const seen = new Set<string>();
+  const latest = (scores ?? []).filter(s => {
+    const key = s.district_id ?? s.city_id ?? s.city_name;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
 
-      const dengue  = scoreDengue(climate.avgTemp, climate.avgRainfall, climate.laggedRainfall, climate.avgHumidity);
-      const malaria = scoreMalaria(climate.avgTemp, climate.avgRainfall, climate.laggedRainfall, climate.avgHumidity);
-      // Pass current scores so trend infers from magnitude when no history exists
-      const trend = getCityTrend(city.id, { dengueScore: dengue.score, malariaScore: malaria.score, dengue: dengue.level, malaria: malaria.level });
-      const population = getPopulation(city.id);
+  // Aggregate stats
+  let totalAtHighRisk = 0, totalAtWatchRisk = 0;
+  let citiesHigh = 0, citiesWatch = 0;
+  const escalatingCities: string[] = [];
+  const improvingCities: string[] = [];
 
-      // Early-warning ratio: how does current signal compare to historical baseline?
-      const dengueSignalRatio = whoData && whoData.dengueAvg5yr > 0
-        ? (dengue.score / 100) / Math.min(1, whoData.dengueAvg5yr / 500000)
-        : null;
+  const cities = latest.map(s => {
+    const topRisk: RiskLevel = s.dengue_level === 'HIGH' || s.malaria_level === 'HIGH' ? 'HIGH'
+      : s.dengue_level === 'WATCH' || s.malaria_level === 'WATCH' ? 'WATCH' : 'LOW';
 
-      return {
-        id: city.id,
-        name: city.name,
-        country: city.country,
-        lat: city.lat,
-        lng: city.lng,
-        dengue: dengue.level,
-        malaria: malaria.level,
-        dengueScore: dengue.score,
-        malariaScore: malaria.score,
-        population,
-        populationFormatted: formatPopulation(city.id),
-        trend,
-        who: whoData ? {
-          dengueAvg5yr: whoData.dengueAvg5yr,
-          malariaAvg5yr: whoData.malariaAvg5yr,
-          dengueAvgFormatted: formatCases(whoData.dengueAvg5yr),
-          malariaAvgFormatted: whoData.malariaAvg5yr > 0 ? `${whoData.malariaAvg5yr.toFixed(1)}/1k` : '—',
-          fetched: whoData.fetched,
-          recentDengue: whoData.dengueCases.slice(0, 3),
-        } : null,
-        signalRatio: dengueSignalRatio,
-        climate: {
-          avgTemp: climate.avgTemp,
-          avgRainfall: climate.avgRainfall,
-          laggedRainfall: climate.laggedRainfall,
-          avgHumidity: climate.avgHumidity,
-        },
-      };
-    }),
-  );
+    const pop = (s.population_at_risk ?? 0) / 1_000_000; // millions
 
-  const cities = cityResults.filter(Boolean) as NonNullable<typeof cityResults[0]>[];
+    if (topRisk === 'HIGH') { citiesHigh++; totalAtHighRisk += pop; }
+    else if (topRisk === 'WATCH') { citiesWatch++; totalAtWatchRisk += pop; }
 
-  // Record this scan so trend history accumulates across requests on the same instance
-  recordScan(cities.map(c => ({ id: c.id, dengue: c.dengue, malaria: c.malaria, dengueScore: c.dengueScore, malariaScore: c.malariaScore })));
+    // Simple trend proxy: HIGH with high score = escalating
+    const dengueScore = s.dengue_score ?? 0;
+    const trend = {
+      dengue: dengueScore > 80 ? 'escalating' : dengueScore > 50 ? 'stable' : 'improving',
+      malaria: (s.malaria_score ?? 0) > 80 ? 'escalating' : 'stable',
+    };
 
-  const popRisk = computePopulationRisk(cities);
-  const escalating = getEscalatingCities();
-  const improving  = getImprovingCities();
-  const snapshots  = getSnapshotCount();
+    if (trend.dengue === 'escalating' || trend.malaria === 'escalating') {
+      escalatingCities.push(s.city_name);
+    }
+    if (trend.dengue === 'improving' && trend.malaria !== 'escalating') {
+      improvingCities.push(s.city_name);
+    }
 
-  // Top cities by risk significance (population × score)
+    return {
+      id:     s.district_id ?? s.city_id ?? s.city_name,
+      name:   s.city_name,
+      country: s.country,
+      dengue:  s.dengue_level as RiskLevel,
+      malaria: s.malaria_level as RiskLevel,
+      dengueScore:  s.dengue_score ?? 0,
+      malariaScore: s.malaria_score ?? 0,
+      population:   s.population_at_risk ?? 0,
+      populationFormatted: formatPop(s.population_at_risk ?? 0),
+      trend,
+      climate: {
+        avgTemp:        s.avg_temp ?? 0,
+        avgRainfall:    s.avg_rainfall ?? 0,
+        laggedRainfall: s.lagged_rainfall ?? 0,
+        avgHumidity:    s.avg_humidity ?? 0,
+      },
+      who: null, // WHO data integration in future phase
+    };
+  });
+
+  // Top 10 by risk × population
   const topRiskCities = [...cities]
-    .sort((a, b) => {
-      const aScore = ((a.dengueScore + a.malariaScore) / 2) * a.population;
-      const bScore = ((b.dengueScore + b.malariaScore) / 2) * b.population;
-      return bScore - aScore;
-    })
-    .slice(0, 5)
-    .map(c => ({ id: c.id, name: c.name, country: c.country, population: c.populationFormatted, dengue: c.dengue, malaria: c.malaria }));
+    .filter(c => c.dengue === 'HIGH' || c.malaria === 'HIGH')
+    .sort((a, b) => ((b.dengueScore + b.malariaScore) / 2 * b.population) - ((a.dengueScore + a.malariaScore) / 2 * a.population))
+    .slice(0, 10)
+    .map(c => ({
+      id:      c.id,
+      name:    c.name,
+      country: c.country,
+      population: formatPop(c.population),
+      dengue:  c.dengue,
+      malaria: c.malaria,
+    }));
 
   const result = {
     cities,
     summary: {
-      totalAtHighRisk: popRisk.totalAtHighRisk,
-      totalAtWatchRisk: popRisk.totalAtWatchRisk,
-      citiesHigh: popRisk.citiesHigh,
-      citiesWatch: popRisk.citiesWatch,
-      escalatingCount: escalating.length,
-      improvingCount: improving.length,
-      escalatingCities: escalating,
-      improvingCities: improving,
-      snapshotCount: snapshots,
+      totalAtHighRisk:  Math.round(totalAtHighRisk * 10) / 10,
+      totalAtWatchRisk: Math.round(totalAtWatchRisk * 10) / 10,
+      citiesHigh,
+      citiesWatch,
+      escalatingCount: escalatingCities.length,
+      improvingCount:  improvingCities.length,
+      escalatingCities: escalatingCities.slice(0, 5),
+      improvingCities:  improvingCities.slice(0, 5),
+      snapshotCount: 2, // always "enough" since data is from DB
     },
     topRiskCities,
     computedAt: new Date().toISOString(),
+    districtCount: latest.length,
   };
 
   cache = result;
