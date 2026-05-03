@@ -187,6 +187,7 @@ function LineageDiagram() {
 // ── Main component ────────────────────────────────────────────────────────────
 export default function IntelligenceTab() {
   const [data, setData] = useState<InsightsData | null>(null);
+  const [accuracy, setAccuracy] = useState<{ totalPredictions: number; accuracy: number | null; accuracyN: number; nextValidationDue: string | null; loggingSince: string | null; note: string } | null>(null);
   const [loading, setLoading] = useState(false);
   const [lastUpdated, setLastUpdated] = useState('—');
   const [sortBy, setSortBy] = useState<'risk' | 'population' | 'trend'>('risk');
@@ -194,9 +195,12 @@ export default function IntelligenceTab() {
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/insights');
-      if (!res.ok) return;
-      setData(await res.json());
+      const [insightsRes, accuracyRes] = await Promise.all([
+        fetch('/api/insights'),
+        fetch('/api/accuracy'),
+      ]);
+      if (insightsRes.ok) setData(await insightsRes.json());
+      if (accuracyRes.ok) setAccuracy(await accuracyRes.json());
       setLastUpdated(new Date().toLocaleTimeString());
     } finally {
       setLoading(false);
@@ -227,7 +231,7 @@ export default function IntelligenceTab() {
         <div className="text-center space-y-2">
           <div className="w-5 h-5 border border-white/20 rounded-full animate-pulse mx-auto" />
           <p className="text-white/65 text-xs">Loading intelligence layer…</p>
-          <p className="text-white/60 text-xs">Fetching WHO data · scoring 22 cities · computing trends</p>
+          <p className="text-white/60 text-xs">Loading district risk data across 26 countries…</p>
         </div>
       </div>
     );
@@ -238,11 +242,42 @@ export default function IntelligenceTab() {
       {/* Summary stats */}
       {data && (
         <>
+          {/* Prospective validation accuracy strip */}
+          {accuracy && (
+            <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl px-4 py-3 flex items-center gap-6 text-xs flex-wrap">
+              <div>
+                <span className="text-white/50">Predictions logged </span>
+                <span className="text-white/80 font-bold">{accuracy.totalPredictions.toLocaleString()}</span>
+              </div>
+              {accuracy.accuracy !== null ? (
+                <div>
+                  <span className="text-white/50">Prospective accuracy </span>
+                  <span className="font-bold" style={{ color: accuracy.accuracy >= 70 ? '#34D399' : '#FCD34D' }}>
+                    {accuracy.accuracy}%
+                  </span>
+                  <span className="text-white/40 ml-1">(n={accuracy.accuracyN})</span>
+                </div>
+              ) : (
+                <div className="text-white/50">
+                  First validation due{' '}
+                  {accuracy.nextValidationDue
+                    ? new Date(accuracy.nextValidationDue).toLocaleDateString()
+                    : 'in 5 weeks'}
+                </div>
+              )}
+              {accuracy.loggingSince && (
+                <div className="text-white/40">
+                  Logging since {new Date(accuracy.loggingSince).toLocaleDateString()}
+                </div>
+              )}
+            </div>
+          )}
+
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             <StatCard
               label="People at HIGH risk"
               value={`${data.summary.totalAtHighRisk.toFixed(0)}M`}
-              sub={`across ${data.summary.citiesHigh} cities`}
+              sub={`across ${data.summary.citiesHigh} districts`}
             />
             <StatCard
               label="People at WATCH"

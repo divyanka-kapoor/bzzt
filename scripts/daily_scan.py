@@ -107,6 +107,7 @@ def main():
 
     high_count = watch_count = low_count = error_count = 0
     batch = []
+    pred_batch = []
 
     for i, d in enumerate(districts):
         lat, lng = d["lat"], d["lng"]
@@ -130,6 +131,10 @@ def main():
         elif top == "WATCH": watch_count += 1
         else: low_count += 1
 
+        import random, string
+        pred_id = ''.join(random.choices(string.ascii_lowercase + string.digits, k=8))
+        validate_after = (datetime.utcnow() + timedelta(days=35)).isoformat()
+
         batch.append({
             "district_id":        d["id"],
             "city_id":            d["id"],
@@ -150,10 +155,30 @@ def main():
             "model_version":      MODEL_VERSION,
         })
 
+        # Log prospective prediction for validation in 5 weeks
+        pred_batch.append({
+            "id":               pred_id,
+            "city_id":          d["id"],
+            "city_name":        d["district"],
+            "country":          d["country"],
+            "predicted_at":     now,
+            "validate_after":   validate_after,
+            "dengue_level":     d_level,
+            "malaria_level":    m_level,
+            "probability_score": round((sum([d_level == "HIGH", m_level == "HIGH"]) / 2) * 100),
+            "avg_temp":         climate["avg_temp"],
+            "avg_rainfall":     climate["avg_rainfall"],
+            "lagged_rainfall":  climate["lagged_rainfall"],
+            "avg_humidity":     climate["avg_humidity"],
+        })
+
         # Insert in batches of 50
         if len(batch) >= 50:
             supabase_insert("risk_scores", batch)
             batch = []
+        if len(pred_batch) >= 50:
+            supabase_insert("predictions", pred_batch)
+            pred_batch = []
 
         # Progress every 100 districts
         if (i + 1) % 100 == 0:
@@ -164,6 +189,8 @@ def main():
     # Insert remaining
     if batch:
         supabase_insert("risk_scores", batch)
+    if pred_batch:
+        supabase_insert("predictions", pred_batch)
 
     total = len(districts) - error_count
     print(f"\nScan complete:")

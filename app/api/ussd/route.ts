@@ -1,72 +1,121 @@
 /**
- * USSD endpoint — called by Africa's Talking when a user dials the short code.
- * Works on any phone including basic feature phones. No internet, no app, no enrollment.
+ * USSD endpoint — Africa's Talking callback for *384# short code.
+ * Works on ANY phone including $15 feature phones. No internet, no app.
  *
- * Flow:
- *   User dials *384# → selects region → gets current risk level for nearest city
+ * Menu flow:
+ *   1. Check disease risk by region
+ *   2. Report symptoms (CHW mode) — fever cases, dengue, malaria, RDT results
  *
- * This addresses the last-mile equity gap: the poorest communities in Africa
- * can check disease risk with a $15 phone and no data plan.
+ * This is the last-mile layer: a community health worker in rural Nigeria
+ * can submit weekly case counts with a basic phone and no data plan.
+ * Those reports feed directly into Bzzt's ground truth data.
  */
 
 import { NextRequest, NextResponse } from 'next/server';
 
-const REGION_CITIES: Record<string, { city: string; id: string }[]> = {
-  '1': [{ city: 'Lagos', id: 'lagos' }, { city: 'Accra', id: 'accra' }],
-  '2': [{ city: 'Nairobi', id: 'nairobi' }, { city: 'Dar es Salaam', id: 'dar-es-salaam' }],
-  '3': [{ city: 'Mumbai', id: 'mumbai' }, { city: 'Dhaka', id: 'dhaka' }],
-  '4': [{ city: 'Jakarta', id: 'jakarta' }, { city: 'Manila', id: 'manila' }],
-};
-
 export async function POST(req: NextRequest) {
-  const data = await req.formData();
-  const text = (data.get('text') as string) || '';
+  const data  = await req.formData();
+  const text  = (data.get('text')        as string) || '';
+  const phone = (data.get('phoneNumber') as string) || '';
 
   const steps = text.split('*').filter(Boolean);
 
-  // Step 0 — main menu
+  // ── Main menu ──────────────────────────────────────────────────────────────
   if (steps.length === 0) {
-    return ussdResponse(`CON Bzzt Disease Early Warning
-Check mosquito-borne disease risk:
-
-1. West Africa (Lagos, Accra)
-2. East Africa (Nairobi, Dar es Salaam)
-3. South Asia (Mumbai, Dhaka)
-4. Southeast Asia (Jakarta, Manila)`);
+    return ussd(`CON Bzzt Disease Early Warning
+1. Check risk by region
+2. Report symptoms (CHW)`);
   }
 
-  // Step 1 — region selected, fetch risk for first city
-  const regionChoice = steps[0];
-  const cities = REGION_CITIES[regionChoice];
-  if (!cities) {
-    return ussdResponse('END Invalid selection. Please dial again and choose 1-4.');
+  // ── Branch 1: Check risk ───────────────────────────────────────────────────
+  if (steps[0] === '1') {
+    if (steps.length === 1) {
+      return ussd(`CON Select region:
+1. West Africa
+2. East Africa
+3. South Asia
+4. Southeast Asia
+5. Latin America`);
+    }
+
+    const REGIONS: Record<string, { country: string; iso3: string }> = {
+      '1': { country: 'Nigeria',     iso3: 'NGA' },
+      '2': { country: 'Kenya',       iso3: 'KEN' },
+      '3': { country: 'India',       iso3: 'IND' },
+      '4': { country: 'Philippines', iso3: 'PHL' },
+      '5': { country: 'Brazil',      iso3: 'BRA' },
+    };
+
+    const region = REGIONS[steps[1]];
+    if (!region) return ussd('END Invalid. Dial again.');
+
+    try {
+      const base = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';
+      const res  = await fetch(`${base}/api/district-risks?country=${encodeURIComponent(region.country)}&level=HIGH,WATCH&limit=3`, { cache: 'no-store' });
+      const d    = res.ok ? await res.json() : { features: [] };
+
+      if (!d.features?.length) {
+        return ussd(`END ${region.country}: No HIGH or WATCH risk districts right now.`);
+      }
+
+      const lines = d.features.slice(0, 3).map((f: { properties: { name: string; topRisk: string } }) =>
+        `${f.properties.name}: ${f.properties.topRisk}`
+      ).join('\n');
+
+      return ussd(`END ${region.country} risk:\n${lines}\n\nEnroll: bzzt-sigma.vercel.app`);
+    } catch {
+      return ussd('END Error fetching data. Try again.');
+    }
   }
 
-  try {
-    // Fetch current risk from our own scan endpoint
-    const base = process.env.VERCEL_URL
-      ? `https://${process.env.VERCEL_URL}`
-      : 'http://localhost:3000';
+  // ── Branch 2: CHW symptom report ──────────────────────────────────────────
+  if (steps[0] === '2') {
+    // Step 2.1 — ask fever cases
+    if (steps.length === 1) {
+      return ussd('CON CHW Report\nEnter fever cases this week (0-999):');
+    }
+    // Step 2.2 — ask dengue
+    if (steps.length === 2) {
+      return ussd('CON Suspected dengue cases (0-999):');
+    }
+    // Step 2.3 — ask malaria
+    if (steps.length === 3) {
+      return ussd('CON Suspected malaria cases (0-999):');
+    }
+    // Step 2.4 — ask RDT positives
+    if (steps.length === 4) {
+      return ussd('CON RDT positive results (0-999):');
+    }
+    // Step 2.5 — submit
+    if (steps.length >= 5) {
+      const feverCases      = parseInt(steps[1]) || 0;
+      const suspectedDengue = parseInt(steps[2]) || 0;
+      const suspectedMalaria= parseInt(steps[3]) || 0;
+      const rdtPositive     = parseInt(steps[4]) || 0;
 
-    const scanRes = await fetch(`${base}/api/scan`, { cache: 'no-store' });
-    const scanData = scanRes.ok ? await scanRes.json() : { cities: [] };
+      try {
+        const base = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';
+        await fetch(`${base}/api/chw-report`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            lat: 0, lng: 0, // USSD can't get GPS — district matched by phone number region in future
+            feverCases, suspectedDengue, suspectedMalaria, rdtPositive,
+            reporterPhone: phone,
+          }),
+        });
+      } catch { /* log silently */ }
 
-    const lines = cities.map(({ city, id }) => {
-      const found = scanData.cities?.find((c: { id: string }) => c.id === id);
-      if (!found) return `${city}: data unavailable`;
-      const topRisk = found.dengue === 'HIGH' || found.malaria === 'HIGH' ? 'HIGH RISK'
-        : found.dengue === 'WATCH' || found.malaria === 'WATCH' ? 'WATCH' : 'LOW RISK';
-      return `${city}: ${topRisk}`;
-    }).join('\n');
-
-    return ussdResponse(`END Bzzt Risk Update:\n${lines}\n\nFor SMS alerts text JOIN to +1-555-BZZT-NOW\nbzzt-sigma.vercel.app`);
-  } catch {
-    return ussdResponse('END Unable to fetch risk data. Try again later.');
+      return ussd(`END Report submitted. Thank you.
+Fever: ${feverCases} | Dengue: ${suspectedDengue}
+Malaria: ${suspectedMalaria} | RDT+: ${rdtPositive}
+Your data improves outbreak predictions.`);
+    }
   }
+
+  return ussd('END Invalid input. Please dial again.');
 }
 
-function ussdResponse(message: string) {
-  return new NextResponse(message, {
-    headers: { 'Content-Type': 'text/plain' },
-  });
+function ussd(message: string) {
+  return new NextResponse(message, { headers: { 'Content-Type': 'text/plain' } });
 }

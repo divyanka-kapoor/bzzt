@@ -6,6 +6,7 @@ import { NextResponse } from 'next/server';
 export const dynamic = 'force-dynamic';
 
 import { db } from '@/lib/db';
+import { getSeasonalForecast, forecastSummary } from '@/lib/ecmwf-forecast';
 
 type RiskLevel = 'HIGH' | 'WATCH' | 'LOW';
 
@@ -110,8 +111,22 @@ export async function GET() {
       malaria: c.malaria,
     }));
 
+  // Seasonal forecast for highest-burden regions (sample 3 key locations)
+  const [saForecast, seaForecast, africaForecast] = await Promise.allSettled([
+    getSeasonalForecast(20.59, 78.96),  // India centroid
+    getSeasonalForecast(13.76, 100.50), // Bangkok (SE Asia)
+    getSeasonalForecast(9.08, 8.68),    // Nigeria centroid
+  ]);
+
+  const seasonalSignals = [
+    saForecast.status === 'fulfilled' && saForecast.value ? { region: 'South Asia', ...saForecast.value, summary: forecastSummary(saForecast.value) } : null,
+    seaForecast.status === 'fulfilled' && seaForecast.value ? { region: 'Southeast Asia', ...seaForecast.value, summary: forecastSummary(seaForecast.value) } : null,
+    africaForecast.status === 'fulfilled' && africaForecast.value ? { region: 'Sub-Saharan Africa', ...africaForecast.value, summary: forecastSummary(africaForecast.value) } : null,
+  ].filter(Boolean);
+
   const result = {
     cities,
+    seasonalForecasts: seasonalSignals,
     summary: {
       totalAtHighRisk:  Math.round(totalAtHighRisk * 10) / 10,
       totalAtWatchRisk: Math.round(totalAtWatchRisk * 10) / 10,
