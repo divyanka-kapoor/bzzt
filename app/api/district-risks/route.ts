@@ -38,20 +38,35 @@ function simplifyGeom(geom: Record<string, unknown>, keep = 20): Record<string, 
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
-  const country = searchParams.get('country');
-  const levels  = searchParams.get('level')?.split(',') ?? ['HIGH', 'WATCH'];
-  const limit   = parseInt(searchParams.get('limit') ?? '500');
+  const country    = searchParams.get('country');
+  const levels     = searchParams.get('level')?.split(',') ?? ['HIGH', 'WATCH'];
+  const limit      = parseInt(searchParams.get('limit') ?? '500');
+  const adminLevel = parseInt(searchParams.get('admin_level') ?? '1');
 
   try {
     // Get latest risk score per district (subquery via Supabase RPC is complex —
     // instead fetch recent scores and deduplicate in JS, which is fast enough at 800 districts)
+    // For level-2, filter district IDs by prefix pattern
+    const l2Countries: Record<string, string> = {
+      'India': 'IND_L2', 'Nigeria': 'NGA_L2', 'Kenya': 'KEN_L2', 'Bangladesh': 'BGD_L2',
+    };
+    const useL2 = adminLevel === 2 && country && l2Countries[country];
+
     let scoresQuery = db
       .from('risk_scores')
       .select('district_id, city_name, country, dengue_level, malaria_level, dengue_score, malaria_score, population_at_risk, computed_at, lat, lng')
       .order('computed_at', { ascending: false })
-      .limit(limit * 3); // fetch extra to ensure we get latest per district
+      .limit(limit * 3);
 
     if (country) scoresQuery = scoresQuery.eq('country', country);
+
+    // For level-2, only return district IDs with the L2 prefix
+    if (useL2) {
+      scoresQuery = scoresQuery.like('district_id', `${l2Countries[country]}%`);
+    } else if (adminLevel === 1) {
+      // For level-1, exclude L2 records
+      scoresQuery = scoresQuery.not('district_id', 'like', '%_L2%');
+    }
 
     const { data: scores, error: scoresErr } = await scoresQuery;
     if (scoresErr) throw scoresErr;

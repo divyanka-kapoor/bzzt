@@ -173,3 +173,6 @@ create policy "service full access chw_reports"
 
 create policy "service full access districts"
   on districts for all to service_role using (true);
+
+-- Admin level for zoom-based choropleth (1=state/province, 2=district/LGA)
+ALTER TABLE districts ADD COLUMN IF NOT EXISTS admin_level INTEGER DEFAULT 1;
