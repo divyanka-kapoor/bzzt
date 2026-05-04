@@ -163,10 +163,12 @@ export default function Map({ livePoints }: { livePoints?: CityRisk[] }) {
     }
   }, []);
 
-  // Init Leaflet map once
+  // Step 1: set mounted so the map div renders
+  useEffect(() => { setMounted(true); }, []);
+
+  // Step 2: init Leaflet only after the div is in the DOM
   useEffect(() => {
-    setMounted(true);
-    if (!mapRef.current || leafletRef.current) return;
+    if (!mounted || !mapRef.current || leafletRef.current) return;
 
     import('leaflet').then(({ default: L }) => {
       // Fix default icon paths for Next.js
@@ -199,7 +201,7 @@ export default function Map({ livePoints }: { livePoints?: CityRisk[] }) {
         leafletRef.current = null;
       }
     };
-  }, [loadDistricts]);
+  }, [mounted, loadDistricts]);
 
   const handleCountryChange = (c: string) => {
     setCountry(c);
