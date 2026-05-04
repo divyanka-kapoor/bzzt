@@ -53,16 +53,21 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ features: [], countries: [] });
     }
 
-    // Fetch geometries for matched districts
-    const districtIds = filtered.map(s => s.district_id).filter(Boolean);
-    const { data: districts, error: distErr } = await db
-      .from('districts')
-      .select('id, state, population, geometry')
-      .in('id', districtIds as string[]);
+    // Fetch geometries in batches of 80 to avoid URL length limits
+    const districtIds = filtered.map(s => s.district_id).filter(Boolean) as string[];
+    const BATCH = 80;
+    const allDistricts: { id: string; state: string; population: number; geometry: object }[] = [];
+    for (let i = 0; i < districtIds.length; i += BATCH) {
+      const chunk = districtIds.slice(i, i + BATCH);
+      const { data, error } = await db
+        .from('districts')
+        .select('id, state, population, geometry')
+        .in('id', chunk);
+      if (error) console.warn('[district-risks] geometry batch error:', error.message);
+      if (data) allDistricts.push(...data);
+    }
 
-    if (distErr) throw distErr;
-
-    const districtMap = new Map((districts ?? []).map(d => [d.id, d]));
+    const districtMap = new Map(allDistricts.map(d => [d.id, d]));
 
     // Build GeoJSON FeatureCollection
     const features = filtered
