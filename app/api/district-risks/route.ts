@@ -12,7 +12,29 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 
 export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+export const revalidate = 3600;
+
+// Reduce polygon point count for world-zoom rendering (~3MB → ~300KB)
+function simplifyGeom(geom: Record<string, unknown>, keep = 20): Record<string, unknown> {
+  const sr = (ring: number[][]): number[][] => {
+    if (ring.length <= keep * 2) return ring;
+    const step = Math.max(1, Math.floor(ring.length / keep));
+    const out = ring.filter((_, i) => i % step === 0);
+    if (out[out.length - 1] !== ring[ring.length - 1]) out.push(ring[ring.length - 1]);
+    return out;
+  };
+  try {
+    if (geom.type === 'Polygon') {
+      return { type: 'Polygon', coordinates: (geom.coordinates as number[][][]).map(sr) };
+    }
+    if (geom.type === 'MultiPolygon') {
+      const polys = geom.coordinates as number[][][][];
+      const largest = polys.reduce((a, b) => (a[0].length >= b[0].length ? a : b));
+      return { type: 'Polygon', coordinates: largest.map(sr) };
+    }
+  } catch { /* return original */ }
+  return geom;
+}
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -80,7 +102,7 @@ export async function GET(req: NextRequest) {
 
         return {
           type: 'Feature',
-          geometry: dist.geometry,
+          geometry: simplifyGeom(dist.geometry as Record<string, unknown>),
           properties: {
             id:           s.district_id,
             name:         dist.state ?? s.city_name,
