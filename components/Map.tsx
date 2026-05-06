@@ -192,11 +192,8 @@ export default function Map({ livePoints }: { livePoints?: CityRisk[] }) {
       // Auto-switch to level-2 when zoomed into a country with L2 data
       map.on('zoomend', () => {
         const z = map.getZoom();
-        const center = map.getCenter();
-        // Detect which country we're zoomed into
         if (z >= 5) {
-          // Try to find country from center point — simplified approach
-          // Will be handled by country filter UX instead
+          // Level switching handled by country filter UX
         }
       });
     });
