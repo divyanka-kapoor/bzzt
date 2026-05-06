@@ -115,6 +115,34 @@ export default function Map({ livePoints }: { livePoints?: CityRisk[] }) {
             ? new Date(p.computedAt as string).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
             : null;
 
+          // Dynamic peak window: lag varies by disease type
+          // Dengue (Aedes): 8–10 wks | Malaria (Anopheles): 10–14 wks | Both: 8–14 wks | WATCH adds uncertainty
+          const dengueLevel  = p.dengue  as string;
+          const malariaLevel = p.malaria as string;
+          let minLag = 10, maxLag = 14;
+          if (dengueLevel === 'HIGH' && malariaLevel === 'HIGH') { minLag = 8;  maxLag = 14; }
+          else if (dengueLevel === 'HIGH')                        { minLag = 8;  maxLag = 10; }
+          else if (malariaLevel === 'HIGH')                       { minLag = 10; maxLag = 14; }
+          else                                                    { minLag = 10; maxLag = 16; } // WATCH — earlier signal, wider window
+
+          const MS_WEEK = 7 * 24 * 60 * 60 * 1000;
+          const signalDate = p.computedAt ? new Date(p.computedAt as string) : new Date();
+          const today      = new Date();
+          const peakStart  = new Date(signalDate.getTime() + minLag * MS_WEEK);
+          const peakEnd    = new Date(signalDate.getTime() + maxLag * MS_WEEK);
+          const wksToStart = Math.round((peakStart.getTime() - today.getTime()) / MS_WEEK);
+          const wksToEnd   = Math.round((peakEnd.getTime()   - today.getTime()) / MS_WEEK);
+          const fmtD       = (d: Date) => d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+
+          let peakLabel: string;
+          if (wksToEnd < 0) {
+            peakLabel = `<span style="color:#F87171">⚠ Peak may have passed (was ${fmtD(peakEnd)})</span>`;
+          } else if (wksToStart <= 0) {
+            peakLabel = `<span style="color:#F87171">🔴 Peak window active — through ${fmtD(peakEnd)}</span>`;
+          } else {
+            peakLabel = `Peak in ~${wksToStart}–${wksToEnd} wks &nbsp;(${fmtD(peakStart)} – ${fmtD(peakEnd)})`;
+          }
+
           const scoreBar = (score: number, color: string) =>
             `<div style="background:#333;border-radius:2px;height:4px;width:100%;margin-top:3px">
                <div style="background:${color};border-radius:2px;height:4px;width:${Math.min(score,100)}%"></div>
@@ -144,11 +172,14 @@ export default function Map({ livePoints }: { livePoints?: CityRisk[] }) {
 
               <div style="border-top:1px solid #333;padding-top:8px;display:grid;grid-template-columns:1fr 1fr;gap:4px">
                 ${p.population ? `<div style="font-size:11px;color:#888">👥 ~${formatPop(p.population as number)}</div>` : ''}
-                ${p.avgTemp != null ? `<div style="font-size:11px;color:#888">🌡 ${(p.avgTemp as number).toFixed(1)}°C</div>` : ''}
+                ${p.avgTemp     != null ? `<div style="font-size:11px;color:#888">🌡 ${(p.avgTemp     as number).toFixed(1)}°C</div>` : ''}
                 ${p.avgRainfall != null ? `<div style="font-size:11px;color:#888">🌧 ${(p.avgRainfall as number).toFixed(0)}mm</div>` : ''}
                 ${p.avgHumidity != null ? `<div style="font-size:11px;color:#888">💧 ${(p.avgHumidity as number).toFixed(0)}% humidity</div>` : ''}
               </div>
-              ${scannedDate ? `<div style="font-size:10px;color:#555;margin-top:6px">Assessed ${scannedDate} · peak ~11 wks ahead</div>` : ''}
+              <div style="font-size:10px;color:#666;margin-top:7px;line-height:1.5">
+                ${peakLabel}<br>
+                ${scannedDate ? `<span style="color:#444">Signal assessed ${scannedDate}</span>` : ''}
+              </div>
             </div>
           `);
           lyr.on('mouseover', () => lyr.setStyle({ weight: 2, fillOpacity: 0.85 }));
