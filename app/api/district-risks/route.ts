@@ -54,7 +54,7 @@ export async function GET(req: NextRequest) {
 
     let scoresQuery = db
       .from('risk_scores')
-      .select('district_id, city_name, country, dengue_level, malaria_level, dengue_score, malaria_score, population_at_risk, computed_at, lat, lng')
+      .select('district_id, city_name, country, dengue_level, malaria_level, dengue_score, malaria_score, population_at_risk, avg_temp, avg_rainfall, avg_humidity, computed_at, lat, lng')
       .order('computed_at', { ascending: false })
       .limit(limit * 3);
 
@@ -128,6 +128,9 @@ export async function GET(req: NextRequest) {
             malariaScore: s.malaria_score,
             topRisk,
             population:   dist.population ?? s.population_at_risk,
+            avgTemp:      s.avg_temp,
+            avgRainfall:  s.avg_rainfall,
+            avgHumidity:  s.avg_humidity,
             computedAt:   s.computed_at,
             lat:          s.lat,
             lng:          s.lng,

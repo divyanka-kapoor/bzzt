@@ -110,21 +110,45 @@ export default function Map({ livePoints }: { livePoints?: CityRisk[] }) {
           const dengueColor  = RISK_COLOR[(p.dengue  as RiskLevel) ?? 'LOW'];
           const malariaColor = RISK_COLOR[(p.malaria as RiskLevel) ?? 'LOW'];
 
+          const displayName = (p.name as string).replace(/_/g, ' ');
+          const scannedDate = p.computedAt
+            ? new Date(p.computedAt as string).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
+            : null;
+
+          const scoreBar = (score: number, color: string) =>
+            `<div style="background:#333;border-radius:2px;height:4px;width:100%;margin-top:3px">
+               <div style="background:${color};border-radius:2px;height:4px;width:${Math.min(score,100)}%"></div>
+             </div>`;
+
           lyr.bindPopup(`
-            <div style="font-family:sans-serif;padding:8px 10px;min-width:180px">
-              <strong style="font-size:14px">${p.name}</strong>
-              <div style="color:#888;font-size:12px;margin-bottom:8px">${p.country}</div>
-              <div style="display:flex;gap:8px;margin-bottom:4px">
-                <span style="font-size:12px;padding:2px 6px;border-radius:3px;
-                  background:${dengueColor}22;color:${dengueColor};font-weight:700">
-                  Dengue: ${p.dengue}
-                </span>
-                <span style="font-size:12px;padding:2px 6px;border-radius:3px;
-                  background:${malariaColor}22;color:${malariaColor};font-weight:700">
-                  Malaria: ${p.malaria}
-                </span>
+            <div style="font-family:sans-serif;padding:10px 12px;min-width:210px;max-width:260px">
+              <strong style="font-size:14px">${displayName}</strong>
+              <div style="color:#888;font-size:11px;margin-bottom:10px">${p.country}</div>
+
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+                <div>
+                  <div style="font-size:11px;color:#aaa;margin-bottom:2px">Dengue</div>
+                  <span style="font-size:12px;padding:2px 7px;border-radius:3px;
+                    background:${dengueColor}22;color:${dengueColor};font-weight:700">${p.dengue}</span>
+                  ${scoreBar(p.dengueScore as number, dengueColor)}
+                  <div style="font-size:10px;color:#666;margin-top:2px">Score: ${p.dengueScore ?? '—'}/100</div>
+                </div>
+                <div>
+                  <div style="font-size:11px;color:#aaa;margin-bottom:2px">Malaria</div>
+                  <span style="font-size:12px;padding:2px 7px;border-radius:3px;
+                    background:${malariaColor}22;color:${malariaColor};font-weight:700">${p.malaria}</span>
+                  ${scoreBar(p.malariaScore as number, malariaColor)}
+                  <div style="font-size:10px;color:#666;margin-top:2px">Score: ${p.malariaScore ?? '—'}/100</div>
+                </div>
               </div>
-              ${p.population ? `<div style="color:#888;font-size:12px">~${formatPop(p.population)} people</div>` : ''}
+
+              <div style="border-top:1px solid #333;padding-top:8px;display:grid;grid-template-columns:1fr 1fr;gap:4px">
+                ${p.population ? `<div style="font-size:11px;color:#888">👥 ~${formatPop(p.population as number)}</div>` : ''}
+                ${p.avgTemp != null ? `<div style="font-size:11px;color:#888">🌡 ${(p.avgTemp as number).toFixed(1)}°C</div>` : ''}
+                ${p.avgRainfall != null ? `<div style="font-size:11px;color:#888">🌧 ${(p.avgRainfall as number).toFixed(0)}mm</div>` : ''}
+                ${p.avgHumidity != null ? `<div style="font-size:11px;color:#888">💧 ${(p.avgHumidity as number).toFixed(0)}% humidity</div>` : ''}
+              </div>
+              ${scannedDate ? `<div style="font-size:10px;color:#555;margin-top:6px">Assessed ${scannedDate} · peak ~11 wks ahead</div>` : ''}
             </div>
           `);
           lyr.on('mouseover', () => lyr.setStyle({ weight: 2, fillOpacity: 0.85 }));
