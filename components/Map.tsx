@@ -115,18 +115,24 @@ export default function Map({ livePoints }: { livePoints?: CityRisk[] }) {
             ? new Date(p.computedAt as string).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
             : null;
 
-          // Dynamic peak window: lag varies by disease type
-          // Dengue (Aedes): 8–10 wks | Malaria (Anopheles): 10–14 wks | Both: 8–14 wks | WATCH adds uncertainty
+          // Peak window: anchored to the 10-12 week lagged rainfall signal.
+          // The lagged_rainfall in our model is rainfall from 10-12 weeks ago —
+          // that breeding event is what drives the upcoming case peak.
+          // Remaining weeks = lag - time already elapsed since signal date.
+          // Dengue (Aedes aegypti): 8–10 wks total lag
+          // Malaria (Anopheles):   10–14 wks total lag
           const dengueLevel  = p.dengue  as string;
           const malariaLevel = p.malaria as string;
           let minLag = 10, maxLag = 14;
           if (dengueLevel === 'HIGH' && malariaLevel === 'HIGH') { minLag = 8;  maxLag = 14; }
           else if (dengueLevel === 'HIGH')                        { minLag = 8;  maxLag = 10; }
           else if (malariaLevel === 'HIGH')                       { minLag = 10; maxLag = 14; }
-          else                                                    { minLag = 10; maxLag = 16; } // WATCH — earlier signal, wider window
+          else                                                    { minLag = 10; maxLag = 16; }
 
-          const MS_WEEK = 7 * 24 * 60 * 60 * 1000;
-          const signalDate = p.computedAt ? new Date(p.computedAt as string) : new Date();
+          // Signal date = midpoint of the lagged window (≈ 11 weeks ago from scan)
+          const MS_WEEK    = 7 * 24 * 60 * 60 * 1000;
+          const scanDate   = p.computedAt ? new Date(p.computedAt as string) : new Date();
+          const signalDate = new Date(scanDate.getTime() - 11 * MS_WEEK); // when rainfall actually occurred
           const today      = new Date();
           const peakStart  = new Date(signalDate.getTime() + minLag * MS_WEEK);
           const peakEnd    = new Date(signalDate.getTime() + maxLag * MS_WEEK);

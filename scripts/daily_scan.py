@@ -47,9 +47,13 @@ def score_malaria(temp, rain, lagged_rain, humidity):
 
 # ── Open-Meteo climate ────────────────────────────────────────────────────────
 def fetch_climate(lat, lng):
+    # Fetch 90 days to compute a true 10-11 week lagged rainfall signal.
+    # lagged_rainfall = avg rainfall 70-84 days ago (weeks 10-12 back).
+    # This is the actual climate predictor: high rainfall 10-12 weeks ago
+    # drives mosquito breeding that peaks as disease cases now + next few weeks.
     url = (f"https://archive-api.open-meteo.com/v1/archive"
            f"?latitude={lat}&longitude={lng}"
-           f"&start_date={(datetime.utcnow()-timedelta(days=30)).strftime('%Y-%m-%d')}"
+           f"&start_date={(datetime.utcnow()-timedelta(days=90)).strftime('%Y-%m-%d')}"
            f"&end_date={datetime.utcnow().strftime('%Y-%m-%d')}"
            f"&daily=temperature_2m_max,precipitation_sum,relative_humidity_2m_max"
            f"&timezone=auto")
@@ -61,11 +65,18 @@ def fetch_climate(lat, lng):
         hums  = [v for v in d["daily"].get("relative_humidity_2m_max",[]) if v is not None]
         if not temps: return None
         avg = lambda lst: sum(lst)/len(lst) if lst else 0
+        # Recent conditions (last 30 days): temp, humidity, current rainfall
+        recent_temps = temps[-30:] if len(temps) >= 30 else temps
+        recent_rains = rains[-30:] if len(rains) >= 30 else rains
+        recent_hums  = hums[-30:]  if len(hums)  >= 30 else hums
+        # True lagged rainfall: days 70-84 ago (10-12 weeks back)
+        # rains[0] = 90 days ago, so index 6 = 84 days ago, index 20 = 70 days ago
+        lagged_window = rains[6:21] if len(rains) >= 21 else rains[:14]
         return {
-            "avg_temp":      round(avg(temps), 1),
-            "avg_rainfall":  round(avg(rains), 2),
-            "lagged_rainfall": round(avg(rains[-14:]), 2),
-            "avg_humidity":  round(avg(hums), 1),
+            "avg_temp":        round(avg(recent_temps), 1),
+            "avg_rainfall":    round(avg(recent_rains), 2),
+            "lagged_rainfall": round(avg(lagged_window), 2),
+            "avg_humidity":    round(avg(recent_hums), 1),
         }
     except Exception as e:
         return None
