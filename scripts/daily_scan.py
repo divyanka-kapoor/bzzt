@@ -131,8 +131,8 @@ def main():
         elif top == "WATCH": watch_count += 1
         else: low_count += 1
 
-        import random, string
-        pred_id = ''.join(random.choices(string.ascii_lowercase + string.digits, k=8))
+        import uuid
+        pred_id = str(uuid.uuid4())
         validate_after = (datetime.utcnow() + timedelta(days=35)).isoformat()
 
         batch.append({
