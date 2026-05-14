@@ -10,6 +10,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { L2_PREFIXES } from '@/lib/config';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 3600;
@@ -47,10 +48,7 @@ export async function GET(req: NextRequest) {
     // Get latest risk score per district (subquery via Supabase RPC is complex —
     // instead fetch recent scores and deduplicate in JS, which is fast enough at 800 districts)
     // For level-2, filter district IDs by prefix pattern
-    const l2Countries: Record<string, string> = {
-      'India': 'IND_L2', 'Nigeria': 'NGA_L2', 'Kenya': 'KEN_L2', 'Bangladesh': 'BGD_L2',
-    };
-    const useL2 = adminLevel === 2 && country && l2Countries[country];
+    const useL2 = adminLevel === 2 && country && L2_PREFIXES[country];
 
     let scoresQuery = db
       .from('risk_scores')
@@ -62,7 +60,7 @@ export async function GET(req: NextRequest) {
 
     // For level-2, only return district IDs with the L2 prefix
     if (useL2) {
-      scoresQuery = scoresQuery.like('district_id', `${l2Countries[country]}%`);
+      scoresQuery = scoresQuery.like('district_id', `${L2_PREFIXES[country]}%`);
     } else if (adminLevel === 1) {
       // For level-1, exclude L2 records
       scoresQuery = scoresQuery.not('district_id', 'like', '%_L2%');

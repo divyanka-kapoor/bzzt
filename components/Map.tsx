@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, useCallback } from 'react';
 import 'leaflet/dist/leaflet.css';
+import { L2_COUNTRIES } from '@/lib/config';
 
 export interface CityRisk {
   id: string; name: string; country: string;
@@ -16,23 +17,6 @@ type RiskLevel = 'HIGH' | 'WATCH' | 'LOW';
 
 const RISK_COLOR: Record<RiskLevel, string> = {
   HIGH: '#F87171', WATCH: '#FCD34D', LOW: '#34D399',
-};
-
-// Countries with level-2 district data available
-const L2_COUNTRIES = new Set(['India', 'Nigeria', 'Kenya', 'Bangladesh']);
-
-// Bounding boxes for fly-to on country select
-const COUNTRY_BOUNDS: Record<string, [[number,number],[number,number]]> = {
-  'India':       [[8.07, 68.11],  [37.10, 97.40]],
-  'Nigeria':     [[4.27, 2.69],   [13.89, 14.68]],
-  'Kenya':       [[-4.68, 33.91], [4.62, 41.91]],
-  'Bangladesh':  [[20.74, 88.01], [26.63, 92.67]],
-  'Brazil':      [[-33.75, -73.98],[5.27, -28.65]],
-  'Indonesia':   [[-11.01, 95.01],[5.91, 141.02]],
-  'Philippines': [[4.59, 116.93], [21.12, 126.60]],
-  'Thailand':    [[5.61, 97.34],  [20.46, 105.64]],
-  'Vietnam':     [[8.56, 102.14], [23.39, 109.47]],
-  'Colombia':    [[-4.23, -81.73],[13.39, -66.87]],
 };
 
 function formatPop(n?: number): string {
@@ -53,9 +37,18 @@ export default function Map({ livePoints }: { livePoints?: CityRisk[] }) {
   const [country,    setCountry]    = useState('');
   const [countries,  setCountries]  = useState<string[]>([]);
   const [adminLevel, setAdminLevel] = useState(1);
-  const [stats,      setStats]      = useState({ high: 0, watch: 0, total: 0 });
-  const [loading,    setLoading]    = useState(true);
-  const [error,      setError]      = useState('');
+  const [stats,        setStats]        = useState({ high: 0, watch: 0, total: 0 });
+  const [loading,      setLoading]      = useState(true);
+  const [error,        setError]        = useState('');
+  const [countryBounds, setCountryBounds] = useState<Record<string, [[number,number],[number,number]]>>({});
+
+  // Load country bounds dynamically from DB — scales with any new countries added
+  useEffect(() => {
+    fetch('/api/country-bounds')
+      .then(r => r.json())
+      .then(setCountryBounds)
+      .catch(() => {});
+  }, []);
 
   const loadDistricts = useCallback(async (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -251,9 +244,9 @@ export default function Map({ livePoints }: { livePoints?: CityRisk[] }) {
     const level = (c && L2_COUNTRIES.has(c)) ? 2 : 1;
     setAdminLevel(level);
 
-    // Fly to country bounds if available
-    if (c && COUNTRY_BOUNDS[c]) {
-      mapRef.current.flyToBounds(COUNTRY_BOUNDS[c], { padding: [20, 20], duration: 1 });
+    // Fly to country bounds — sourced dynamically from DB via /api/country-bounds
+    if (c && countryBounds[c]) {
+      mapRef.current.flyToBounds(countryBounds[c], { padding: [20, 20], duration: 1 });
     } else if (!c) {
       // Reset to world view
       mapRef.current.flyTo([10, 20], 2, { duration: 1 });

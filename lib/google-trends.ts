@@ -17,6 +17,8 @@
  *   Thailand:    "ไข้เลือดออก" (dengue), "มาลาเรีย" (malaria)
  */
 
+import { COUNTRY_TZ } from './config';
+
 const COUNTRY_TERMS: Record<string, { geo: string; terms: string[] }> = {
   NGA: { geo: 'NG', terms: ['malaria symptoms', 'fever treatment', 'mosquito bite'] },
   IND: { geo: 'IN', terms: ['dengue bukhar', 'malaria lakshan', 'dengue fever'] },
@@ -50,8 +52,9 @@ export async function getTrendsSignal(iso3: string): Promise<TrendsSignal | null
 
   try {
     // Google Trends comparison API — returns relative interest 0-100
+    const tz      = COUNTRY_TZ[iso3] ?? 0; // correct local timezone, not hardcoded IST
     const keyword = encodeURIComponent(config.terms[0]);
-    const url = `https://trends.google.com/trends/api/explore?hl=en&tz=-330&req={"comparisonItem":[{"keyword":"${keyword}","geo":"${config.geo}","time":"today 3-m"}],"category":0,"property":""}`;
+    const url = `https://trends.google.com/trends/api/explore?hl=en&tz=${tz}&req={"comparisonItem":[{"keyword":"${keyword}","geo":"${config.geo}","time":"today 3-m"}],"category":0,"property":""}`;
 
     const res = await fetch(url, {
       headers: { 'User-Agent': 'Mozilla/5.0 (compatible; BzztHealthBot/1.0)' },
@@ -69,7 +72,7 @@ export async function getTrendsSignal(iso3: string): Promise<TrendsSignal | null
     // Fetch the actual timeseries data
     const token   = widget.token;
     const reqStr  = encodeURIComponent(JSON.stringify(widget.request));
-    const tsUrl   = `https://trends.google.com/trends/api/widgetdata/multiline?hl=en&tz=-330&req=${reqStr}&token=${token}&geo=${config.geo}`;
+    const tsUrl   = `https://trends.google.com/trends/api/widgetdata/multiline?hl=en&tz=${tz}&req=${reqStr}&token=${token}&geo=${config.geo}`;
 
     const tsRes = await fetch(tsUrl, {
       headers: { 'User-Agent': 'Mozilla/5.0 (compatible; BzztHealthBot/1.0)' },

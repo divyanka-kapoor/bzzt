@@ -12,6 +12,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+import { countryFromPhone } from '@/lib/config';
 
 export async function POST(req: NextRequest) {
   const data  = await req.formData();
@@ -94,12 +95,17 @@ export async function POST(req: NextRequest) {
       const rdtPositive     = parseInt(steps[4]) || 0;
 
       try {
+        // Resolve location from phone number — country centroid is far better than 0,0
+        const callerLocation = countryFromPhone(phone);
+        const lat = callerLocation?.lat ?? 0;
+        const lng = callerLocation?.lng ?? 0;
+
         const base = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';
         await fetch(`${base}/api/chw-report`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            lat: 0, lng: 0, // USSD can't get GPS — district matched by phone number region in future
+            lat, lng,
             feverCases, suspectedDengue, suspectedMalaria, rdtPositive,
             reporterPhone: phone,
           }),
