@@ -1,6 +1,6 @@
 # Bzzt — Mosquito-borne Disease Early Warning
 
-> **Climate data predicts dengue and malaria outbreaks weeks before they happen. Bzzt makes sure the warning reaches you.**
+> **Climate signals precede outbreaks by 8–14 weeks. Bzzt reads those signals across thousands of districts and sends free warnings before the outbreak arrives.**
 
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Live Demo](https://img.shields.io/badge/demo-live-green.svg)](https://bzzt-sigma.vercel.app)
@@ -12,7 +12,7 @@
 
 Dengue and malaria kill over **600,000 people every year** — almost all in low-income countries where health warnings arrive too late, or not at all.
 
-The climate conditions that drive outbreaks (temperature, rainfall, humidity) are measurable days or weeks before the first person gets sick. That data exists, it's free, and it's updated hourly. But it never reaches the people who need it.
+The climate conditions that drive outbreaks are measurable weeks before the first person gets sick. That data exists, it's free, and it's updated daily. But it never reaches the people who need it — district health officers, community health workers, or the families themselves.
 
 Bzzt closes that gap.
 
@@ -20,26 +20,70 @@ Bzzt closes that gap.
 
 ## What Bzzt Does
 
-Bzzt is an autonomous disease intelligence platform that:
+Bzzt is an autonomous, district-level disease early warning system that:
 
-1. **Scans 797 districts across 26 endemic countries daily** using real-time climate data from Open-Meteo
-2. **Scores dengue and malaria risk** using WHO-aligned mosquito biology thresholds (Aedes aegypti, Anopheles gambiae, Plasmodium)
-3. **Sends bilingual alerts** (local language + English) via SMS, WhatsApp, and email to enrolled residents — 4–11 weeks before outbreaks peak
-4. **Tracks every computation** through OpenMetadata — full data lineage, 7 quality checks per run, auditable pipeline
-5. **Shows government officials** a choropleth map of district-level risk across all endemic countries, with population-at-risk counts
+1. **Scores disease risk daily** for every district using a trained logistic regression model (OpenDengue V1.3 × Open-Meteo climate, 1.1M training observations)
+2. **Outputs a three-tier alert** — WATCH / ALERT / HIGH — with calibrated probability and explicit confidence per tier
+3. **Boosts scores in real-time** using Google Trends symptom searches (per-country, correct local timezone) and CHW ground reports
+4. **Maps every district** on a choropleth with dynamic peak window calculation, per-disease scores, climate drivers, and honest limitation flags
+5. **Sends bilingual alerts** (local language + English) via SMS, WhatsApp, and USSD to enrolled residents 8–14 weeks before outbreaks peak
+6. **Covers all endemic countries** — state-level globally, district-level for highest-burden countries (India: 676 districts, Nigeria: 775 LGAs, Kenya: 300 districts, Bangladesh: 64 districts)
+
+---
+
+## Disease Coverage
+
+| Disease | Vector | Training data | Lead time |
+|---|---|---|---|
+| Dengue | Aedes aegypti | OpenDengue V1.3 — 1.1M district-months, 102 countries | 8–10 weeks |
+| Malaria | Anopheles | WHO GHO estimated cases | 10–14 weeks |
+| Chikungunya | Aedes aegypti | Same model as dengue | 8–10 weeks |
+
+**Honest limitations documented in every popup:**
+- P. vivax reactivation not predictable from climate signals
+- Urban stored-water dengue partially captured via Google Trends boost
+- Intervention coverage (IRS, nets, larviciding) not included
+- District climate sampled at centroid — large districts may be heterogeneous
+
+---
+
+## Scoring Model
+
+```
+Final Risk Score =
+  Logistic regression (climate absolute + anomaly + seasonal + geographic)
+  × Google Trends booster  (1.4× if symptom searches rising in country)
+  × CHW report booster     (1.8× if ≥3 fever reports in district last 14 days)
+
+Output tiers:
+  P < 0.35   → LOW    (not shown on map)
+  P 0.35–0.6 → WATCH  (climate favorable — act preventively)
+  P 0.6–0.8  → ALERT  (climate + real-time signal converging)
+  P > 0.8    → HIGH   (mobilise now)
+```
+
+**Model features (12 total):**
+- Absolute: avg_temp, avg_rainfall, lagged_rainfall (true 10–12 week lag), avg_humidity
+- Anomaly: each vs 5-year rolling same-month baseline (adapts to local norms)
+- Seasonal: month encoded cyclically — captures within-year patterns
+- Geographic: latitude, distance from equator
+
+**Validation:** LOCO cross-validation — model trained on all countries except holdout, tested on countries it never saw.
 
 ---
 
 ## Validated Science
 
-Retrospective validation against **2,610 weeks of real dengue surveillance data** (InfoDengue/FIOCRUZ + OpenDengue):
+Retrospective validation against **2,610 weeks of real dengue surveillance data**:
 
 | Study | Result |
 |---|---|
-| Lead-time signal (São Paulo, 2014–2023) | **r = 0.489 at 10–11 weeks** (p<0.001) — climate predicts outbreak peak 2.5 months ahead |
-| ML model AUC (climate-only, temporal split) | **0.752** on gold-standard InfoDengue labels |
-| LOCO generalisation (14 locations, 4 countries) | **AUC 0.77–0.95** on cities the model never saw |
-| Countries validated | Brazil, Peru, Colombia, Taiwan, Philippines |
+| Lead-time signal (São Paulo 2014–2023) | **r = 0.489 at 10–11 weeks** (p<0.001) |
+| ML model AUC (climate-only, temporal split) | **0.752** |
+| LOCO generalisation (14 locations, 4 countries) | **AUC 0.77–0.95** |
+| Logistic regression LOCO | See `models/accuracy_report.json` |
+
+Real-world confirmation: Delhi May 2026 → model showed WATCH via Google Trends spike → confirmed by MCD data showing highest April dengue count in 5 years.
 
 Full methodology: [`VALIDATION_EXPLAINER.md`](VALIDATION_EXPLAINER.md)
 
@@ -49,156 +93,86 @@ Full methodology: [`VALIDATION_EXPLAINER.md`](VALIDATION_EXPLAINER.md)
 
 | Layer | Technology |
 |---|---|
-| Framework | Next.js 14 (App Router), TypeScript |
-| Database | Supabase (Postgres) — 797 districts, risk scores, enrollments, predictions |
-| Climate data | Open-Meteo Archive + Forecast API (free, no key) |
-| Disease data | InfoDengue (FIOCRUZ), OpenDengue, WHO GHO |
-| Boundaries | GADM v4.1 (26 endemic countries, 797 districts) |
-| Messaging | Twilio SMS, Africa's Talking (Africa), Meta WhatsApp Business API |
-| AI | Claude (Anthropic) — bilingual alert composition in 15 languages |
-| Data governance | OpenMetadata — catalog, column-level lineage, pipeline observability |
-| Map | Leaflet + GeoJSON choropleth |
-| Batch jobs | GitHub Actions (daily scan at 2am UTC) |
-| Deployment | Vercel |
-
----
-
-## OpenMetadata Integration
-
-Bzzt treats disease risk predictions as first-class data assets with full governance:
-
-- **3 data source services** registered: Open-Meteo, WHO GHO, UN Population
-- **4 table entities** with full column schemas
-- **Column-level lineage**: `climate_observations.{temperature, precipitation, humidity}` → `disease_risk_scores.{dengue_score, malaria_score}`
-- **Pipeline status** per run with per-task state (fetch-climate, score-risk, send-alert)
-- **7 automated quality checks** per computation — runs marked Failed if any check fails
-- **Prospective prediction log** — every computation timestamped for 5-week validation
-
----
-
-## Geographic Coverage
-
-797 districts across 26 countries covering the highest-burden regions globally:
-
-| Region | Countries |
-|---|---|
-| Sub-Saharan Africa | Nigeria, DRC, Tanzania, Kenya, Ghana, Mozambique, Uganda, Ethiopia |
-| South Asia | India, Bangladesh, Pakistan, Sri Lanka |
-| Southeast Asia | Indonesia, Philippines, Thailand, Vietnam, Malaysia, Myanmar |
-| Latin America | Brazil, Colombia, Peru, Bolivia, Ecuador, Venezuela |
-| MENA | Egypt, Yemen |
-
----
-
-## Alert Channels
-
-| Channel | Coverage | Cost at scale |
-|---|---|---|
-| WhatsApp Business API | Smartphone users globally | ~$0.004/conversation |
-| Africa's Talking SMS | Feature phones in Africa | ~$0.008/SMS |
-| Twilio SMS | All other regions | ~$0.04/SMS |
-| USSD (`/api/ussd`) | Any phone, no data needed | ~$0.001/session |
-
-**Languages supported:** Hausa, Bengali, Filipino, Hindi, Swahili, Bahasa Indonesia, Thai, Vietnamese, Malay, French, Urdu (+ English)
-
----
-
-## Running Locally
-
-```bash
-git clone https://github.com/divyanka-kapoor/bzzt
-cd bzzt
-npm install
-
-# Copy env template and fill in your keys
-cp .env.local.example .env.local
-
-npm run dev
-```
-
-### Required environment variables
-
-```
-SUPABASE_URL=
-SUPABASE_ANON_KEY=
-SUPABASE_SERVICE_ROLE_KEY=
-ANTHROPIC_API_KEY=         # for bilingual alert composition
-AGENTMAIL_API_KEY=         # for email alerts
-```
-
-### Optional (alerts won't send without these)
-```
-TWILIO_ACCOUNT_SID=
-TWILIO_AUTH_TOKEN=
-TWILIO_PHONE_NUMBER=
-AFRICAS_TALKING_API_KEY=
-AFRICAS_TALKING_USERNAME=
-WHATSAPP_API_TOKEN=
-WHATSAPP_PHONE_NUMBER_ID=
-```
-
-### Load districts and run first scan
-
-```bash
-# Load 797 GADM districts into Supabase (one-time)
-python3 scripts/load_districts.py
-
-# Run risk scan manually
-python3 scripts/daily_scan.py
-```
-
----
-
-## Validation Studies
-
-All validation scripts are in [`scripts/`](scripts/):
-
-| Script | What it does |
-|---|---|
-| `validation_study.py` | Retrospective study — 5 Brazilian cities, 2014–2023, InfoDengue |
-| `regional_validation.py` | Localized thresholds vs. global model comparison |
-| `ml_validation.py` | ML model with temporal split + LOCO cross-validation |
-| `ml_global_climate_only.py` | Climate-only ML across 13 locations, 4 countries |
-| `backtest.mjs` | Original rule-based model backtest |
-
-Results saved as JSON in `scripts/` for reproducibility.
+| Frontend | Next.js 14, TypeScript, Tailwind CSS |
+| Map | Leaflet — choropleth, GeoJSON, dynamic popup |
+| Database | Supabase (PostgreSQL + JSONB geometry) |
+| Climate data | Open-Meteo Archive API (free, global, 1940–present) |
+| Case history | OpenDengue V1.3, WHO GHO |
+| Boundaries | GADM v4.1 (level-1 + level-2) |
+| ML model | scikit-learn LogisticRegression (LOCO cross-validated) |
+| Seasonal forecast | ECMWF via Open-Meteo seasonal API |
+| Real-time signal | Google Trends (per-country, local timezone) |
+| Alerts | Africa's Talking (SMS/USSD), Meta WhatsApp Business API, Twilio |
+| Alert language | Claude Haiku (bilingual local + English) |
+| Daily scan | GitHub Actions cron (2am UTC) |
+| Hosting | Vercel (CDN, ISR caching) |
 
 ---
 
 ## Architecture
 
 ```
-Open-Meteo API ─┐
-WHO GHO API    ─┼─→ daily_scan.py (GitHub Actions, 2am UTC)
-UN Population  ─┘         │
-                           ▼
-                    Supabase Postgres
-                    ┌──────────────────┐
-                    │ districts (797)  │
-                    │ risk_scores      │
-                    │ enrollments      │
-                    │ alert_logs       │
-                    │ predictions      │
-                    │ chw_reports      │
-                    └──────┬───────────┘
-                           │
-              ┌────────────┼────────────┐
-              ▼            ▼            ▼
-         Dashboard    /api/alert    OpenMetadata
-         (choropleth  (bilingual    (lineage +
-          map,         SMS/WA/       quality
-          filters)     email)        checks)
+Open-Meteo Archive ──┐
+OpenDengue V1.3    ──┤  train_model.py  →  dengue_model.pkl
+WHO GHO Malaria    ──┘                     malaria_model.pkl
+                                                  │
+                              daily_scan.py ───────┤
+                    ┌── Climate (90 days)          │
+                    ├── Climate baselines (anomaly)│
+                    ├── Google Trends boost        │
+                    └── CHW report boost           │
+                                                  ↓
+                         Supabase: risk_scores + predictions
+                                                  │
+                   ┌──────────────────────────────┤
+                   │                              │
+             Next.js API                   GitHub Actions
+        (district-risks,             (daily re-score, 2am UTC)
+         country-bounds,
+         insights, accuracy)
+                   │
+             Leaflet map
+        (choropleth, 3-tier,
+         dynamic peak window)
+                   │
+           SMS / WhatsApp / USSD
+        (Africa's Talking, Twilio,
+         Meta — bilingual alerts)
 ```
 
 ---
 
-## Live Demo
+## Running Locally
 
-**[bzzt-sigma.vercel.app](https://bzzt-sigma.vercel.app)**
+```bash
+npm install
+cp .env.example .env.local
+# Add: SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, SUPABASE_ANON_KEY
+#      ANTHROPIC_API_KEY, AFRICAS_TALKING_API_KEY, TWILIO_*, WHATSAPP_*
 
-- `/` — Enrollment landing page
-- `/dashboard` — Live choropleth map + Intelligence tab
-- `/lookup` — Check risk for any location
+npm run dev
+
+# One-time data setup
+python3 scripts/load_districts.py
+python3 scripts/load_districts_l2.py
+python3 scripts/download_case_history.py
+python3 scripts/fetch_climate_history.py
+python3 scripts/train_model.py
+
+# Daily scan (runs automatically via GitHub Actions)
+python3 scripts/daily_scan.py
+```
+
+---
+
+## Data Sources
+
+| Source | Use | License |
+|---|---|---|
+| [Open-Meteo](https://open-meteo.com) | Climate archive + forecast | CC BY 4.0 |
+| [OpenDengue V1.3](https://opendengue.org) | Dengue case history | CC BY 4.0 |
+| [WHO GHO](https://www.who.int/data/gho) | Malaria estimates | CC BY-NC-SA |
+| [GADM v4.1](https://gadm.org) | Administrative boundaries | Academic use |
 
 ---
 
@@ -206,9 +180,4 @@ UN Population  ─┘         │
 
 MIT — see [LICENSE](LICENSE)
 
----
-
-## Built for
-
-- [UNICEF Venture Fund — Climate and Health 2026](https://www.unicef.org/innovation/call-for-application-climate-and-health-2026)
-- Children in the highest-burden communities who receive no advance warning today
+Built for the UNICEF Venture Fund Climate and Health 2026 call.

@@ -39,3 +39,11 @@ next-env.d.ts
 scripts/audio/
 scripts/video/
 scripts/output/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# models/ is intentionally tracked — pkl files needed by GitHub Actions
+# to run daily_scan.py with the trained model

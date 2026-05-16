@@ -4,6 +4,42 @@
 
 ---
 
+## Model Version 2.0 — What Changed (May 2026)
+
+The original Bzzt model used hand-written biological thresholds:
+`if temp > 26°C AND rainfall > 8mm AND humidity > 60% → WATCH`.
+
+This had two problems:
+1. **Absolute thresholds** are almost always met in tropical cities — Lagos is always hot
+2. **No learning** — we guessed the thresholds from biology textbooks, not from data
+
+**Version 2.0 replaces this with a trained logistic regression model:**
+
+| | v1.0 Rule-based | v2.0 Logistic Regression |
+|---|---|---|
+| Thresholds | Hardcoded (26°C, 8mm, 60%) | Learned from 1.1M district-month observations |
+| Training data | None | OpenDengue V1.3 (102 countries, 2000–2023) |
+| Anomaly detection | None | vs 5-year rolling same-month baseline |
+| Seasonal features | None | Month encoded cyclically (sin/cos) |
+| Real-time signals | None | Google Trends boost (1.4×), CHW boost (1.8×) |
+| Validation | Retrospective only | LOCO cross-validation by country |
+| Output | HIGH / WATCH / LOW | Calibrated probability → WATCH / ALERT / HIGH |
+| Rainfall non-linearity | Not captured | Rainfall capped at 150mm (floods flush larvae) |
+
+**Key epidemiological decisions made explicitly:**
+- Lagged rainfall: true 10–12 week lag (days 70–84 ago), not just "recent rain"
+- Anomaly vs absolute: both used — absolute gate (is climate viable?) + anomaly (worse than usual?)
+- Google Trends: correct local timezone per country — previously all queries used India's UTC+5:30
+- USSD CHW reports: coordinates resolved from phone number prefix, not hardcoded 0,0
+
+**Honest limitations added to every district popup:**
+- P. vivax malaria reactivation not predictable from climate
+- Urban stored-water dengue (Delhi pre-monsoon) partially captured via Trends boost only
+- Intervention coverage (IRS, larviciding) invisible to the model
+- Climate sampled at district centroid — large districts may be heterogeneous
+
+---
+
 ## The Big Picture (Plain English)
 
 We asked one question: **does climate data actually predict dengue outbreaks?**
