@@ -14,7 +14,7 @@ Scoring pipeline (in order):
 Output: risk_scores table + predictions table in Supabase
 """
 
-import os, sys, json, time, math, urllib.request, urllib.error, pickle
+import os, sys, json, time, math, urllib.request, urllib.error, urllib.parse, pickle
 from datetime import datetime, timedelta
 import uuid
 
@@ -207,10 +207,8 @@ def get_trends_multiplier(iso3: str) -> float:
 
     geo, terms = config
     tz = COUNTRY_TZ.get(iso3, 0)
-    keyword = urllib.parse.quote(terms[0]) if hasattr(urllib, 'parse') else terms[0].replace(" ", "%20")
 
     try:
-        import urllib.parse
         keyword = urllib.parse.quote(terms[0])
         url = (f"https://trends.google.com/trends/api/explore"
                f"?hl=en&tz={tz}"
