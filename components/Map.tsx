@@ -13,10 +13,10 @@ export interface CityRisk {
   scannedAt?: string;
 }
 
-type RiskLevel = 'HIGH' | 'WATCH' | 'LOW';
+type RiskLevel = 'HIGH' | 'ALERT' | 'WATCH' | 'LOW';
 
 const RISK_COLOR: Record<RiskLevel, string> = {
-  HIGH: '#F87171', WATCH: '#FCD34D', LOW: '#34D399',
+  HIGH: '#F87171', ALERT: '#FB923C', WATCH: '#FCD34D', LOW: '#34D399',
 };
 
 function formatPop(n?: number): string {
@@ -37,7 +37,7 @@ export default function Map({ livePoints }: { livePoints?: CityRisk[] }) {
   const [country,    setCountry]    = useState('');
   const [countries,  setCountries]  = useState<string[]>([]);
   const [adminLevel, setAdminLevel] = useState(1);
-  const [stats,        setStats]        = useState({ high: 0, watch: 0, total: 0 });
+  const [stats,        setStats]        = useState({ high: 0, alert: 0, watch: 0, total: 0 });
   const [loading,      setLoading]      = useState(true);
   const [error,        setError]        = useState('');
   const [countryBounds, setCountryBounds] = useState<Record<string, [[number,number],[number,number]]>>({});
@@ -74,12 +74,12 @@ export default function Map({ livePoints }: { livePoints?: CityRisk[] }) {
       if (layerRef.current) { layerRef.current.removeFrom(map); layerRef.current = null; }
 
       if (!data.features?.length) {
-        setStats({ high: 0, watch: 0, total: 0 });
+        setStats({ high: 0, alert: 0, watch: 0, total: 0 });
         setLoading(false);
         return;
       }
 
-      let high = 0, watch = 0;
+      let high = 0, alert = 0, watch = 0;
 
       const layer = L.geoJSON(data.features, {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -98,6 +98,7 @@ export default function Map({ livePoints }: { livePoints?: CityRisk[] }) {
           const p = feature.properties;
           const topRisk = (p.topRisk ?? 'LOW') as RiskLevel;
           if (topRisk === 'HIGH') high++;
+          else if (topRisk === 'ALERT') alert++;
           else if (topRisk === 'WATCH') watch++;
 
           const dengueColor  = RISK_COLOR[(p.dengue  as RiskLevel) ?? 'LOW'];
@@ -188,7 +189,7 @@ export default function Map({ livePoints }: { livePoints?: CityRisk[] }) {
 
       layer.addTo(map);
       layerRef.current = layer;
-      setStats({ high, watch, total: data.features.length });
+      setStats({ high, alert, watch, total: data.features.length });
     } catch (err) {
       setError(String(err));
     } finally {
@@ -309,6 +310,8 @@ export default function Map({ livePoints }: { livePoints?: CityRisk[] }) {
           <div className="flex items-center gap-2 bg-[#1a1a1a]/90 border border-white/10 rounded-lg px-3 py-1.5 text-xs">
             <span className="text-[#F87171] font-bold">{stats.high} HIGH</span>
             <span className="text-white/30">·</span>
+            <span className="text-[#FB923C] font-bold">{stats.alert} ALERT</span>
+            <span className="text-white/30">·</span>
             <span className="text-[#FCD34D] font-bold">{stats.watch} WATCH</span>
             <span className="text-white/30">·</span>
             <span className="text-white/50">{stats.total} {adminLevel === 2 ? 'districts' : 'states'}</span>
@@ -330,7 +333,7 @@ export default function Map({ livePoints }: { livePoints?: CityRisk[] }) {
       {/* Legend */}
       <div className="absolute bottom-6 left-3 z-[1000] flex items-center gap-3
                       bg-[#1a1a1a]/90 border border-white/10 rounded-lg px-3 py-2 text-xs">
-        {(['HIGH', 'WATCH'] as RiskLevel[]).map(level => (
+        {(['HIGH', 'ALERT', 'WATCH'] as RiskLevel[]).map(level => (
           <span key={level} className="flex items-center gap-1.5">
             <span className="w-3 h-3 rounded-sm inline-block"
               style={{ background: RISK_COLOR[level], opacity: 0.8 }} />

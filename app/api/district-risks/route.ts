@@ -40,7 +40,7 @@ function simplifyGeom(geom: Record<string, unknown>, keep = 20): Record<string, 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const country    = searchParams.get('country');
-  const levels     = searchParams.get('level')?.split(',') ?? ['HIGH', 'WATCH'];
+  const levels     = searchParams.get('level')?.split(',') ?? ['HIGH', 'ALERT', 'WATCH'];
   const limit      = parseInt(searchParams.get('limit') ?? '500');
   const adminLevel = parseInt(searchParams.get('admin_level') ?? '1');
 
@@ -79,7 +79,8 @@ export async function GET(req: NextRequest) {
 
     // Filter by requested risk levels
     const filtered = Array.from(latestByDistrict.values()).filter(s => {
-      const topRisk = s.dengue_level === 'HIGH' || s.malaria_level === 'HIGH' ? 'HIGH'
+      const topRisk = s.dengue_level === 'HIGH'  || s.malaria_level === 'HIGH'  ? 'HIGH'
+        : s.dengue_level === 'ALERT' || s.malaria_level === 'ALERT' ? 'ALERT'
         : s.dengue_level === 'WATCH' || s.malaria_level === 'WATCH' ? 'WATCH' : 'LOW';
       return levels.includes(topRisk);
     });
@@ -110,7 +111,8 @@ export async function GET(req: NextRequest) {
         const dist = districtMap.get(s.district_id ?? '');
         if (!dist?.geometry) return null;
 
-        const topRisk = s.dengue_level === 'HIGH' || s.malaria_level === 'HIGH' ? 'HIGH'
+        const topRisk = s.dengue_level === 'HIGH'  || s.malaria_level === 'HIGH'  ? 'HIGH'
+          : s.dengue_level === 'ALERT' || s.malaria_level === 'ALERT' ? 'ALERT'
           : s.dengue_level === 'WATCH' || s.malaria_level === 'WATCH' ? 'WATCH' : 'LOW';
 
         return {
