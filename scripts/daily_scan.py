@@ -276,12 +276,18 @@ def main():
     print(f"Bzzt Daily Scan — {now}")
     print(f"Model: {MODEL_VERSION}")
 
-    # Load districts
+    # Load all districts — paginate to avoid Supabase row limits
     print("Loading districts...", end=" ", flush=True)
-    districts = supabase_get(
-        "districts",
-        "select=id,country,country_code,state,district,lat,lng,population&limit=2000"
-    )
+    districts = []
+    offset = 0
+    while True:
+        page = supabase_get(
+            "districts",
+            f"select=id,country,country_code,state,district,lat,lng,population&limit=1000&offset={offset}"
+        )
+        districts.extend(page)
+        if len(page) < 1000: break
+        offset += 1000
     print(f"✓ {len(districts)} districts")
 
     # Load climate baselines for anomaly scoring

@@ -85,17 +85,17 @@ export default function Home() {
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
               <div className="lg:col-span-3 bg-[#FF6B6B]/[0.08] border border-[#FF6B6B]/25 rounded-2xl p-8 space-y-4">
                 <div className="text-xs font-bold uppercase tracking-widest text-[#FF6B6B]">
-                  Real-world signal — Delhi, May 2026
+                  Signal validated — Delhi, May 2026
                 </div>
                 <p className="text-base text-white/85 leading-relaxed">
-                  In May 2026, Bzzt&rsquo;s real-time signal flagged Delhi as elevated risk,
-                  driven by rising Google Trends searches for dengue symptoms.
-                  Delhi&rsquo;s Municipal Corporation data confirmed the highest April dengue
-                  case count in five years — 52 cases, up 24% from the previous April.
-                  The climate and search signal aligned with the official case data.
+                  Bzzt flagged Delhi as elevated dengue risk based on rising symptom searches
+                  and climate conditions. Delhi&rsquo;s Municipal Corporation subsequently
+                  confirmed the highest April dengue case count in five years —
+                  52 cases, up 24% from the previous April. The Bzzt signal and the
+                  official case report were in agreement.
                 </p>
                 <p className="text-xs text-white/55">
-                  Source: Business Standard, May 6 2026 — MCD municipal surveillance data.
+                  Source: Business Standard · MCD municipal surveillance data · May 2026
                 </p>
               </div>
               <div className="lg:col-span-2 grid grid-cols-1 gap-6">
