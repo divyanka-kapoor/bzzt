@@ -32,10 +32,20 @@ export default function Home() {
       {/* ── SECTION 1: HERO ─────────────────────────────────────────────── */}
       <section
         aria-labelledby="hero-heading"
-        className="min-h-screen flex flex-col justify-center px-8 md:px-16 lg:px-24 pt-32 pb-24"
-        style={{ background: 'linear-gradient(150deg, #152e28 0%, #1d3d35 55%)' }}
+        className="relative min-h-screen flex flex-col justify-center px-8 md:px-16 lg:px-24 pt-32 pb-24 overflow-hidden"
+        style={{ background: '#1d3d35' }}
       >
-        <div className="max-w-screen-xl mx-auto w-full">
+        {/* Mosquito illustration — white line art, screen blend removes black bg */}
+        <div className="absolute inset-0 flex items-center justify-end pointer-events-none select-none" aria-hidden="true">
+          <img
+            src="/mosquito.png"
+            alt=""
+            className="w-[55%] max-w-3xl opacity-15 object-contain"
+            style={{ mixBlendMode: 'screen', filter: 'brightness(1.5)' }}
+          />
+        </div>
+
+        <div className="relative z-10 max-w-screen-xl mx-auto w-full">
           <ScrollReveal>
             <p className="text-xs font-bold uppercase tracking-[0.25em] mb-10" style={{ color: 'rgba(255,255,255,0.35)' }}>
               Bzzt — Disease Early Warning
@@ -63,7 +73,7 @@ export default function Home() {
             <div className="flex flex-wrap gap-4">
               <Link href="#enroll"
                 className="inline-flex items-center font-semibold text-sm px-7 py-3.5 rounded-full hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-transparent transition-opacity"
-                style={{ background: '#e85045', color: '#1d3d35' }}>
+                style={{ background: '#2d6b5a', color: '#ffffff' }}>
                 Get free alerts for your district
               </Link>
               <Link href="/dashboard"
@@ -78,7 +88,7 @@ export default function Home() {
 
       {/* ── SECTION 2: THE NUMBERS ──────────────────────────────────────── */}
       <section aria-label="Key statistics" className="min-h-[85vh] flex flex-col justify-center px-8 md:px-16 lg:px-24 py-32"
-        style={{ background: '#1d3d35' }}>
+        style={{ background: '#0f2420', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
         <div className="max-w-screen-xl mx-auto w-full">
           <ScrollReveal>
             <p className="text-xs font-bold uppercase tracking-[0.25em] mb-20" style={{ color: 'rgba(255,255,255,0.35)' }}>The scale</p>
