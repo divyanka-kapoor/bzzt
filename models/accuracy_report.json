@@ -1,0 +1,60 @@
+{
+  "model_version": "2.0-logistic-regression",
+  "trained_at": "2026-05-16T09:20:13.039039",
+  "training_records": 74378,
+  "outbreak_rate": 0.379,
+  "features": [
+    "avg_temp",
+    "avg_rainfall_capped",
+    "lagged_rainfall_capped",
+    "avg_humidity",
+    "temp_anomaly",
+    "rain_anomaly",
+    "lagged_rain_anomaly",
+    "humidity_anomaly",
+    "month_sin",
+    "month_cos",
+    "lat",
+    "abs_lat"
+  ],
+  "feature_importances": {
+    "month_sin": 0.1097,
+    "lagged_rainfall_capped": -0.0447,
+    "humidity_anomaly": -0.0305,
+    "rain_anomaly": 0.0263,
+    "avg_rainfall_capped": -0.024,
+    "avg_temp": 0.0211,
+    "month_cos": -0.0201,
+    "temp_anomaly": -0.0168,
+    "avg_humidity": -0.015,
+    "lagged_rain_anomaly": -0.0137,
+    "abs_lat": -0.0102,
+    "lat": 0.0066
+  },
+  "loco_cross_validation": [
+    {
+      "country": "BRA",
+      "auc": 0.522,
+      "n_test": 74172
+    },
+    {
+      "country": "BOL",
+      "auc": 0.603,
+      "n_test": 206
+    }
+  ],
+  "loco_summary": {
+    "n_countries": 2,
+    "median_auc": 0.603,
+    "min_auc": 0.522,
+    "max_auc": 0.603
+  },
+  "honest_limitations": [
+    "Dengue model trained on OpenDengue V1.3 (2000-2023). Reporting bias: well-surveilled countries over-represented.",
+    "Malaria model uses dengue architecture \u2014 sub-national malaria case data not yet integrated.",
+    "Climate features from district centroids only \u2014 large districts may have heterogeneous climate.",
+    "P. vivax reactivation not predictable from climate signals.",
+    "Urban stored-water dengue (Delhi pre-monsoon) partially captured via Google Trends boost.",
+    "Intervention coverage (IRS, nets, larviciding) not included \u2014 model may over-flag controlled areas."
+  ]
+}

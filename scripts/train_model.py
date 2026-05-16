@@ -58,7 +58,7 @@ print("Bzzt — Model Training Pipeline")
 print("="*60)
 
 print("\n[1/5] Loading districts...")
-districts = sb_get_all("districts", "select=id,country,lat,lng,state&not.lat=is.null&not.district_id=like.*_L2*")
+districts = sb_get_all("districts", "select=id,country,lat,lng,state&lat=not.is.null&id=not.like.*_L2*")
 dist_by_id = {d["id"]: d for d in districts}
 print(f"  {len(districts)} level-1 districts loaded")
 
@@ -73,7 +73,7 @@ print(f"  {len(baselines)} baseline rows ({len(baseline_idx)} districts)")
 print("\n[3/5] Loading case history (dengue)...")
 dengue_cases = sb_get_all(
     "case_history",
-    "select=iso3,country,adm1_name,year,month,cases&disease=eq.dengue&not.month=is.null&not.adm1_name=is.null&cases=gt.0"
+    "select=iso3,country,adm1_name,year,month,cases&disease=eq.dengue&month=not.is.null&adm1_name=not.is.null&cases=gt.0"
 )
 print(f"  {len(dengue_cases)} dengue district-month records")
 
@@ -82,7 +82,7 @@ print("\n[4/5] Loading current risk scores for feature alignment...")
 # (these have actual climate values from the daily scan)
 risk_scores = sb_get_all(
     "risk_scores",
-    "select=district_id,country,avg_temp,avg_rainfall,lagged_rainfall,avg_humidity,computed_at&not.district_id=like.*_L2*",
+    "select=district_id,country,avg_temp,avg_rainfall,lagged_rainfall,avg_humidity,computed_at&district_id=not.like.*_L2*",
     page=500
 )
 # Keep only the most recent score per district

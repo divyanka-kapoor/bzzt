@@ -1,0 +1,14 @@
+[
+  "avg_temp",
+  "avg_rainfall_capped",
+  "lagged_rainfall_capped",
+  "avg_humidity",
+  "temp_anomaly",
+  "rain_anomaly",
+  "lagged_rain_anomaly",
+  "humidity_anomaly",
+  "month_sin",
+  "month_cos",
+  "lat",
+  "abs_lat"
+]
