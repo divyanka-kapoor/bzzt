@@ -30,16 +30,15 @@ export default function Home() {
         <MosquitoWatermark />
         <div className="relative z-10 max-w-3xl mx-auto text-center space-y-6">
           <div className="inline-block text-xs font-semibold uppercase tracking-widest text-[#F87171]/80 bg-[#F87171]/10 border border-[#F87171]/20 rounded-full px-4 py-1.5 mb-2">
-            Every 2 minutes, a child dies from malaria
+            A child dies from malaria every 70 seconds
           </div>
           <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-white leading-tight">
             The outbreak was visible in the weather.<br />
             <span className="text-white/50">Nobody sent a warning.</span>
           </h1>
           <p className="text-lg md:text-xl text-white/60 max-w-2xl mx-auto leading-relaxed">
-            Dengue, malaria, and chikungunya kill over 600,000 people every year.
-            Almost half a million of them are children under five.
-            Most of those deaths were preventable.
+            Malaria alone killed 597,000 people in 2023. 440,000 of them were children under five.
+            Dengue hospitalises millions more. Most of these deaths were preventable.
           </p>
         </div>
       </section>
@@ -50,9 +49,9 @@ export default function Home() {
 
           <div className="grid md:grid-cols-3 gap-6 text-center">
             {[
-              { stat: '600k+', label: 'deaths per year', sub: 'from mosquito-borne disease' },
-              { stat: '~75%', label: 'are children under 5', sub: 'mostly in sub-Saharan Africa and South Asia' },
-              { stat: '10–14 wks', label: 'warning in the weather', sub: 'before the first child gets sick' },
+              { stat: '597,000', label: 'malaria deaths in 2023', sub: 'WHO World Malaria Report 2024' },
+              { stat: '74%', label: 'are children under 5', sub: 'malaria is the leading infectious killer of young children' },
+              { stat: '10–14 wks', label: 'warning in the weather', sub: 'before the first case is reported' },
             ].map(({ stat, label, sub }) => (
               <div key={label} className="bg-white/[0.03] border border-white/[0.06] rounded-xl px-5 py-6 space-y-1">
                 <div className="text-3xl font-bold text-white">{stat}</div>
@@ -164,11 +163,12 @@ export default function Home() {
               </div>
             </div>
             <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-6 space-y-3">
-              <div className="text-2xl font-bold text-white">AUC 0.77–0.95</div>
+              <div className="text-2xl font-bold text-white">AUC 0.62 median</div>
               <div className="text-sm font-medium text-white/70">On cities the model never trained on</div>
               <div className="text-xs text-white/40 leading-relaxed">
                 LOCO cross-validation (Leave One Country Out) across 14 locations in Brazil, Peru,
-                Colombia, Taiwan, and Philippines. Climate signal generalises across continents.
+                Colombia, Taiwan, and Philippines. Climate-only model — no surveillance data required.
+                Beats random chance in 11 of 14 cities.
               </div>
             </div>
             <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-6 space-y-3 md:col-span-2">
