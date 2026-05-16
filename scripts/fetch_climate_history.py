@@ -70,9 +70,15 @@ def fetch_monthly_climate(lat, lng):
         f"&daily=temperature_2m_max,precipitation_sum,relative_humidity_2m_max"
         f"&timezone=auto"
     )
-    try:
+    for attempt in range(3):
+      try:
         with urllib.request.urlopen(url, timeout=20) as r:
             d = json.loads(r.read())
+        break
+      except Exception:
+        if attempt < 2: time.sleep(2 ** attempt)
+        else: return None
+    try:
         dates = d["daily"].get("time", [])
         temps = d["daily"].get("temperature_2m_max", [])
         rains = d["daily"].get("precipitation_sum", [])
@@ -170,7 +176,7 @@ for i, dist in enumerate(unique):
         print(f"  {i+1}/{len(unique)} districts | {inserted} baseline rows written | errors: {errors}")
         rows_to_insert = []
 
-    time.sleep(0.15)  # ~6 req/s, well within Open-Meteo free limits
+    time.sleep(0.5)   # 2 req/s — conservative to avoid Open-Meteo rate limiting
 
 # Final flush
 if rows_to_insert:

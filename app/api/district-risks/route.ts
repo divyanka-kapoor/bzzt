@@ -13,7 +13,7 @@ import { db } from '@/lib/db';
 import { L2_PREFIXES } from '@/lib/config';
 
 export const dynamic = 'force-dynamic';
-export const revalidate = 3600;
+export const revalidate = 3600; // CDN caches for 1hr; stale-while-revalidate serves instantly while refreshing
 
 // Reduce polygon point count for world-zoom rendering (~3MB → ~300KB)
 function simplifyGeom(geom: Record<string, unknown>, keep = 20): Record<string, unknown> {
@@ -142,7 +142,10 @@ export async function GET(req: NextRequest) {
     // Unique country list for filter dropdown
     const countries = Array.from(new Set(filtered.map(s => s.country))).sort();
 
-    return NextResponse.json({ features, countries, total: features.length });
+    return NextResponse.json(
+      { features, countries, total: features.length },
+      { headers: { 'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400' } }
+    );
   } catch (err) {
     console.error('[district-risks]', err);
     return NextResponse.json({ features: [], countries: [], error: String(err) });
