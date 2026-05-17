@@ -143,15 +143,17 @@ export default function Home() {
       </section>
 
       {/* ── PULL QUOTE ──────────────────────────────────────────────────── */}
-      <section aria-label="Mission" className="min-h-[40vh] flex items-center px-8 md:px-16 lg:px-24 py-24"
-        style={{ background: '#e85045' }}>
+      <section aria-label="Mission" className="w-full px-8 md:px-16 lg:px-24 py-20"
+        style={{ background: '#152e28', borderTop: '1px solid rgba(255,255,255,0.06)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
         <div className="max-w-screen-xl mx-auto w-full">
           <ScrollReveal>
-            <blockquote className="text-[clamp(1.75rem,3.5vw,3rem)] font-bold leading-snug max-w-4xl" style={{ color: '#ffffff' }}>
-              &ldquo;Bzzt is the first free, open-source system to predict
-              dengue, malaria, and chikungunya at district level — 10 weeks
-              before outbreak peaks — for any community in the world.&rdquo;
-            </blockquote>
+            <div className="flex items-start gap-6 max-w-3xl">
+              <div className="shrink-0 w-1 h-16 rounded-full mt-1" style={{ background: '#e85045' }} aria-hidden="true" />
+              <blockquote className="text-xl md:text-2xl font-light leading-relaxed" style={{ color: 'rgba(255,255,255,0.85)' }}>
+                The first free, open-source system to predict dengue, malaria, and chikungunya
+                at district level — 10 weeks before outbreak peaks — for any community in the world.
+              </blockquote>
+            </div>
           </ScrollReveal>
         </div>
       </section>
