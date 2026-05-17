@@ -190,7 +190,7 @@ export default function Map({ livePoints }: { livePoints?: CityRisk[] }) {
             </div>
           `);
           lyr.on('mouseover', () => lyr.setStyle({ weight: 2, fillOpacity: 0.85 }));
-          lyr.on('mouseout',  () => lyr.setStyle({ weight: level === 2 ? 0.5 : 0.8, fillOpacity: topRisk === 'HIGH' ? 0.65 : topRisk === 'LOW' ? 0.15 : 0.45 }));
+          lyr.on('mouseout',  () => lyr.setStyle({ weight: level === 2 ? 0.5 : 0.8, fillOpacity: (topRisk === 'HIGH' || topRisk === 'ALERT') ? 0.70 : topRisk === 'LOW' ? 0.08 : 0.50 }));
         },
       });
 

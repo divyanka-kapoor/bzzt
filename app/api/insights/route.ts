@@ -41,10 +41,13 @@ export async function GET() {
 
   // Pull population from districts table (risk_scores.population_at_risk is often NULL)
   const districtIds = Array.from(new Set((scores ?? []).map(s => s.district_id).filter(Boolean))) as string[];
-  const { data: districtPops } = await db
-    .from('districts')
-    .select('id, population')
-    .in('id', districtIds.slice(0, 500));
+  // Fetch population in batches to avoid URL length limits
+  const districtPopsList: { id: string; population: number }[] = [];
+  for (let i = 0; i < districtIds.length; i += 200) {
+    const { data } = await db.from('districts').select('id, population').in('id', districtIds.slice(i, i + 200));
+    if (data) districtPopsList.push(...data);
+  }
+  const { data: districtPops } = { data: districtPopsList };
   const popMap = new Map((districtPops ?? []).map(d => [d.id, d.population]));
 
   // Deduplicate — keep latest per district
