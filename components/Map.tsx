@@ -15,13 +15,15 @@ export interface CityRisk {
 
 type RiskLevel = 'HIGH' | 'ALERT' | 'WATCH' | 'LOW';
 
-// Colorblind-safe palette (Wong 2011 / IBM) — distinguishable for deuteranopia & protanopia
-// HIGH: vermilion (distinct red-orange), ALERT: amber, WATCH: sky blue (not yellow — red/yellow confusion)
+// Two-tier colorblind-safe palette:
+// HIGH (≥0.6): vermilion-red — bright, saturated, universally reads as danger
+// WATCH (0.35–0.6): amber — lighter luminance, distinguishable from red even for deuteranopes
+// ALERT merged into HIGH in the API — three tiers added confusion with no user value
 const RISK_COLOR: Record<RiskLevel, string> = {
-  HIGH:  '#D55E00', // vermilion — universally seen as danger
-  ALERT: '#E69F00', // amber — distinct from vermilion
-  WATCH: '#56B4E9', // sky blue — completely different wavelength from red/orange
-  LOW:   '#009E73', // teal-green
+  HIGH:  '#CC3311', // vermilion red
+  ALERT: '#CC3311', // same as HIGH — merged visually
+  WATCH: '#FFAA44', // amber — lighter, still urgent
+  LOW:   '#2A5A4A', // very dark teal — barely visible outline only
 };
 
 function formatPop(n?: number): string {
@@ -92,7 +94,7 @@ export default function Map({ livePoints }: { livePoints?: CityRisk[] }) {
           const risk: RiskLevel = feature?.properties?.topRisk ?? 'LOW';
           return {
             fillColor: RISK_COLOR[risk],
-            fillOpacity: risk === 'HIGH' ? 0.65 : risk === 'LOW' ? 0.15 : 0.45,
+            fillOpacity: risk === 'HIGH' || risk === 'ALERT' ? 0.70 : risk === 'LOW' ? 0.08 : 0.50,
             color: RISK_COLOR[risk],
             weight: level === 2 ? 0.5 : 0.8,
             opacity: 0.7,
@@ -313,11 +315,9 @@ export default function Map({ livePoints }: { livePoints?: CityRisk[] }) {
         {/* Stats */}
         {stats.total > 0 && (
           <div className="flex items-center gap-2 bg-[#1a1a1a]/90 border border-white/10 rounded-lg px-3 py-1.5 text-xs">
-            <span className="font-bold" style={{ color: '#D55E00' }}>{stats.high} HIGH</span>
+            <span className="font-bold" style={{ color: '#CC3311' }}>{stats.high + stats.alert} HIGH</span>
             <span className="text-white/30">·</span>
-            <span className="font-bold" style={{ color: '#E69F00' }}>{stats.alert} ALERT</span>
-            <span className="text-white/30">·</span>
-            <span className="font-bold" style={{ color: '#56B4E9' }}>{stats.watch} WATCH</span>
+            <span className="font-bold" style={{ color: '#FFAA44' }}>{stats.watch} WATCH</span>
             <span className="text-white/30">·</span>
             <span className="text-white/50">{stats.total} {adminLevel === 2 ? 'districts' : 'states'}</span>
           </div>
@@ -338,17 +338,13 @@ export default function Map({ livePoints }: { livePoints?: CityRisk[] }) {
       {/* Legend */}
       <div className="absolute bottom-6 left-3 z-[1000] flex items-center gap-3
                       bg-[#1a1a1a]/90 border border-white/10 rounded-lg px-3 py-2 text-xs">
-        {(adminLevel === 2
-          ? ['HIGH', 'ALERT', 'WATCH', 'LOW']
-          : ['HIGH', 'ALERT', 'WATCH']
-        ).map(l => (
+        {(['HIGH', 'WATCH'] as RiskLevel[]).map(l => (
           <span key={l} className="flex items-center gap-1.5">
-            <span className="w-3 h-3 rounded-sm inline-block"
-              style={{ background: RISK_COLOR[l as RiskLevel], opacity: l === 'LOW' ? 0.4 : 0.8 }} />
+            <span className="w-3 h-3 rounded-sm inline-block" style={{ background: RISK_COLOR[l], opacity: 0.85 }} />
             <span className="text-white/60">{l}</span>
           </span>
         ))}
-        {adminLevel !== 2 && <span className="text-white/30 text-xs ml-1">LOW hidden</span>}
+        <span className="text-white/30 text-xs ml-1">LOW shown as outline</span>
       </div>
 
       {/* Hint when no country selected */}

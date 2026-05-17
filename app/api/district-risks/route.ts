@@ -54,7 +54,7 @@ export async function GET(req: NextRequest) {
       .from('risk_scores')
       .select('district_id, city_name, country, dengue_level, malaria_level, dengue_score, malaria_score, population_at_risk, avg_temp, avg_rainfall, avg_humidity, computed_at, lat, lng')
       .order('computed_at', { ascending: false })
-      .limit(limit * 3);
+      .limit(10000); // fetch all — dedup in JS keeps only latest per district
 
     if (country) scoresQuery = scoresQuery.eq('country', country);
 
