@@ -41,7 +41,8 @@ export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const country    = searchParams.get('country');
   const levels     = searchParams.get('level')?.split(',') ?? ['HIGH', 'ALERT', 'WATCH'];
-  const limit      = parseInt(searchParams.get('limit') ?? '500');
+  // limit param kept for API compatibility but ignored — we always fetch all districts
+  void searchParams.get('limit');
   const adminLevel = parseInt(searchParams.get('admin_level') ?? '1');
 
   try {
