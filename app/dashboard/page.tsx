@@ -197,7 +197,7 @@ export default function Dashboard() {
               ))}
             </div>
           )}
-          <span className="ml-auto text-white/65">{cities.length} cities monitored</span>
+          <span className="ml-auto text-white/65">2,500+ districts monitored</span>
         </div>
       )}
 

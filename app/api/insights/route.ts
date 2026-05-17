@@ -24,7 +24,7 @@ export async function GET() {
     return NextResponse.json(cache);
   }
 
-  // Pull latest risk score per district from Supabase
+  // Pull latest risk score per district — exclude L2 sub-districts for the summary view
   const { data: scores, error } = await db
     .from('risk_scores')
     .select(`
@@ -33,10 +33,19 @@ export async function GET() {
       population_at_risk, avg_temp, avg_rainfall, lagged_rainfall, avg_humidity,
       computed_at, lat, lng
     `)
+    .not('district_id', 'like', '%_L2%')
     .order('computed_at', { ascending: false })
     .limit(2000);
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  // Pull population from districts table (risk_scores.population_at_risk is often NULL)
+  const districtIds = Array.from(new Set((scores ?? []).map(s => s.district_id).filter(Boolean))) as string[];
+  const { data: districtPops } = await db
+    .from('districts')
+    .select('id, population')
+    .in('id', districtIds.slice(0, 500));
+  const popMap = new Map((districtPops ?? []).map(d => [d.id, d.population]));
 
   // Deduplicate — keep latest per district
   const seen = new Set<string>();
@@ -57,7 +66,9 @@ export async function GET() {
     const topRisk: RiskLevel = s.dengue_level === 'HIGH' || s.malaria_level === 'HIGH' ? 'HIGH'
       : s.dengue_level === 'WATCH' || s.malaria_level === 'WATCH' ? 'WATCH' : 'LOW';
 
-    const pop = (s.population_at_risk ?? 0) / 1_000_000; // millions
+    // Use district population from districts table — risk_scores.population_at_risk is often NULL
+    const popRaw = popMap.get(s.district_id ?? '') ?? s.population_at_risk ?? 0;
+    const pop = (popRaw) / 1_000_000; // millions
 
     if (topRisk === 'HIGH') { citiesHigh++; totalAtHighRisk += pop; }
     else if (topRisk === 'WATCH') { citiesWatch++; totalAtWatchRisk += pop; }
@@ -84,8 +95,8 @@ export async function GET() {
       malaria: s.malaria_level as RiskLevel,
       dengueScore:  s.dengue_score ?? 0,
       malariaScore: s.malaria_score ?? 0,
-      population:   s.population_at_risk ?? 0,
-      populationFormatted: formatPop(s.population_at_risk ?? 0),
+      population:   popRaw,
+      populationFormatted: formatPop(popRaw),
       trend,
       climate: {
         avgTemp:        s.avg_temp ?? 0,
