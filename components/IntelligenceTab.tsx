@@ -275,14 +275,14 @@ export default function IntelligenceTab() {
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             <StatCard
-              label="People at HIGH risk"
-              value={`${data.summary.totalAtHighRisk.toFixed(0)}M`}
-              sub={`across ${data.summary.citiesHigh} districts`}
+              label="Districts at HIGH"
+              value={String(data.summary.citiesHigh)}
+              sub="flagged HIGH risk"
             />
             <StatCard
-              label="People at WATCH"
-              value={`${data.summary.totalAtWatchRisk.toFixed(0)}M`}
-              sub={`across ${data.summary.citiesWatch} cities`}
+              label="Districts at WATCH"
+              value={String(data.summary.citiesWatch)}
+              sub="elevated conditions"
             />
             <StatCard
               label="Escalating now"
@@ -298,7 +298,7 @@ export default function IntelligenceTab() {
 
           {/* Top risk cities */}
           <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-4">
-            <p className="text-xs text-white/65 uppercase tracking-wider mb-3">Highest burden — risk score × population</p>
+            <p className="text-xs text-white/65 uppercase tracking-wider mb-3">Highest risk districts — by score</p>
             <div className="space-y-2">
               {data.topRiskCities.map((c, i) => (
                 <div key={c.id} className="flex items-center justify-between text-sm">

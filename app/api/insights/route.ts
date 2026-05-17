@@ -108,16 +108,16 @@ export async function GET() {
     };
   });
 
-  // Top 10 by risk × population
+  // Top 10 by combined risk score (population data not available at district level)
   const topRiskCities = [...cities]
-    .filter(c => c.dengue === 'HIGH' || c.malaria === 'HIGH')
-    .sort((a, b) => ((b.dengueScore + b.malariaScore) / 2 * b.population) - ((a.dengueScore + a.malariaScore) / 2 * a.population))
+    .filter(c => c.dengue === 'HIGH' || c.malaria === 'HIGH' || c.dengue === 'WATCH' || c.malaria === 'WATCH')
+    .sort((a, b) => (b.dengueScore + b.malariaScore) - (a.dengueScore + a.malariaScore))
     .slice(0, 10)
     .map(c => ({
       id:      c.id,
       name:    c.name,
       country: c.country,
-      population: formatPop(c.population),
+      population: c.population > 0 ? formatPop(c.population) : '—',
       dengue:  c.dengue,
       malaria: c.malaria,
     }));
