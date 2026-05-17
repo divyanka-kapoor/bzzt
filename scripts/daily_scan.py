@@ -16,6 +16,7 @@ Output: risk_scores table + predictions table in Supabase
 
 import os, sys, json, time, math, urllib.request, urllib.error, urllib.parse, pickle
 from datetime import datetime, timedelta
+from concurrent.futures import ThreadPoolExecutor, as_completed
 import uuid
 
 # ── Config ────────────────────────────────────────────────────────────────────
@@ -326,6 +327,27 @@ def main():
     active_trends = sum(1 for v in TRENDS_CACHE.values() if v > 1.0)
     print(f"✓ {active_trends}/{len(TRENDS_CACHE)} countries with rising trends signal")
 
+    # Pre-fetch all climate data concurrently — replaces sequential fetching
+    # Sequential: 2,612 × 0.7s avg = ~30min. Concurrent (20 workers): ~2min.
+    print("Fetching climate data (concurrent)...", end=" ", flush=True)
+    valid_districts = [d for d in districts if d.get("lat") is not None and d.get("lng") is not None]
+
+    def fetch_for_district(d):
+        return d, fetch_climate(d["lat"], d["lng"])
+
+    climate_map: dict = {}
+    with ThreadPoolExecutor(max_workers=20) as executor:
+        futures = {executor.submit(fetch_for_district, d): d for d in valid_districts}
+        done = 0
+        for future in as_completed(futures):
+            d, climate = future.result()
+            if climate:
+                climate_map[d["id"]] = climate
+            done += 1
+            if done % 500 == 0:
+                print(f"{done}/{len(valid_districts)}...", end=" ", flush=True)
+    print(f"✓ {len(climate_map)}/{len(valid_districts)} districts with climate data")
+
     high_count = watch_count = alert_count = low_count = error_count = 0
     batch = []
     pred_batch = []
@@ -336,7 +358,7 @@ def main():
             error_count += 1
             continue
 
-        climate = fetch_climate(lat, lng)
+        climate = climate_map.get(d["id"])
         if not climate:
             error_count += 1
             continue
@@ -436,8 +458,6 @@ def main():
 
         if (i + 1) % 100 == 0:
             print(f"  {i+1}/{len(districts)} districts scanned...")
-
-        time.sleep(0.05)
 
     # Final flush
     if batch:      supabase_insert("risk_scores", batch)

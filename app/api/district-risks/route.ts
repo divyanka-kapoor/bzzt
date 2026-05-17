@@ -51,11 +51,16 @@ export async function GET(req: NextRequest) {
     // For level-2, filter district IDs by prefix pattern
     const useL2 = adminLevel === 2 && country && L2_PREFIXES[country];
 
+    // Fetch last 7 days of scores — guarantees all districts are included
+    // regardless of scan order. Max rows = 7 × 2,612 = ~18k. After JS dedup = 2,612 unique.
+    // This replaces the broken LIMIT heuristic that silently dropped countries.
+    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
     let scoresQuery = db
       .from('risk_scores')
       .select('district_id, city_name, country, dengue_level, malaria_level, dengue_score, malaria_score, population_at_risk, avg_temp, avg_rainfall, avg_humidity, computed_at, lat, lng')
+      .gte('computed_at', sevenDaysAgo)
       .order('computed_at', { ascending: false })
-      .limit(10000); // fetch all — dedup in JS keeps only latest per district
+      .limit(50000);
 
     if (country) scoresQuery = scoresQuery.eq('country', country);
 

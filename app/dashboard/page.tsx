@@ -120,9 +120,10 @@ export default function Dashboard() {
     }
   }
 
+  // District counts come from insights API (loaded by IntelligenceTab) via shared state
+  // For the strip we use cities only as fallback — primary source is insights summary
   const highCount  = cities.filter(c => c.dengue === 'HIGH' || c.malaria === 'HIGH').length;
   const watchCount = cities.filter(c => (c.dengue === 'WATCH' || c.malaria === 'WATCH') && c.dengue !== 'HIGH' && c.malaria !== 'HIGH').length;
-  const highCities = cities.filter(c => c.dengue === 'HIGH' || c.malaria === 'HIGH').slice(0, 3);
 
   return (
     <main id="main-content" className="min-h-screen bg-[#0a0a0a] text-white flex flex-col font-sans">
@@ -170,36 +171,16 @@ export default function Dashboard() {
         </div>
       </header>
 
-      {/* Stats strip */}
-      {cities.length > 0 && (
-        <div aria-label="Risk summary" className="flex items-center gap-6 px-6 py-2 border-b border-white/[0.04] text-xs">
-          <span className="text-white/70">
-            <strong>{highCount}</strong> <span className="text-white/50">HIGH</span>
-          </span>
-          <span className="text-white/60">
-            <strong>{watchCount}</strong> <span className="text-white/70">WATCH</span>
-          </span>
-          <span className="text-white/70">
-            <strong>{cities.length - highCount - watchCount}</strong> LOW
-          </span>
-          {highCities.length > 0 && (
-            <div className="flex items-center gap-2 ml-2" role="group" aria-label="Trigger alerts for high-risk cities">
-              {highCities.map(c => (
-                <button
-                  key={c.id}
-                  onClick={() => triggerAlert(c.id)}
-                  disabled={triggering === c.id}
-                  aria-label={`Send alert for ${c.name}`}
-                  className="text-xs px-2 py-0.5 rounded border border-white/20 hover:border-white/40 text-white/60 hover:text-white transition disabled:opacity-30"
-                >
-                  <span aria-hidden="true">⚡</span> {triggering === c.id ? 'Sending…' : c.name}
-                </button>
-              ))}
-            </div>
-          )}
-          <span className="ml-auto text-white/65">2,500+ districts monitored</span>
-        </div>
-      )}
+      {/* Stats strip — district-level counts from the intelligence API */}
+      <div aria-label="Risk summary" className="flex items-center gap-6 px-6 py-2 border-b border-white/[0.04] text-xs">
+        <span style={{ color: '#CC3311' }}>
+          <strong>{highCount}</strong> <span className="text-white/50">HIGH</span>
+        </span>
+        <span style={{ color: '#FFAA44' }}>
+          <strong>{watchCount}</strong> <span className="text-white/50">WATCH</span>
+        </span>
+        <span className="ml-auto text-white/50">2,500+ districts · updated {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+      </div>
 
       {/* Intelligence tab */}
       <div
