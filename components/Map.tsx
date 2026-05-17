@@ -58,8 +58,8 @@ export default function Map({ livePoints }: { livePoints?: CityRisk[] }) {
     setError('');
     try {
       const params = new URLSearchParams({
-        level: 'HIGH,WATCH',
-        limit: level === 2 ? '1000' : '600',
+        level: level === 2 ? 'HIGH,ALERT,WATCH,LOW' : 'HIGH,ALERT,WATCH',
+        limit: level === 2 ? '1500' : '800',
         admin_level: String(level),
       });
       if (selectedCountry) params.set('country', selectedCountry);
@@ -87,7 +87,7 @@ export default function Map({ livePoints }: { livePoints?: CityRisk[] }) {
           const risk: RiskLevel = feature?.properties?.topRisk ?? 'LOW';
           return {
             fillColor: RISK_COLOR[risk],
-            fillOpacity: risk === 'HIGH' ? 0.65 : 0.45,
+            fillOpacity: risk === 'HIGH' ? 0.65 : risk === 'LOW' ? 0.15 : 0.45,
             color: RISK_COLOR[risk],
             weight: level === 2 ? 0.5 : 0.8,
             opacity: 0.7,
@@ -183,7 +183,7 @@ export default function Map({ livePoints }: { livePoints?: CityRisk[] }) {
             </div>
           `);
           lyr.on('mouseover', () => lyr.setStyle({ weight: 2, fillOpacity: 0.85 }));
-          lyr.on('mouseout',  () => lyr.setStyle({ weight: level === 2 ? 0.5 : 0.8, fillOpacity: topRisk === 'HIGH' ? 0.65 : 0.45 }));
+          lyr.on('mouseout',  () => lyr.setStyle({ weight: level === 2 ? 0.5 : 0.8, fillOpacity: topRisk === 'HIGH' ? 0.65 : topRisk === 'LOW' ? 0.15 : 0.45 }));
         },
       });
 
@@ -333,14 +333,17 @@ export default function Map({ livePoints }: { livePoints?: CityRisk[] }) {
       {/* Legend */}
       <div className="absolute bottom-6 left-3 z-[1000] flex items-center gap-3
                       bg-[#1a1a1a]/90 border border-white/10 rounded-lg px-3 py-2 text-xs">
-        {(['HIGH', 'ALERT', 'WATCH'] as RiskLevel[]).map(level => (
-          <span key={level} className="flex items-center gap-1.5">
+        {(adminLevel === 2
+          ? ['HIGH', 'ALERT', 'WATCH', 'LOW']
+          : ['HIGH', 'ALERT', 'WATCH']
+        ).map(l => (
+          <span key={l} className="flex items-center gap-1.5">
             <span className="w-3 h-3 rounded-sm inline-block"
-              style={{ background: RISK_COLOR[level], opacity: 0.8 }} />
-            <span className="text-white/60">{level}</span>
+              style={{ background: RISK_COLOR[l as RiskLevel], opacity: l === 'LOW' ? 0.4 : 0.8 }} />
+            <span className="text-white/60">{l}</span>
           </span>
         ))}
-        <span className="text-white/30 text-xs ml-1">LOW hidden</span>
+        {adminLevel !== 2 && <span className="text-white/30 text-xs ml-1">LOW hidden</span>}
       </div>
 
       {/* Hint when no country selected */}
