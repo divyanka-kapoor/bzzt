@@ -179,5 +179,3 @@ python3 scripts/daily_scan.py
 ## License
 
 MIT — see [LICENSE](LICENSE)
-
-Built for the UNICEF Venture Fund Climate and Health 2026 call.
