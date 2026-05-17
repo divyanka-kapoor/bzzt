@@ -96,7 +96,7 @@ export default function Home() {
             ))}
           </div>
           <ScrollReveal delay={300}>
-            <div className="rounded-3xl p-10 md:p-12 max-w-3xl" style={{ background: '#2a5248' }}>
+            <div className="rounded-3xl p-10 md:p-12 w-full" style={{ background: '#2a5248' }}>
               <p className="text-xs font-bold uppercase tracking-[0.25em] mb-5" style={{ color: '#e85045' }}>
                 Signal validated — Delhi, May 2026
               </p>
