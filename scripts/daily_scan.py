@@ -164,11 +164,19 @@ def supabase_insert(table, rows):
         },
         method="POST"
     )
-    try:
-        with urllib.request.urlopen(req, timeout=30): return True
-    except urllib.error.HTTPError as e:
-        print(f"  insert error {e.code}: {e.read().decode()[:100]}")
-        return False
+    for attempt in range(3):
+        try:
+            with urllib.request.urlopen(req, timeout=30): return True
+        except urllib.error.HTTPError as e:
+            print(f"  insert error {e.code}: {e.read().decode()[:100]}")
+            return False  # HTTP errors won't fix with retry
+        except Exception as e:
+            if attempt < 2:
+                time.sleep(2 ** attempt)
+            else:
+                print(f"  insert failed after 3 attempts: {e}")
+                return False
+    return False
 
 # ── Google Trends booster (real-time symptom signal) ─────────────────────────
 # Fetches the Trends signal for a country and returns a probability multiplier.
@@ -436,21 +444,23 @@ def main():
             "model_version":      MODEL_VERSION,
         })
 
-        pred_batch.append({
-            "id":               str(uuid.uuid4()),
-            "city_id":          did,
-            "city_name":        d.get("district"),
-            "country":          d.get("country"),
-            "predicted_at":     now,
-            "validate_after":   (datetime.utcnow() + timedelta(days=35)).isoformat(),
-            "dengue_level":     d_level,
-            "malaria_level":    m_level,
-            "probability_score": round(max(d_prob_boosted, m_prob_boosted) * 100),
-            "avg_temp":         avg_temp,
-            "avg_rainfall":     avg_rain,
-            "lagged_rainfall":  lagged_rain,
-            "avg_humidity":     avg_humidity,
-        })
+        # Only log predictions for level-1 districts — L2 sub-districts violate DB constraints
+        if "_L2" not in did:
+            pred_batch.append({
+                "id":               str(uuid.uuid4()),
+                "city_id":          did,
+                "city_name":        d.get("district") or d.get("state") or did,
+                "country":          d.get("country"),
+                "predicted_at":     now,
+                "validate_after":   (datetime.utcnow() + timedelta(days=35)).isoformat(),
+                "dengue_level":     d_level,
+                "malaria_level":    m_level,
+                "probability_score": round(max(d_prob_boosted, m_prob_boosted) * 100),
+                "avg_temp":         avg_temp,
+                "avg_rainfall":     avg_rain,
+                "lagged_rainfall":  lagged_rain,
+                "avg_humidity":     avg_humidity,
+            })
 
         if len(batch) >= 50:
             supabase_insert("risk_scores", batch)
