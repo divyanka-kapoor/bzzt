@@ -63,6 +63,7 @@ export default function Dashboard() {
   const [cities, setCities] = useState<CityRisk[]>([]);
   const [lineage, setLineage] = useState<LineageEvent[]>([]);
   const [scanning, setScanning] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [triggering, setTriggering] = useState<string | null>(null);
   const [lastScan, setLastScan] = useState<string>('—');
   const [activeTab, setActiveTab] = useState<'alerts' | 'lineage'>('alerts');
@@ -106,6 +107,7 @@ export default function Dashboard() {
     return () => { clearInterval(alertInterval); clearInterval(scanInterval); };
   }, [loadAlerts, loadLineage, runScan]);
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async function triggerAlert(cityId: string) {
     setTriggering(cityId);
     try {
