@@ -100,9 +100,8 @@ def rule_score_malaria(temp, rain, lagged_rain, humidity):
     return 0.10
 
 def prob_to_tier(p):
-    """Map probability to alert tier string."""
-    if p >= 0.80: return "HIGH"
-    if p >= 0.60: return "ALERT"
+    """Map probability to alert tier string. DB constraint: HIGH | WATCH | LOW only."""
+    if p >= 0.60: return "HIGH"   # ALERT merged into HIGH (DB doesn't allow ALERT)
     if p >= 0.35: return "WATCH"
     return "LOW"
 
