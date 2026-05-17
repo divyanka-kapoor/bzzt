@@ -336,17 +336,20 @@ def main():
         return d, fetch_climate(d["lat"], d["lng"])
 
     climate_map: dict = {}
-    with ThreadPoolExecutor(max_workers=20) as executor:
+    rate_errors = 0
+    with ThreadPoolExecutor(max_workers=5) as executor:  # 5 workers balances speed vs rate limits
         futures = {executor.submit(fetch_for_district, d): d for d in valid_districts}
         done = 0
         for future in as_completed(futures):
             d, climate = future.result()
             if climate:
                 climate_map[d["id"]] = climate
+            else:
+                rate_errors += 1
             done += 1
             if done % 500 == 0:
-                print(f"{done}/{len(valid_districts)}...", end=" ", flush=True)
-    print(f"✓ {len(climate_map)}/{len(valid_districts)} districts with climate data")
+                print(f"{done}/{len(valid_districts)} (errors: {rate_errors})...", end=" ", flush=True)
+    print(f"✓ {len(climate_map)}/{len(valid_districts)} districts with climate data ({rate_errors} fetch errors)")
 
     high_count = watch_count = alert_count = low_count = error_count = 0
     batch = []
