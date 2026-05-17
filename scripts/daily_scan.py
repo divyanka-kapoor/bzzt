@@ -118,27 +118,32 @@ def fetch_climate(lat, lng):
            f"&end_date={datetime.utcnow().strftime('%Y-%m-%d')}"
            f"&daily=temperature_2m_max,precipitation_sum,relative_humidity_2m_max"
            f"&timezone=auto")
-    try:
-        with urllib.request.urlopen(url, timeout=15) as r:
-            d = json.loads(r.read())
-        temps = [v for v in d["daily"].get("temperature_2m_max",[]) if v is not None]
-        rains = [v for v in d["daily"].get("precipitation_sum",[]) if v is not None]
-        hums  = [v for v in d["daily"].get("relative_humidity_2m_max",[]) if v is not None]
-        if not temps: return None
-        avg = lambda lst: sum(lst)/len(lst) if lst else 0
-        recent_temps = temps[-30:] if len(temps) >= 30 else temps
-        recent_rains = rains[-30:] if len(rains) >= 30 else rains
-        recent_hums  = hums[-30:]  if len(hums)  >= 30 else hums
-        lagged_window = rains[6:21] if len(rains) >= 21 else rains[:14]
-        return {
-            "avg_temp":        round(avg(recent_temps), 1),
-            "avg_rainfall":    round(avg(recent_rains), 2),
-            "lagged_rainfall": round(avg(lagged_window), 2),
-            "avg_humidity":    round(avg(recent_hums), 1),
-            "month":           datetime.utcnow().month,
-        }
-    except:
-        return None
+    for attempt in range(3):  # retry up to 3 times for transient rate limits
+        try:
+            with urllib.request.urlopen(url, timeout=20) as r:
+                d = json.loads(r.read())
+            temps = [v for v in d["daily"].get("temperature_2m_max",[]) if v is not None]
+            rains = [v for v in d["daily"].get("precipitation_sum",[]) if v is not None]
+            hums  = [v for v in d["daily"].get("relative_humidity_2m_max",[]) if v is not None]
+            if not temps: return None
+            avg = lambda lst: sum(lst)/len(lst) if lst else 0
+            recent_temps = temps[-30:] if len(temps) >= 30 else temps
+            recent_rains = rains[-30:] if len(rains) >= 30 else rains
+            recent_hums  = hums[-30:]  if len(hums)  >= 30 else hums
+            lagged_window = rains[6:21] if len(rains) >= 21 else rains[:14]
+            return {
+                "avg_temp":        round(avg(recent_temps), 1),
+                "avg_rainfall":    round(avg(recent_rains), 2),
+                "lagged_rainfall": round(avg(lagged_window), 2),
+                "avg_humidity":    round(avg(recent_hums), 1),
+                "month":           datetime.utcnow().month,
+            }
+        except Exception:
+            if attempt < 2:
+                time.sleep(1 + attempt)  # 1s, 2s backoff
+            else:
+                return None
+    return None
 
 # ── Supabase helpers ──────────────────────────────────────────────────────────
 
