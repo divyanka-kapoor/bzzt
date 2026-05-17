@@ -80,10 +80,12 @@ function CityCard({ city }: { city: CityInsight }) {
           <p className="text-sm font-semibold text-white leading-tight truncate">{city.name}</p>
           <p className="text-xs text-white/65">{city.country}</p>
         </div>
-        <div className="text-right shrink-0">
-          <p className="text-xs font-bold text-white">{city.populationFormatted}</p>
-          <p className="text-xs text-white/60">population</p>
-        </div>
+        {city.population > 0 && (
+          <div className="text-right shrink-0">
+            <p className="text-xs font-bold text-white">{city.populationFormatted}</p>
+            <p className="text-xs text-white/60">population</p>
+          </div>
+        )}
       </div>
 
       {/* Disease rows */}
@@ -214,15 +216,18 @@ export default function IntelligenceTab() {
   }, [load]);
 
   const sorted = data ? [...data.cities].sort((a, b) => {
-    if (sortBy === 'population') return b.population - a.population;
+    if (sortBy === 'population') return b.population - a.population || (b.dengueScore + b.malariaScore) - (a.dengueScore + a.malariaScore);
     if (sortBy === 'trend') {
       const tScore = (c: CityInsight) =>
         (c.trend.dengue === 'escalating' ? 2 : c.trend.dengue === 'improving' ? -1 : 0) +
         (c.trend.malaria === 'escalating' ? 2 : c.trend.malaria === 'improving' ? -1 : 0);
       return tScore(b) - tScore(a);
     }
-    // default: risk × population
-    return ((b.dengueScore + b.malariaScore) / 2 * b.population) - ((a.dengueScore + a.malariaScore) / 2 * a.population);
+    // sort by combined risk score
+    const riskOrder = { HIGH: 3, WATCH: 2, LOW: 1 } as Record<string, number>;
+    const topA = Math.max(riskOrder[a.dengue] ?? 0, riskOrder[a.malaria] ?? 0);
+    const topB = Math.max(riskOrder[b.dengue] ?? 0, riskOrder[b.malaria] ?? 0);
+    return topB - topA || (b.dengueScore + b.malariaScore) - (a.dengueScore + a.malariaScore);
   }) : [];
 
   if (!data && loading) {
@@ -320,12 +325,12 @@ export default function IntelligenceTab() {
           {/* Sort controls */}
           <div className="flex items-center gap-2">
             <p className="text-xs text-white/60 mr-1">Sort:</p>
-            {(['risk', 'population', 'trend'] as const).map(s => (
-              <button key={s} onClick={() => setSortBy(s)}
-                className={`text-xs px-2.5 py-1 rounded border transition capitalize ${
-                  sortBy === s ? 'border-white/25 text-white/70 bg-white/5' : 'border-white/[0.06] text-white/60 hover:text-white/70'
+            {([['risk', 'Risk'], ['trend', 'Trend']] as const).map(([val, label]) => (
+              <button key={val} onClick={() => setSortBy(val)}
+                className={`text-xs px-2.5 py-1 rounded border transition ${
+                  sortBy === val ? 'border-white/25 text-white/70 bg-white/5' : 'border-white/[0.06] text-white/60 hover:text-white/70'
                 }`}>
-                {s}
+                {label}
               </button>
             ))}
             <span className="ml-auto text-xs text-white/60">
