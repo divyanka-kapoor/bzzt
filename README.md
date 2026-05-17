@@ -3,7 +3,7 @@
 > **Climate signals precede outbreaks by 8–14 weeks. Bzzt reads those signals across thousands of districts and sends free warnings before the outbreak arrives.**
 
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Live Demo](https://img.shields.io/badge/demo-live-green.svg)](https://bzzt-sigma.vercel.app)
+[![Live Demo](https://img.shields.io/badge/demo-live-green.svg)](https://bzzt-alerts.vercel.app)
 [![Digital Public Good](https://img.shields.io/badge/DPG-applying-orange.svg)](https://digitalpublicgoods.net)
 
 ---

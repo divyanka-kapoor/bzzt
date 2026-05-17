@@ -63,7 +63,7 @@ export async function POST(req: NextRequest) {
         `${f.properties.name}: ${f.properties.topRisk}`
       ).join('\n');
 
-      return ussd(`END ${region.country} risk:\n${lines}\n\nEnroll: bzzt-sigma.vercel.app`);
+      return ussd(`END ${region.country} risk:\n${lines}\n\nEnroll: bzzt-alerts.vercel.app`);
     } catch {
       return ussd('END Error fetching data. Try again.');
     }

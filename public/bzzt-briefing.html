@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bzzt — Partner Briefing Note</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'EB Garamond', Georgia, serif;
+      font-size: 11.5pt;
+      line-height: 1.7;
+      color: #1a1a1a;
+      background: #fff;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 60px 60px;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      border-bottom: 2px solid #1d3d35;
+      padding-bottom: 20px;
+      margin-bottom: 28px;
+    }
+    .logo {
+      font-family: 'Inter', sans-serif;
+      font-size: 22pt;
+      font-weight: 600;
+      color: #1d3d35;
+      letter-spacing: -0.5px;
+    }
+    .logo-sub {
+      font-family: 'Inter', sans-serif;
+      font-size: 8pt;
+      color: #888;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+    .doc-meta {
+      text-align: right;
+      font-family: 'Inter', sans-serif;
+      font-size: 8pt;
+      color: #888;
+      line-height: 1.6;
+    }
+
+    /* Document title */
+    .doc-title {
+      font-family: 'Inter', sans-serif;
+      font-size: 9pt;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #1d3d35;
+      margin-bottom: 8px;
+    }
+    h1 {
+      font-size: 20pt;
+      font-weight: 600;
+      line-height: 1.2;
+      color: #1a1a1a;
+      margin-bottom: 6px;
+    }
+    .subtitle {
+      font-size: 11pt;
+      color: #555;
+      font-style: italic;
+      margin-bottom: 32px;
+      border-bottom: 1px solid #e0e0e0;
+      padding-bottom: 20px;
+    }
+
+    /* Sections */
+    h2 {
+      font-family: 'Inter', sans-serif;
+      font-size: 9pt;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #1d3d35;
+      margin-top: 28px;
+      margin-bottom: 10px;
+      padding-bottom: 5px;
+      border-bottom: 1px solid #d8e8e4;
+    }
+
+    p {
+      margin-bottom: 10px;
+      color: #2a2a2a;
+    }
+
+    /* Stats row */
+    .stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0;
+      border: 1px solid #d8e8e4;
+      border-radius: 4px;
+      margin: 16px 0;
+      overflow: hidden;
+    }
+    .stat {
+      padding: 14px 16px;
+      border-right: 1px solid #d8e8e4;
+    }
+    .stat:last-child { border-right: none; }
+    .stat-n {
+      font-family: 'Inter', sans-serif;
+      font-size: 16pt;
+      font-weight: 600;
+      color: #1d3d35;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .stat-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 8pt;
+      color: #666;
+      line-height: 1.3;
+    }
+
+    /* Validation box */
+    .box {
+      background: #f2f7f6;
+      border-left: 3px solid #1d3d35;
+      padding: 14px 18px;
+      margin: 16px 0;
+      border-radius: 0 4px 4px 0;
+    }
+    .box p { margin-bottom: 0; font-size: 11pt; }
+    .box-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 8pt;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #1d3d35;
+      margin-bottom: 6px;
+    }
+
+    /* Pilot table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 14px 0;
+      font-size: 10.5pt;
+    }
+    td {
+      padding: 8px 12px;
+      border-bottom: 1px solid #eee;
+      vertical-align: top;
+    }
+    td:first-child {
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      font-size: 9pt;
+      color: #1d3d35;
+      width: 32%;
+      white-space: nowrap;
+    }
+
+    /* Footer */
+    .footer {
+      margin-top: 40px;
+      padding-top: 16px;
+      border-top: 1px solid #e0e0e0;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+    .footer-contact {
+      font-family: 'Inter', sans-serif;
+      font-size: 8.5pt;
+      color: #888;
+      line-height: 1.7;
+    }
+    .footer-note {
+      font-family: 'Inter', sans-serif;
+      font-size: 8pt;
+      color: #bbb;
+      text-align: right;
+      line-height: 1.6;
+    }
+
+    /* Print */
+    @media print {
+      body { padding: 0; }
+      @page {
+        size: A4;
+        margin: 22mm 22mm 20mm 22mm;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="header">
+    <div>
+      <div class="logo">Bzzt</div>
+      <div class="logo-sub">Disease Early Warning System</div>
+    </div>
+    <div class="doc-meta">
+      PARTNER BRIEFING NOTE<br>
+      CONFIDENTIAL<br>
+      May 2026
+    </div>
+  </div>
+
+  <!-- Title -->
+  <div class="doc-title">Executive Briefing</div>
+  <h1>Predicting Disease Outbreaks<br>Before They Happen</h1>
+  <div class="subtitle">
+    A climate-intelligence system for early warning of dengue, malaria,
+    and chikungunya — operating across 26 countries, free of cost
+  </div>
+
+  <!-- Section 1 -->
+  <h2>The Problem</h2>
+  <p>
+    India reports among the highest burdens of dengue, malaria, and chikungunya in the
+    world. Despite decades of investment in disease surveillance, the fundamental
+    challenge remains unchanged: outbreaks are detected after they have already begun.
+    By the time cases reach a district hospital, the mosquito breeding cycle responsible
+    started 10–14 weeks earlier.
+  </p>
+  <p>
+    Community health workers, district officers, and families at risk receive no advance
+    warning. The information to prevent this exists — in freely available weather data
+    updated daily — but no accessible system converts it into an actionable alert.
+  </p>
+
+  <!-- Section 2 -->
+  <h2>The Solution</h2>
+  <p>
+    Bzzt is an automated disease early warning system that predicts outbreak risk for
+    dengue, malaria, and chikungunya at district level — across India and 25 other
+    endemic countries — every night, at no cost.
+  </p>
+  <p>
+    A machine learning model trained on 1.1 million real outbreak records from 102 countries
+    reads daily climate data for every monitored district and produces a risk score 10 weeks
+    before the outbreak peak. When risk crosses a threshold, an early warning is issued via
+    SMS, WhatsApp, or USSD — a feature phone dial code requiring no internet connection, no
+    smartphone, and no data plan. Alerts are delivered in English and local languages
+    including Hindi, Bengali, and others.
+  </p>
+
+  <!-- Stats -->
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-n">2,522</div>
+      <div class="stat-label">Districts scored<br>as of May 2026</div>
+    </div>
+    <div class="stat">
+      <div class="stat-n">26</div>
+      <div class="stat-label">Endemic countries<br>monitored daily</div>
+    </div>
+    <div class="stat">
+      <div class="stat-n">10 wks</div>
+      <div class="stat-label">Lead time before<br>outbreak peak</div>
+    </div>
+  </div>
+
+  <!-- Section 3 -->
+  <h2>Current Status</h2>
+  <p>
+    Bzzt is a fully operational system — not a prototype. A live intelligence map
+    at <strong>bzzt-alerts.vercel.app</strong> displays real-time risk across all monitored
+    districts, updated every night by an automated pipeline. India is covered at full
+    district level (676 districts). SMS, WhatsApp, and USSD delivery are integrated
+    and tested. The complete codebase is open-source and available at no cost
+    to any government or institution.
+  </p>
+
+  <!-- Section 4 -->
+  <h2>Scientific Validation</h2>
+  <p>
+    The predictive signal has been validated against 2,610 weeks of confirmed dengue
+    surveillance data from FIOCRUZ — Brazil's national disease authority — and cross-validated
+    across 14 cities in 5 countries on 3 continents.
+  </p>
+
+  <div class="box">
+    <div class="box-label">Real-World Confirmation — Delhi, May 2026</div>
+    <p>
+      Bzzt flagged Delhi as elevated dengue risk based on climate conditions and rising
+      symptom search trends. Delhi's Municipal Corporation subsequently confirmed the
+      highest April dengue case count in five years — 52 cases, up 24% year-on-year —
+      consistent with the Bzzt signal that week.
+    </p>
+  </div>
+
+  <!-- Section 5 -->
+  <h2>What a Pilot Involves</h2>
+  <p>
+    A pilot requires no financial commitment and minimal administrative resource from
+    the partner organisation. The system operates automatically.
+  </p>
+  <table>
+    <tr>
+      <td>Coverage</td>
+      <td>Districts within the partner's jurisdiction or area of operation, monitored at no cost</td>
+    </tr>
+    <tr>
+      <td>Deliverables</td>
+      <td>Weekly district-level risk reports; early warning alerts for high-risk periods; end-of-pilot summary report</td>
+    </tr>
+    <tr>
+      <td>Partner's role</td>
+      <td>Designated point of contact; feedback on alert utility; optional sharing of anonymised case data</td>
+    </tr>
+    <tr>
+      <td>Duration</td>
+      <td>Flexible — minimum one transmission season (3–6 months) recommended</td>
+    </tr>
+    <tr>
+      <td>Cost</td>
+      <td>No cost to the partner organisation</td>
+    </tr>
+  </table>
+
+  <!-- Section 6 -->
+  <h2>Funding Context</h2>
+  <p>
+    Bzzt has applied to the <strong>UNICEF Venture Fund Climate and Health 2026</strong>
+    — a $100,000 equity-free grant programme supporting frontier technology for children's
+    health. A letter of intent from an institutional partner expressing interest in a pilot
+    would materially strengthen the application. The letter requires no financial or
+    operational commitment — it is an expression of interest in further discussion.
+    A draft is available upon request.
+  </p>
+
+  <!-- Section 7 -->
+  <h2>The Ask</h2>
+  <p>
+    We respectfully request a letter of intent on official letterhead expressing
+    institutional interest in exploring a pilot of the Bzzt platform for disease
+    surveillance and early warning. A draft letter tailored to your organisation
+    is available and can be reviewed and amended as required.
+  </p>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="footer-contact">
+      <strong>Divyanka Kapoor</strong><br>
+      nickadesina@berkeley.edu<br>
+      bzzt-alerts.vercel.app<br>
+      github.com/divyanka-kapoor/bzzt
+    </div>
+    <div class="footer-note">
+      Open-Meteo · OpenDengue V1.3 · WHO · GADM<br>
+      Full codebase open-source under MIT licence<br>
+      May 2026
+    </div>
+  </div>
+
+</body>
+</html>
