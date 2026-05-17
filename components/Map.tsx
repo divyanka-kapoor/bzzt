@@ -15,8 +15,13 @@ export interface CityRisk {
 
 type RiskLevel = 'HIGH' | 'ALERT' | 'WATCH' | 'LOW';
 
+// Colorblind-safe palette (Wong 2011 / IBM) — distinguishable for deuteranopia & protanopia
+// HIGH: vermilion (distinct red-orange), ALERT: amber, WATCH: sky blue (not yellow — red/yellow confusion)
 const RISK_COLOR: Record<RiskLevel, string> = {
-  HIGH: '#F87171', ALERT: '#FB923C', WATCH: '#FCD34D', LOW: '#34D399',
+  HIGH:  '#D55E00', // vermilion — universally seen as danger
+  ALERT: '#E69F00', // amber — distinct from vermilion
+  WATCH: '#56B4E9', // sky blue — completely different wavelength from red/orange
+  LOW:   '#009E73', // teal-green
 };
 
 function formatPop(n?: number): string {
@@ -58,7 +63,7 @@ export default function Map({ livePoints }: { livePoints?: CityRisk[] }) {
     setError('');
     try {
       const params = new URLSearchParams({
-        level: level === 2 ? 'HIGH,ALERT,WATCH,LOW' : 'HIGH,ALERT,WATCH',
+        level: 'HIGH,ALERT,WATCH,LOW',
         limit: level === 2 ? '1500' : '800',
         admin_level: String(level),
       });
@@ -308,11 +313,11 @@ export default function Map({ livePoints }: { livePoints?: CityRisk[] }) {
         {/* Stats */}
         {stats.total > 0 && (
           <div className="flex items-center gap-2 bg-[#1a1a1a]/90 border border-white/10 rounded-lg px-3 py-1.5 text-xs">
-            <span className="text-[#F87171] font-bold">{stats.high} HIGH</span>
+            <span className="font-bold" style={{ color: '#D55E00' }}>{stats.high} HIGH</span>
             <span className="text-white/30">·</span>
-            <span className="text-[#FB923C] font-bold">{stats.alert} ALERT</span>
+            <span className="font-bold" style={{ color: '#E69F00' }}>{stats.alert} ALERT</span>
             <span className="text-white/30">·</span>
-            <span className="text-[#FCD34D] font-bold">{stats.watch} WATCH</span>
+            <span className="font-bold" style={{ color: '#56B4E9' }}>{stats.watch} WATCH</span>
             <span className="text-white/30">·</span>
             <span className="text-white/50">{stats.total} {adminLevel === 2 ? 'districts' : 'states'}</span>
           </div>

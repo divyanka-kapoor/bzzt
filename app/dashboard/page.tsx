@@ -340,16 +340,9 @@ export default function Dashboard() {
         </aside>
       </div>
 
-      {/* Footer legend */}
-      <div className="px-6 py-2 border-t border-white/[0.04] flex items-center gap-5 text-xs text-white/60">
-        {([['HIGH', '#F87171'], ['WATCH', '#FCD34D'], ['LOW', '#34D399']] as [string, string][]).map(([label, color]) => (
-          <span key={label} className="flex items-center gap-1.5">
-            <span className="text-xs" style={{ color }}>◉</span>
-            <span>{label}</span>
-          </span>
-        ))}
-        <span className="text-white/60">◉ dengue · ◆ malaria</span>
-        <span className="ml-auto">Open-Meteo · WHO GHO · OpenMetadata</span>
+      {/* Attribution only — legend is on the map itself */}
+      <div className="px-6 py-2 border-t border-white/[0.04] flex items-center text-xs text-white/30">
+        <span className="ml-auto">Open-Meteo · WHO GHO · GADM</span>
       </div>
     </main>
   );
