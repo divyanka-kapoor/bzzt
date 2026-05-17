@@ -149,7 +149,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json(
       { features, countries, total: features.length },
-      { headers: { 'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400' } }
+      { headers: { 'Cache-Control': 'no-store' } }
     );
   } catch (err) {
     console.error('[district-risks]', err);
