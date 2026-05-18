@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import 'leaflet/dist/leaflet.css';
 import { L2_COUNTRIES } from '@/lib/config';
+import { formatDistrictName } from '@/lib/format';
 
 export interface CityRisk {
   id: string; name: string; country: string;
@@ -111,7 +112,7 @@ export default function Map({ livePoints }: { livePoints?: CityRisk[] }) {
           const dengueColor  = RISK_COLOR[(p.dengue  as RiskLevel) ?? 'LOW'];
           const malariaColor = RISK_COLOR[(p.malaria as RiskLevel) ?? 'LOW'];
 
-          const displayName = (p.name as string).replace(/_/g, ' ');
+          const displayName = formatDistrictName(p.name as string);
           const scannedDate = p.computedAt
             ? new Date(p.computedAt as string).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
             : null;
@@ -166,14 +167,14 @@ export default function Map({ livePoints }: { livePoints?: CityRisk[] }) {
                   <span style="font-size:12px;padding:2px 7px;border-radius:3px;
                     background:${dengueColor}22;color:${dengueColor};font-weight:700">${p.dengue}</span>
                   ${scoreBar(p.dengueScore as number, dengueColor)}
-                  <div style="font-size:10px;color:#666;margin-top:2px">Score: ${p.dengueScore ?? '—'}/100</div>
+                  <div style="font-size:10px;color:#666;margin-top:2px">${p.dengueScore ?? '—'}% outbreak probability</div>
                 </div>
                 <div>
                   <div style="font-size:11px;color:#aaa;margin-bottom:2px">Malaria</div>
                   <span style="font-size:12px;padding:2px 7px;border-radius:3px;
                     background:${malariaColor}22;color:${malariaColor};font-weight:700">${p.malaria}</span>
                   ${scoreBar(p.malariaScore as number, malariaColor)}
-                  <div style="font-size:10px;color:#666;margin-top:2px">Score: ${p.malariaScore ?? '—'}/100</div>
+                  <div style="font-size:10px;color:#666;margin-top:2px">${p.malariaScore ?? '—'}% outbreak probability</div>
                 </div>
               </div>
 

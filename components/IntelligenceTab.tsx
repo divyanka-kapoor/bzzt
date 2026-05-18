@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
+import { formatDistrictName } from '@/lib/format';
 
 type RiskLevel = 'HIGH' | 'WATCH' | 'LOW';
 type TrendDir  = 'escalating' | 'improving' | 'stable' | 'new';
@@ -37,8 +38,14 @@ interface InsightsData {
 const RISK_COLOR: Record<RiskLevel, string> = { HIGH: '#F87171', WATCH: '#FCD34D', LOW: '#34D399' };
 const RISK_BG:    Record<RiskLevel, string> = { HIGH: 'rgba(248,113,113,0.1)', WATCH: 'rgba(252,211,77,0.1)', LOW: 'rgba(52,211,153,0.08)' };
 
-const TREND_ICON: Record<TrendDir, string> = { escalating: '↑', improving: '↓', stable: '→', new: '·' };
+const TREND_ICON:  Record<TrendDir, string> = { escalating: '↑', improving: '↓', stable: '→', new: '·' };
 const TREND_COLOR: Record<TrendDir, string> = { escalating: '#F87171', improving: '#34D399', stable: '#9ca3af', new: '#888888' };
+const TREND_LABEL: Record<TrendDir, string> = {
+  escalating: 'Escalating — risk rising',
+  improving:  'Improving — risk falling',
+  stable:     'Stable — risk unchanged',
+  new:        'New — first observation',
+};
 
 function RiskBadge({ level, size = 'sm' }: { level: RiskLevel; size?: 'sm' | 'xs' }) {
   const cls = size === 'xs' ? 'text-xs px-1.5 py-0.5' : 'text-xs px-2 py-0.5';
@@ -51,7 +58,7 @@ function RiskBadge({ level, size = 'sm' }: { level: RiskLevel; size?: 'sm' | 'xs
 
 function TrendBadge({ dir }: { dir: TrendDir }) {
   return (
-    <span className="text-xs font-bold" style={{ color: TREND_COLOR[dir] }} title={dir}>
+    <span className="text-xs font-bold" style={{ color: TREND_COLOR[dir] }} title={TREND_LABEL[dir]}>
       {TREND_ICON[dir]}
     </span>
   );
@@ -77,7 +84,7 @@ function CityCard({ city }: { city: CityInsight }) {
       {/* Header */}
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
-          <p className="text-sm font-semibold text-white leading-tight truncate">{city.name}</p>
+          <p className="text-sm font-semibold text-white leading-tight truncate">{formatDistrictName(city.name)}</p>
           <p className="text-xs text-white/65">{city.country}</p>
         </div>
         {city.population > 0 && (
@@ -98,7 +105,7 @@ function CityCard({ city }: { city: CityInsight }) {
           <div className="flex items-center gap-2">
             <TrendBadge dir={city.trend[d]} />
             <RiskBadge level={city[d]} size="xs" />
-            <span className="text-xs text-white/60 w-8 text-right">{d === 'dengue' ? city.dengueScore : city.malariaScore}</span>
+            <span className="text-xs text-white/60 w-10 text-right" title="Outbreak probability score (0–100)">{d === 'dengue' ? city.dengueScore : city.malariaScore}%</span>
           </div>
         </div>
       ))}
@@ -292,12 +299,12 @@ export default function IntelligenceTab() {
             <StatCard
               label="Escalating now"
               value={String(data.summary.escalatingCount)}
-              sub={data.summary.snapshotCount < 2 ? 'need 2 scans for trend' : data.summary.escalatingCities.slice(0,2).join(', ') || 'none'}
+              sub={data.summary.snapshotCount < 2 ? 'need 2 scans for trend' : data.summary.escalatingCities.slice(0,2).map(formatDistrictName).join(', ') || 'none'}
             />
             <StatCard
               label="Improving"
               value={String(data.summary.improvingCount)}
-              sub={data.summary.improvingCities.slice(0,2).join(', ') || 'none'}
+              sub={data.summary.improvingCities.slice(0,2).map(formatDistrictName).join(', ') || 'none'}
             />
           </div>
 
@@ -309,7 +316,7 @@ export default function IntelligenceTab() {
                 <div key={c.id} className="flex items-center justify-between text-sm">
                   <div className="flex items-center gap-3">
                     <span className="text-xs text-white/60 w-4">{i + 1}</span>
-                    <span className="text-white/70">{c.name}</span>
+                    <span className="text-white/70">{formatDistrictName(c.name)}</span>
                     <span className="text-xs text-white/65">{c.country}</span>
                   </div>
                   <div className="flex items-center gap-2">
@@ -337,6 +344,17 @@ export default function IntelligenceTab() {
               {loading ? 'updating…' : `updated ${lastUpdated}`}
               {data.summary.snapshotCount < 2 && ' · refresh for trend data'}
             </span>
+          </div>
+
+          {/* Inline trend legend */}
+          <div className="flex items-center gap-4 text-xs text-white/50 -mt-3">
+            <span className="text-white/35 uppercase tracking-wider text-[10px]">Trend:</span>
+            {(['escalating', 'stable', 'improving'] as TrendDir[]).map(t => (
+              <span key={t} className="flex items-center gap-1">
+                <span style={{ color: TREND_COLOR[t] }} className="font-bold">{TREND_ICON[t]}</span>
+                <span>{t}</span>
+              </span>
+            ))}
           </div>
 
           {/* City grid */}
