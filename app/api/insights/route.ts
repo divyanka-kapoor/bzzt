@@ -33,16 +33,23 @@ export async function GET() {
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
-  // Pull population from districts table (risk_scores.population_at_risk is often NULL)
+  // Pull population from districts table using raw fetch (Supabase JS .in() silently fails for large batches)
   const districtIds = Array.from(new Set((scores ?? []).map(s => s.district_id).filter(Boolean))) as string[];
-  // Fetch population in batches to avoid URL length limits
-  const districtPopsList: { id: string; population: number }[] = [];
-  for (let i = 0; i < districtIds.length; i += 200) {
-    const { data } = await db.from('districts').select('id, population').in('id', districtIds.slice(i, i + 200));
-    if (data) districtPopsList.push(...data);
+  const popMap = new Map<string, number>();
+  const SUPABASE_URL = process.env.SUPABASE_URL!;
+  const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+  for (let i = 0; i < districtIds.length; i += 150) {
+    const chunk = districtIds.slice(i, i + 150);
+    const quoted = chunk.map(id => `"${id}"`).join(',');
+    try {
+      const res = await fetch(
+        `${SUPABASE_URL}/rest/v1/districts?select=id,population&id=in.(${encodeURIComponent(quoted)})`,
+        { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } }
+      );
+      const rows: { id: string; population: number }[] = await res.json();
+      for (const r of rows) { if (r.population) popMap.set(r.id, r.population); }
+    } catch { /* skip batch on error */ }
   }
-  const { data: districtPops } = { data: districtPopsList };
-  const popMap = new Map((districtPops ?? []).map(d => [d.id, d.population]));
 
   // Deduplicate — keep latest per district
   const seen = new Set<string>();

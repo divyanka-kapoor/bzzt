@@ -303,7 +303,7 @@ export default function IntelligenceTab() {
 
           {/* Top risk cities */}
           <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-4">
-            <p className="text-xs text-white/65 uppercase tracking-wider mb-3">Highest risk districts — by score</p>
+            <p className="text-xs text-white/65 uppercase tracking-wider mb-3">Highest risk regions — by score</p>
             <div className="space-y-2">
               {data.topRiskCities.map((c, i) => (
                 <div key={c.id} className="flex items-center justify-between text-sm">
