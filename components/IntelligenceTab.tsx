@@ -64,16 +64,20 @@ function TrendBadge({ dir }: { dir: TrendDir }) {
   );
 }
 
-function StatCard({ label, value, sub, onClick }: { label: string; value: string; sub?: string; onClick?: () => void }) {
+function StatCard({ label, value, sub, onClick, active }: { label: string; value: string; sub?: string; onClick?: () => void; active?: boolean }) {
   return (
     <div
-      className={`bg-white/[0.03] border border-white/[0.06] rounded-xl p-4 ${onClick ? 'cursor-pointer hover:border-white/15 transition-colors' : ''}`}
+      className={`border rounded-xl p-4 transition-colors ${onClick ? 'cursor-pointer' : ''} ${
+        active
+          ? 'bg-white/[0.06] border-white/25'
+          : 'bg-white/[0.03] border-white/[0.06] hover:border-white/15'
+      }`}
       onClick={onClick}
     >
       <p className="text-xs text-white/65 uppercase tracking-wider mb-1">{label}</p>
       <p className="text-2xl font-bold text-white">{value}</p>
       {sub && <p className="text-xs text-white/50 mt-0.5 leading-relaxed">{sub}</p>}
-      {onClick && <p className="text-xs text-white/30 mt-1">sort by trend ↓</p>}
+      {onClick && <p className="text-xs text-white/30 mt-1">{active ? 'click to clear filter ×' : 'click to filter grid ↓'}</p>}
     </div>
   );
 }
@@ -195,6 +199,7 @@ export default function IntelligenceTab() {
   const [loading, setLoading] = useState(false);
   const [lastUpdated, setLastUpdated] = useState('—');
   const [sortBy, setSortBy] = useState<'risk' | 'population' | 'trend'>('risk');
+  const [trendFilter, setTrendFilter] = useState<'escalating' | 'improving' | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -217,7 +222,12 @@ export default function IntelligenceTab() {
     return () => clearInterval(interval);
   }, [load]);
 
-  const sorted = data ? [...data.cities].sort((a, b) => {
+  const filtered = data ? (trendFilter
+    ? data.cities.filter(c => c.trend.dengue === trendFilter || c.trend.malaria === trendFilter)
+    : data.cities
+  ) : [];
+
+  const sorted = data ? [...filtered].sort((a, b) => {
     if (sortBy === 'population') return b.population - a.population || (b.dengueScore + b.malariaScore) - (a.dengueScore + a.malariaScore);
     if (sortBy === 'trend') {
       const tScore = (c: CityInsight) =>
@@ -293,6 +303,7 @@ export default function IntelligenceTab() {
             />
             <StatCard
               label="Escalating now"
+              active={trendFilter === 'escalating'}
               value={String(data.summary.escalatingCount)}
               sub={(() => {
                 const names = data.summary.escalatingCities.map(formatDistrictName);
@@ -301,10 +312,14 @@ export default function IntelligenceTab() {
                 if (total <= names.length) return names.join(', ');
                 return `${names.join(', ')} +${total - names.length} more`;
               })()}
-              onClick={() => { setSortBy('trend'); document.getElementById('city-grid')?.scrollIntoView({ behavior: 'smooth' }); }}
+              onClick={() => {
+                setTrendFilter(f => f === 'escalating' ? null : 'escalating');
+                document.getElementById('city-grid')?.scrollIntoView({ behavior: 'smooth' });
+              }}
             />
             <StatCard
               label="Improving"
+              active={trendFilter === 'improving'}
               value={String(data.summary.improvingCount)}
               sub={(() => {
                 const names = data.summary.improvingCities.map(formatDistrictName);
@@ -313,7 +328,10 @@ export default function IntelligenceTab() {
                 if (total <= names.length) return names.join(', ');
                 return `${names.join(', ')} +${total - names.length} more`;
               })()}
-              onClick={() => { setSortBy('trend'); document.getElementById('city-grid')?.scrollIntoView({ behavior: 'smooth' }); }}
+              onClick={() => {
+                setTrendFilter(f => f === 'improving' ? null : 'improving');
+                document.getElementById('city-grid')?.scrollIntoView({ behavior: 'smooth' });
+              }}
             />
           </div>
 
@@ -354,6 +372,17 @@ export default function IntelligenceTab() {
               {data.summary.snapshotCount < 2 && ' · refresh for trend data'}
             </span>
           </div>
+
+          {/* Active filter pill */}
+          {trendFilter && (
+            <div className="flex items-center gap-2">
+              <span className="flex items-center gap-2 bg-white/[0.06] border border-white/20 rounded-full px-3 py-1 text-xs text-white/70">
+                <span style={{ color: TREND_COLOR[trendFilter] }}>{TREND_ICON[trendFilter]}</span>
+                Showing {trendFilter} regions only ({sorted.length})
+                <button onClick={() => setTrendFilter(null)} className="text-white/40 hover:text-white/70 ml-1">×</button>
+              </span>
+            </div>
+          )}
 
           {/* Inline trend legend */}
           <div className="flex items-center gap-4 text-xs text-white/50 -mt-3">
