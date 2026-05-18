@@ -16,13 +16,7 @@ function formatPop(n: number): string {
   return String(n);
 }
 
-let cache: object | null = null;
-let cacheAt = 0;
-
 export async function GET() {
-  if (Date.now() - cacheAt < 5 * 60 * 1000 && cache) {
-    return NextResponse.json(cache);
-  }
 
   // Pull latest risk score per district — exclude L2 sub-districts for the summary view
   const { data: scores, error } = await db
@@ -157,7 +151,5 @@ export async function GET() {
     districtCount: latest.length,
   };
 
-  cache = result;
-  cacheAt = Date.now();
   return NextResponse.json(result);
 }
