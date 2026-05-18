@@ -64,12 +64,16 @@ function TrendBadge({ dir }: { dir: TrendDir }) {
   );
 }
 
-function StatCard({ label, value, sub }: { label: string; value: string; sub?: string }) {
+function StatCard({ label, value, sub, onClick }: { label: string; value: string; sub?: string; onClick?: () => void }) {
   return (
-    <div className="bg-white/[0.03] border border-white/[0.06] rounded-xl p-4">
+    <div
+      className={`bg-white/[0.03] border border-white/[0.06] rounded-xl p-4 ${onClick ? 'cursor-pointer hover:border-white/15 transition-colors' : ''}`}
+      onClick={onClick}
+    >
       <p className="text-xs text-white/65 uppercase tracking-wider mb-1">{label}</p>
       <p className="text-2xl font-bold text-white">{value}</p>
-      {sub && <p className="text-xs text-white/65 mt-0.5">{sub}</p>}
+      {sub && <p className="text-xs text-white/50 mt-0.5 leading-relaxed">{sub}</p>}
+      {onClick && <p className="text-xs text-white/30 mt-1">sort by trend ↓</p>}
     </div>
   );
 }
@@ -290,12 +294,26 @@ export default function IntelligenceTab() {
             <StatCard
               label="Escalating now"
               value={String(data.summary.escalatingCount)}
-              sub={data.summary.snapshotCount < 2 ? 'need 2 scans for trend' : data.summary.escalatingCities.slice(0,2).map(formatDistrictName).join(', ') || 'none'}
+              sub={(() => {
+                const names = data.summary.escalatingCities.map(formatDistrictName);
+                const total = data.summary.escalatingCount;
+                if (names.length === 0) return 'none';
+                if (total <= names.length) return names.join(', ');
+                return `${names.join(', ')} +${total - names.length} more`;
+              })()}
+              onClick={() => { setSortBy('trend'); document.getElementById('city-grid')?.scrollIntoView({ behavior: 'smooth' }); }}
             />
             <StatCard
               label="Improving"
               value={String(data.summary.improvingCount)}
-              sub={data.summary.improvingCities.slice(0,2).map(formatDistrictName).join(', ') || 'none'}
+              sub={(() => {
+                const names = data.summary.improvingCities.map(formatDistrictName);
+                const total = data.summary.improvingCount;
+                if (names.length === 0) return 'none';
+                if (total <= names.length) return names.join(', ');
+                return `${names.join(', ')} +${total - names.length} more`;
+              })()}
+              onClick={() => { setSortBy('trend'); document.getElementById('city-grid')?.scrollIntoView({ behavior: 'smooth' }); }}
             />
           </div>
 
@@ -349,7 +367,7 @@ export default function IntelligenceTab() {
           </div>
 
           {/* City grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+          <div id="city-grid" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
             {sorted.map(city => <CityCard key={city.id} city={city} />)}
           </div>
 

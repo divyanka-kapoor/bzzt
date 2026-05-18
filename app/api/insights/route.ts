@@ -149,8 +149,8 @@ export async function GET() {
       citiesWatch,
       escalatingCount: escalatingCities.length,
       improvingCount:  improvingCities.length,
-      escalatingCities: escalatingCities.slice(0, 5),
-      improvingCities:  improvingCities.slice(0, 5),
+      escalatingCities: escalatingCities.slice(0, 10),
+      improvingCities:  improvingCities.slice(0, 10),
       snapshotCount: 2, // always "enough" since data is from DB
     },
     topRiskCities,
