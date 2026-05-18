@@ -79,16 +79,16 @@ export default function MethodologyTab() {
       {/* Pipeline */}
       <Section title="Data pipeline">
         <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-6">
-          <div className="flex items-start gap-4 flex-wrap">
+          <div className="flex items-stretch gap-4 w-full">
             {/* Sources */}
-            <div className="flex flex-col gap-2 min-w-[160px]">
+            <div className="flex flex-col gap-2 flex-1">
               <p className="text-xs text-white/40 uppercase tracking-wider mb-1">Sources</p>
               {[
                 { label: 'Open-Meteo API', sub: 'climate · free · no key', color: '#60A5FA' },
                 { label: 'Google Trends',  sub: 'real-time symptom signal', color: '#FCD34D' },
                 { label: 'CHW reports',    sub: 'USSD field reports',        color: '#34D399' },
               ].map(s => (
-                <div key={s.label} className="rounded-lg border px-3 py-2 text-xs"
+                <div key={s.label} className="rounded-lg border px-3 py-2 text-xs flex-1"
                   style={{ borderColor: `${s.color}30`, background: `${s.color}08` }}>
                   <p className="font-semibold" style={{ color: s.color }}>{s.label}</p>
                   <p className="text-white/50">{s.sub}</p>
@@ -96,13 +96,13 @@ export default function MethodologyTab() {
               ))}
             </div>
 
-            <div className="flex flex-col items-center justify-center gap-1 text-white/40 pt-6">
+            <div className="flex flex-col items-center justify-center gap-1 text-white/40 shrink-0 px-2">
               <span className="text-lg">→</span>
               <span className="text-[10px] uppercase tracking-wide text-center">nightly<br/>scoring</span>
             </div>
 
             {/* Scorer */}
-            <div className="rounded-xl border border-white/10 bg-white/[0.03] px-5 py-4 text-xs min-w-[180px]">
+            <div className="rounded-xl border border-white/10 bg-white/[0.03] px-5 py-4 text-xs flex-[2]">
               <p className="font-bold text-white mb-2">bzzt-risk-scorer</p>
               <p className="text-white/60 mb-0.5">Logistic regression · 12 features</p>
               <p className="text-white/60 mb-0.5">5-year district baseline comparison</p>
@@ -115,17 +115,17 @@ export default function MethodologyTab() {
               </div>
             </div>
 
-            <div className="text-white/40 text-lg pt-6">→</div>
+            <div className="flex items-center text-white/40 text-lg shrink-0 px-2">→</div>
 
             {/* Outputs */}
-            <div className="flex flex-col gap-2 min-w-[160px]">
+            <div className="flex flex-col gap-2 flex-1">
               <p className="text-xs text-white/40 uppercase tracking-wider mb-1">Outputs</p>
               {[
                 { label: '2,610 district scores', sub: 'HIGH · WATCH · LOW', color: '#F87171' },
                 { label: 'SMS / WhatsApp / USSD', sub: 'alert delivery', color: '#FCD34D' },
                 { label: 'Intelligence dashboard', sub: 'health officer view', color: '#60A5FA' },
               ].map(s => (
-                <div key={s.label} className="rounded-lg border px-3 py-2 text-xs"
+                <div key={s.label} className="rounded-lg border px-3 py-2 text-xs flex-1"
                   style={{ borderColor: `${s.color}30`, background: `${s.color}08` }}>
                   <p className="font-semibold" style={{ color: s.color }}>{s.label}</p>
                   <p className="text-white/50">{s.sub}</p>
