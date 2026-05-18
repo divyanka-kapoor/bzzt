@@ -65,7 +65,7 @@ const VALIDATION = [
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 w-full">
       <h2 className="text-xs text-white/50 uppercase tracking-wider border-b border-white/[0.06] pb-2">{title}</h2>
       {children}
     </div>
@@ -78,8 +78,8 @@ export default function MethodologyTab() {
 
       {/* Pipeline */}
       <Section title="Data pipeline">
-        <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-6">
-          <div className="grid gap-4 w-full" style={{ gridTemplateColumns: '1fr 40px 2fr 40px 1fr' }}>
+        <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-6 w-full">
+          <div className="grid gap-4" style={{ gridTemplateColumns: '1fr 40px 2fr 40px 1fr', width: '100%' }}>
             {/* Sources */}
             <div className="flex flex-col gap-2">
               <p className="text-xs text-white/40 uppercase tracking-wider mb-1">Sources</p>
