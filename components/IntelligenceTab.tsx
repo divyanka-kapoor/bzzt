@@ -78,72 +78,51 @@ function CityCard({ city }: { city: CityInsight }) {
   const topRisk: RiskLevel = city.dengue === 'HIGH' || city.malaria === 'HIGH' ? 'HIGH'
     : city.dengue === 'WATCH' || city.malaria === 'WATCH' ? 'WATCH' : 'LOW';
 
+  // Determine which diseases are elevated
+  const diseases = [
+    city.dengue !== 'LOW' && 'Dengue',
+    city.malaria !== 'LOW' && 'Malaria',
+  ].filter(Boolean).join(' · ') || 'Low risk';
+
+  // Climate as a readable sentence
+  const climateStr = [
+    `${city.climate.avgTemp.toFixed(0)}°C`,
+    city.climate.avgRainfall > 0 ? `${city.climate.avgRainfall.toFixed(0)}mm rain` : 'no rain',
+    `${city.climate.avgHumidity.toFixed(0)}% humid`,
+  ].join(' · ');
+
+  // Primary score (highest risk disease)
+  const primaryScore = city.dengue === topRisk ? city.dengueScore : city.malariaScore;
+  const trend = city.dengue === topRisk ? city.trend.dengue : city.trend.malaria;
+
   return (
-    <div className="bg-white/[0.02] border rounded-xl p-4 space-y-3 hover:border-white/15 transition-colors"
-      style={{ borderColor: `${RISK_COLOR[topRisk]}25` }}>
-      {/* Header */}
+    <div className="bg-white/[0.02] border rounded-xl p-4 flex flex-col gap-3 hover:border-white/15 transition-colors"
+      style={{ borderColor: `${RISK_COLOR[topRisk]}30` }}>
+
+      {/* Row 1: Name + risk badge */}
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
           <p className="text-sm font-semibold text-white leading-tight truncate">{formatDistrictName(city.name)}</p>
-          <p className="text-xs text-white/65">{city.country}</p>
+          <p className="text-xs text-white/50">{city.country}{city.population > 0 ? ` · ${city.populationFormatted}` : ''}</p>
         </div>
-        {city.population > 0 && (
-          <div className="text-right shrink-0">
-            <p className="text-xs font-bold text-white">{city.populationFormatted}</p>
-            <p className="text-xs text-white/60">population</p>
-          </div>
-        )}
-      </div>
-
-      {/* Disease rows */}
-      {(['dengue', 'malaria'] as const).map(d => (
-        <div key={d} className="flex items-center justify-between text-xs">
-          <div className="flex items-center gap-2">
-            <span className="text-white/65">{d === 'dengue' ? '◉' : '◆'}</span>
-            <span className="text-white/50 capitalize">{d}</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <TrendBadge dir={city.trend[d]} />
-            <RiskBadge level={city[d]} size="xs" />
-            <span className="text-xs text-white/60 w-10 text-right" title="Outbreak probability score (0–100)">{d === 'dengue' ? city.dengueScore : city.malariaScore}%</span>
-          </div>
-        </div>
-      ))}
-
-      {/* WHO baseline */}
-      {city.who && (
-        <div className="border-t border-white/[0.05] pt-2 grid grid-cols-2 gap-2">
-          <div>
-            <p className="text-xs text-white/60 mb-0.5">WHO dengue avg/yr</p>
-            <p className="text-xs text-white/70">{city.who.dengueAvgFormatted}</p>
-          </div>
-          <div>
-            <p className="text-xs text-white/60 mb-0.5">Malaria incidence</p>
-            <p className="text-xs text-white/70">{city.who.malariaAvgFormatted}</p>
-          </div>
-          {!city.who.fetched && <p className="text-xs text-white/60 col-span-2">fallback data</p>}
-        </div>
-      )}
-
-      {/* Climate snapshot */}
-      <div className="border-t border-white/[0.05] pt-2 grid grid-cols-4 gap-1 text-xs">
-        <div className="flex flex-col gap-0.5">
-          <span className="text-white/80 font-medium">{city.climate.avgTemp.toFixed(0)}°C</span>
-          <span className="text-white/40 text-[10px]">temp</span>
-        </div>
-        <div className="flex flex-col gap-0.5">
-          <span className="text-white/80 font-medium">{city.climate.avgRainfall.toFixed(0)}mm</span>
-          <span className="text-white/40 text-[10px]">rainfall</span>
-        </div>
-        <div className="flex flex-col gap-0.5">
-          <span className="text-white/80 font-medium">{city.climate.laggedRainfall.toFixed(0)}mm</span>
-          <span className="text-white/40 text-[10px]" title="Rainfall 6-8 weeks ago — primary outbreak trigger">lagged</span>
-        </div>
-        <div className="flex flex-col gap-0.5">
-          <span className="text-white/80 font-medium">{city.climate.avgHumidity.toFixed(0)}%</span>
-          <span className="text-white/40 text-[10px]">humidity</span>
+        <div className="flex items-center gap-1.5 shrink-0">
+          <TrendBadge dir={trend} />
+          <RiskBadge level={topRisk} size="sm" />
         </div>
       </div>
+
+      {/* Row 2: Disease breakdown — compact */}
+      <div className="flex items-center justify-between text-xs">
+        <span className="text-white/50">{diseases}</span>
+        <span className="text-white/70 font-medium tabular-nums" title="Outbreak probability score (0–100)">
+          {primaryScore}%
+        </span>
+      </div>
+
+      {/* Row 3: Climate signal — readable sentence */}
+      <p className="text-xs text-white/35 border-t border-white/[0.05] pt-2 leading-relaxed">
+        {climateStr}
+      </p>
     </div>
   );
 }
