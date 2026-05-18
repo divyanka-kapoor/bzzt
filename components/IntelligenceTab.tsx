@@ -135,63 +135,6 @@ function CityCard({ city }: { city: CityInsight }) {
   );
 }
 
-// ── Multi-source lineage diagram ─────────────────────────────────────────────
-function LineageDiagram() {
-  const sources = [
-    { label: 'Open-Meteo API', sub: 'climate · free · no key', color: '#60A5FA' },
-    { label: 'WHO GHO',        sub: 'disease surveillance',    color: '#A78BFA' },
-    { label: 'UN Population',  sub: 'city estimates · 2024',   color: '#34D399' },
-  ];
-
-  return (
-    <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-5">
-      <p className="text-xs text-white/65 uppercase tracking-wider mb-4">Data provenance — OpenMetadata catalog</p>
-      <div className="flex items-center gap-3 flex-wrap">
-        {/* Sources */}
-        <div className="flex flex-col gap-2">
-          {sources.map(s => (
-            <div key={s.label} className="rounded-lg border px-3 py-2 text-xs" style={{ borderColor: `${s.color}30`, background: `${s.color}08` }}>
-              <p className="font-semibold" style={{ color: s.color }}>{s.label}</p>
-              <p className="text-white/60">{s.sub}</p>
-            </div>
-          ))}
-        </div>
-
-        {/* Arrow */}
-        <div className="flex flex-col items-center gap-1 text-white/60">
-          <div className="text-lg">→</div>
-          <div className="text-xs uppercase tracking-wide">column<br/>lineage</div>
-        </div>
-
-        {/* Scorer */}
-        <div className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-xs">
-          <p className="font-bold text-white mb-1">bzzt-risk-scorer</p>
-          <p className="text-white/65">WHO-aligned thresholds</p>
-          <p className="text-white/65">14-day lagged rainfall</p>
-          <p className="text-white/65">7 QC checks / run</p>
-          <p className="text-xs text-white/60 mt-1">OpenMetadata pipelineStatus per run</p>
-        </div>
-
-        {/* Arrow */}
-        <div className="text-white/60 text-lg">→</div>
-
-        {/* Output */}
-        <div className="flex flex-col gap-2">
-          {[
-            { label: 'disease_risk_scores', sub: 'table · Bzzt output', color: '#F87171' },
-            { label: 'AgentMail alerts',    sub: 'bzzt@agentmail.to',   color: '#FCD34D' },
-          ].map(s => (
-            <div key={s.label} className="rounded-lg border px-3 py-2 text-xs" style={{ borderColor: `${s.color}30`, background: `${s.color}08` }}>
-              <p className="font-semibold" style={{ color: s.color }}>{s.label}</p>
-              <p className="text-white/60">{s.sub}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
 // ── Main component ────────────────────────────────────────────────────────────
 export default function IntelligenceTab() {
   const [data, setData] = useState<InsightsData | null>(null);
