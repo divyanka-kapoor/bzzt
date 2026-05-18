@@ -126,11 +126,23 @@ function CityCard({ city }: { city: CityInsight }) {
       )}
 
       {/* Climate snapshot */}
-      <div className="grid grid-cols-4 gap-1 text-xs text-white/60">
-        <div><span className="text-white/65">{city.climate.avgTemp.toFixed(0)}°C</span></div>
-        <div><span className="text-white/65">{city.climate.avgRainfall.toFixed(0)}mm</span></div>
-        <div><span className="text-white/65">{city.climate.laggedRainfall.toFixed(0)}mm↩</span></div>
-        <div><span className="text-white/65">{city.climate.avgHumidity.toFixed(0)}%</span></div>
+      <div className="border-t border-white/[0.05] pt-2 grid grid-cols-4 gap-1 text-xs">
+        <div className="flex flex-col gap-0.5">
+          <span className="text-white/80 font-medium">{city.climate.avgTemp.toFixed(0)}°C</span>
+          <span className="text-white/40 text-[10px]">temp</span>
+        </div>
+        <div className="flex flex-col gap-0.5">
+          <span className="text-white/80 font-medium">{city.climate.avgRainfall.toFixed(0)}mm</span>
+          <span className="text-white/40 text-[10px]">rainfall</span>
+        </div>
+        <div className="flex flex-col gap-0.5">
+          <span className="text-white/80 font-medium">{city.climate.laggedRainfall.toFixed(0)}mm</span>
+          <span className="text-white/40 text-[10px]" title="Rainfall 6-8 weeks ago — primary outbreak trigger">lagged</span>
+        </div>
+        <div className="flex flex-col gap-0.5">
+          <span className="text-white/80 font-medium">{city.climate.avgHumidity.toFixed(0)}%</span>
+          <span className="text-white/40 text-[10px]">humidity</span>
+        </div>
       </div>
     </div>
   );
@@ -287,12 +299,12 @@ export default function IntelligenceTab() {
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             <StatCard
-              label="Districts at HIGH"
+              label="Regions at HIGH"
               value={String(data.summary.citiesHigh)}
               sub="flagged HIGH risk"
             />
             <StatCard
-              label="Districts at WATCH"
+              label="Regions at WATCH"
               value={String(data.summary.citiesWatch)}
               sub="elevated conditions"
             />

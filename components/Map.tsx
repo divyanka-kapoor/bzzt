@@ -320,7 +320,7 @@ export default function Map({ livePoints }: { livePoints?: CityRisk[] }) {
             <span className="text-white/30">·</span>
             <span className="font-bold" style={{ color: '#FFAA44' }}>{stats.watch} WATCH</span>
             <span className="text-white/30">·</span>
-            <span className="text-white/50">{stats.total} {adminLevel === 2 ? 'districts' : 'states'}</span>
+            <span className="text-white/50">{stats.total} {adminLevel === 2 ? 'districts' : 'regions'}</span>
           </div>
         )}
 
@@ -336,16 +336,20 @@ export default function Map({ livePoints }: { livePoints?: CityRisk[] }) {
         )}
       </div>
 
-      {/* Legend */}
-      <div className="absolute bottom-6 left-3 z-[1000] flex items-center gap-3
-                      bg-[#1a1a1a]/90 border border-white/10 rounded-lg px-3 py-2 text-xs">
-        {(['HIGH', 'WATCH'] as RiskLevel[]).map(l => (
-          <span key={l} className="flex items-center gap-1.5">
-            <span className="w-3 h-3 rounded-sm inline-block" style={{ background: RISK_COLOR[l], opacity: 0.85 }} />
-            <span className="text-white/60">{l}</span>
-          </span>
-        ))}
-        <span className="text-white/30 text-xs ml-1">LOW shown as outline</span>
+      {/* Legend + CTA */}
+      <div className="absolute bottom-6 left-3 z-[1000] flex items-center gap-3">
+        <div className="flex items-center gap-3 bg-[#1a1a1a]/90 border border-white/10 rounded-lg px-3 py-2 text-xs">
+          {(['HIGH', 'WATCH'] as RiskLevel[]).map(l => (
+            <span key={l} className="flex items-center gap-1.5">
+              <span className="w-3 h-3 rounded-sm inline-block" style={{ background: RISK_COLOR[l], opacity: 0.85 }} />
+              <span className="text-white/60">{l}</span>
+            </span>
+          ))}
+          <span className="text-white/30 text-xs ml-1">LOW shown as outline</span>
+        </div>
+        <a href="/enroll" className="flex items-center gap-1.5 bg-[#CC3311] hover:bg-[#b32d0f] transition-colors rounded-lg px-3 py-2 text-xs font-semibold text-white">
+          Get alerts →
+        </a>
       </div>
 
       {/* Hint when no country selected */}
