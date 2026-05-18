@@ -68,7 +68,18 @@ export default function Dashboard() {
   const [triggering, setTriggering] = useState<string | null>(null);
   const [lastScan, setLastScan] = useState<string>('—');
   const [activeTab, setActiveTab] = useState<'alerts' | 'lineage'>('alerts');
-  const [topTab, setTopTab] = useState<'map' | 'intelligence' | 'methodology'>('map');
+  const [topTab, setTopTab] = useState<'map' | 'intelligence' | 'methodology'>(() => {
+    if (typeof window !== 'undefined') {
+      const hash = window.location.hash.replace('#', '');
+      if (hash === 'intelligence' || hash === 'methodology') return hash;
+    }
+    return 'map';
+  });
+
+  const switchTab = (tab: 'map' | 'intelligence' | 'methodology') => {
+    setTopTab(tab);
+    window.location.hash = tab === 'map' ? '' : tab;
+  };
 
   const loadAlerts = useCallback(async () => {
     try {
@@ -145,7 +156,7 @@ export default function Dashboard() {
                 role="tab"
                 aria-selected={topTab === id}
                 aria-controls={`tabpanel-${id}`}
-                onClick={() => setTopTab(id)}
+                onClick={() => switchTab(id)}
                 className={`px-3 py-1.5 text-xs font-medium transition ${
                   topTab === id ? 'bg-white/10 text-white' : 'text-white/60 hover:text-white/80'
                 }`}
@@ -202,7 +213,7 @@ export default function Dashboard() {
         role="tabpanel"
         aria-label="Methodology"
         hidden={topTab !== 'methodology'}
-        className={`flex-1 flex flex-col overflow-hidden ${topTab !== 'methodology' ? 'hidden' : ''}`}
+        className={`flex-1 w-full overflow-y-auto ${topTab !== 'methodology' ? 'hidden' : ''}`}
       >
         <MethodologyTab />
       </div>

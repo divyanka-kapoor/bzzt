@@ -74,7 +74,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 
 export default function MethodologyTab() {
   return (
-    <div className="flex-1 overflow-y-auto p-6 space-y-10 w-full">
+    <div className="p-6 space-y-10 w-full">
 
       {/* Pipeline */}
       <Section title="Data pipeline">
