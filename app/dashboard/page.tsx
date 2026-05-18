@@ -4,6 +4,7 @@ import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useEffect, useState, useCallback } from 'react';
 import IntelligenceTab from '@/components/IntelligenceTab';
+import MethodologyTab from '@/components/MethodologyTab';
 
 const Map = dynamic(() => import('@/components/Map'), { ssr: false });
 
@@ -67,7 +68,7 @@ export default function Dashboard() {
   const [triggering, setTriggering] = useState<string | null>(null);
   const [lastScan, setLastScan] = useState<string>('—');
   const [activeTab, setActiveTab] = useState<'alerts' | 'lineage'>('alerts');
-  const [topTab, setTopTab] = useState<'map' | 'intelligence'>('map');
+  const [topTab, setTopTab] = useState<'map' | 'intelligence' | 'methodology'>('map');
 
   const loadAlerts = useCallback(async () => {
     try {
@@ -138,7 +139,7 @@ export default function Dashboard() {
 
           {/* Top-level tab switcher — proper ARIA tablist */}
           <div role="tablist" aria-label="Dashboard view" className="flex items-center border border-white/10 rounded-lg overflow-hidden">
-            {([['map', 'Live Map'], ['intelligence', 'Intelligence']] as const).map(([id, label]) => (
+            {([['map', 'Live Map'], ['intelligence', 'Intelligence'], ['methodology', 'Methodology']] as const).map(([id, label]) => (
               <button
                 key={id}
                 role="tab"
@@ -193,6 +194,17 @@ export default function Dashboard() {
         className={`flex-1 flex flex-col overflow-hidden ${topTab !== 'intelligence' ? 'hidden' : ''}`}
       >
         <IntelligenceTab />
+      </div>
+
+      {/* Methodology tab */}
+      <div
+        id="tabpanel-methodology"
+        role="tabpanel"
+        aria-label="Methodology"
+        hidden={topTab !== 'methodology'}
+        className={`flex-1 flex flex-col overflow-hidden ${topTab !== 'methodology' ? 'hidden' : ''}`}
+      >
+        <MethodologyTab />
       </div>
 
       {/* Map tab */}

@@ -400,8 +400,14 @@ export default function IntelligenceTab() {
             {sorted.map(city => <CityCard key={city.id} city={city} />)}
           </div>
 
-          {/* OM lineage diagram */}
-          <LineageDiagram />
+          {/* Data provenance moved to Methodology tab */}
+          <div className="text-xs text-white/30 text-center py-2">
+            Full data provenance, model details, and validation results →{' '}
+            <button className="underline hover:text-white/50 transition-colors"
+              onClick={() => (document.querySelector('[aria-label="Dashboard view"] button:last-child') as HTMLButtonElement)?.click()}>
+              Methodology tab
+            </button>
+          </div>
 
           {/* Legend */}
           <div className="flex flex-wrap items-center gap-6 text-xs text-white/60 pt-2 border-t border-white/[0.04]">
